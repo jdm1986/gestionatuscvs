@@ -9,5 +9,5 @@ public class GestionCurriculums0Application {
 	public static void main(String[] args) {
 		SpringApplication.run(GestionCurriculums0Application.class, args);
 	}
-
 }
+

@@ -10,13 +10,13 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "nombre_usuario", nullable = false)
     private String nombreUsuario;
 
-    @Column(nullable = false)
+    @Column(name = "contrasena", nullable = false)
     private String contrasena;
 
-    @Column(nullable = false)
+    @Column(name = "email", nullable = false)
     private String email;
 
     // Getters and Setters

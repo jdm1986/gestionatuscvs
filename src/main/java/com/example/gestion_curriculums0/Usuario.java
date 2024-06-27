@@ -1,6 +1,7 @@
 package com.example.gestion_curriculums0;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "Usuarios")
@@ -19,7 +20,10 @@ public class Usuario {
     @Column(name = "email", nullable = false)
     private String email;
 
-    // Getters and Setters
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Curriculum> curriculums;
+
+    // Getters y Setters
     public Long getId() {
         return id;
     }
@@ -50,5 +54,13 @@ public class Usuario {
 
     public void setEmail(String email) {
         this.email = email;
-    } //prueba
+    }
+
+    public List<Curriculum> getCurriculums() {
+        return curriculums;
+    }
+
+    public void setCurriculums(List<Curriculum> curriculums) {
+        this.curriculums = curriculums;
+    }
 }

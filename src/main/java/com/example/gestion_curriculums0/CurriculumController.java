@@ -25,6 +25,12 @@ public class CurriculumController {
         return curriculumRepository.findById(id).orElseThrow(() -> new RuntimeException("Curriculum not found"));
     }
 
+    @GetMapping("/usuario/{usuarioId}")
+    public List<Curriculum> getCurriculumsByUsuarioId(@PathVariable Long usuarioId) {
+        return curriculumRepository.findByUsuarioId(usuarioId);
+    }
+
+
     @GetMapping("/buscar/nombre")
     public List<Curriculum> buscarPorNombre(@RequestParam String nombre) {
         return curriculumRepository.findByNombreContaining(nombre);
@@ -38,11 +44,6 @@ public class CurriculumController {
     @GetMapping("/buscar/etiqueta")
     public List<Curriculum> buscarPorEtiqueta(@RequestParam String etiqueta) {
         return curriculumRepository.findByEtiqueta(etiqueta);
-    }
-
-    @GetMapping("/usuario/{usuarioId}")
-    public List<Curriculum> buscarPorUsuarioId(@PathVariable Long usuarioId) {
-        return curriculumRepository.findByUsuarioId(usuarioId);
     }
 
     @PostMapping

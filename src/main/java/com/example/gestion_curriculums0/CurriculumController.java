@@ -30,7 +30,6 @@ public class CurriculumController {
         return curriculumRepository.findByUsuarioId(usuarioId);
     }
 
-
     @GetMapping("/buscar/nombre")
     public List<Curriculum> buscarPorNombre(@RequestParam String nombre) {
         return curriculumRepository.findByNombreContaining(nombre);
@@ -43,7 +42,7 @@ public class CurriculumController {
 
     @GetMapping("/buscar/etiqueta")
     public List<Curriculum> buscarPorEtiqueta(@RequestParam String etiqueta) {
-        return curriculumRepository.findByEtiqueta(etiqueta);
+        return curriculumRepository.findByEtiquetaContaining(etiqueta);
     }
 
     @PostMapping

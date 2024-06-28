@@ -24,7 +24,3 @@ public class UsuarioController {
         return usuarioRepository.save(usuario);
     }
 }
-
-
-
-

@@ -12,7 +12,7 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
     List<Curriculum> findByApellidoContaining(String apellido);
 
     @Query("SELECT c FROM Curriculum c JOIN c.etiquetas e WHERE e = :etiqueta")
-    List<Curriculum> findByEtiqueta(String etiqueta);
+    List<Curriculum> findByEtiquetaContaining(String etiqueta);
 
     List<Curriculum> findByUsuarioId(Long usuarioId);
 }

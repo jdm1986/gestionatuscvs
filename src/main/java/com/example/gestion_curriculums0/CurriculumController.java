@@ -12,6 +12,9 @@ public class CurriculumController {
     @Autowired
     private CurriculumRepository curriculumRepository;
 
+    @Autowired
+    private UsuarioRepository usuarioRepository; // Añadido
+
     @GetMapping
     public List<Curriculum> getAllCurriculums() {
         return curriculumRepository.findAll();
@@ -23,7 +26,9 @@ public class CurriculumController {
     }
 
     @PostMapping
-    public Curriculum createCurriculum(@RequestBody Curriculum curriculum) {
+    public Curriculum createCurriculum(@RequestBody Curriculum curriculum, @RequestParam Long userId) {
+        Usuario usuario = usuarioRepository.findById(userId).orElseThrow(() -> new RuntimeException("Usuario not found"));
+        curriculum.setUsuario(usuario);
         return curriculumRepository.save(curriculum);
     }
 

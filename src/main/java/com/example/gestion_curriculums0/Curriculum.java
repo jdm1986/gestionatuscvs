@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "Curriculums")
+@Table(name = "curriculums")
 public class Curriculum {
 
     @Id
@@ -21,7 +21,8 @@ public class Curriculum {
     private String pdfPath;
 
     @ElementCollection
-    @Column(name = "etiquetas")
+    @CollectionTable(name = "curriculum_etiquetas", joinColumns = @JoinColumn(name = "curriculum_id"))
+    @Column(name = "etiqueta")
     private List<String> etiquetas;
 
     @ManyToOne

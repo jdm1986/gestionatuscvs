@@ -12,11 +12,6 @@ public class CurriculumController {
     @Autowired
     private CurriculumRepository curriculumRepository;
 
-    @PostMapping
-    public Curriculum createCurriculum(@RequestBody Curriculum curriculum) {
-        return curriculumRepository.save(curriculum);
-    }
-
     @GetMapping
     public List<Curriculum> getAllCurriculums() {
         return curriculumRepository.findAll();
@@ -27,18 +22,24 @@ public class CurriculumController {
         return curriculumRepository.findById(id).orElseThrow(() -> new RuntimeException("Curriculum not found"));
     }
 
+    @PostMapping
+    public Curriculum createCurriculum(@RequestBody Curriculum curriculum) {
+        return curriculumRepository.save(curriculum);
+    }
+
     @PutMapping("/{id}")
     public Curriculum updateCurriculum(@PathVariable Long id, @RequestBody Curriculum updatedCurriculum) {
         Curriculum curriculum = curriculumRepository.findById(id).orElseThrow(() -> new RuntimeException("Curriculum not found"));
         curriculum.setNombre(updatedCurriculum.getNombre());
         curriculum.setApellido(updatedCurriculum.getApellido());
-        curriculum.setEtiquetas(updatedCurriculum.getEtiquetas());
         curriculum.setPdfPath(updatedCurriculum.getPdfPath());
+        curriculum.setEtiquetas(updatedCurriculum.getEtiquetas());
         return curriculumRepository.save(curriculum);
     }
 
     @DeleteMapping("/{id}")
     public void deleteCurriculum(@PathVariable Long id) {
-        curriculumRepository.deleteById(id);
+        Curriculum curriculum = curriculumRepository.findById(id).orElseThrow(() -> new RuntimeException("Curriculum not found"));
+        curriculumRepository.delete(curriculum);
     }
 }

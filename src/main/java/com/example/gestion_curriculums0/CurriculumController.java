@@ -42,7 +42,7 @@ public class CurriculumController {
 
     @GetMapping("/buscar/etiqueta")
     public List<Curriculum> buscarPorEtiqueta(@RequestParam String etiqueta) {
-        return curriculumRepository.findByEtiquetaContaining(etiqueta);
+        return curriculumRepository.findByEtiquetasContaining(etiqueta);
     }
 
     @PostMapping

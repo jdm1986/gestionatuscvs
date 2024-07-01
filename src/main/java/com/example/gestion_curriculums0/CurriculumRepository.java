@@ -3,6 +3,8 @@ package com.example.gestion_curriculums0;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -20,5 +22,5 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
             + "(c.nombre LIKE %:nombre% OR :nombre IS NULL) AND "
             + "(c.apellido LIKE %:apellido% OR :apellido IS NULL) AND "
             + "(e.nombre LIKE %:etiqueta% OR :etiqueta IS NULL)")
-    List<Curriculum> findByAdvancedSearch(@Param("nombre") String nombre, @Param("apellido") String apellido, @Param("etiqueta") String etiqueta);
+    Page<Curriculum> findByAdvancedSearch(@Param("nombre") String nombre, @Param("apellido") String apellido, @Param("etiqueta") String etiqueta, Pageable pageable);
 }

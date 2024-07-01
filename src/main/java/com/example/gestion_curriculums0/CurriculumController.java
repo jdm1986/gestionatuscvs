@@ -3,7 +3,10 @@ package com.example.gestion_curriculums0;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -100,12 +103,16 @@ public class CurriculumController {
 
     @GetMapping("/buscar/avanzado")
     @Transactional(readOnly = true)
-    public List<CurriculumDTO> buscarAvanzado(
+    public Page<CurriculumDTO> buscarAvanzado(
             @RequestParam(required = false) String nombre,
             @RequestParam(required = false) String apellido,
-            @RequestParam(required = false) String etiqueta) {
-        return curriculumRepository.findByAdvancedSearch(nombre, apellido, etiqueta)
-                .stream().map(this::convertToDTO).collect(Collectors.toList());
+            @RequestParam(required = false) String etiqueta,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return curriculumRepository.findByAdvancedSearch(nombre, apellido, etiqueta, pageable)
+                .map(this::convertToDTO);
     }
 
     private CurriculumDTO convertToDTO(Curriculum curriculum) {

@@ -98,6 +98,16 @@ public class CurriculumController {
         curriculumRepository.delete(curriculum);
     }
 
+    @GetMapping("/buscar/avanzado")
+    @Transactional(readOnly = true)
+    public List<CurriculumDTO> buscarAvanzado(
+            @RequestParam(required = false) String nombre,
+            @RequestParam(required = false) String apellido,
+            @RequestParam(required = false) String etiqueta) {
+        return curriculumRepository.findByAdvancedSearch(nombre, apellido, etiqueta)
+                .stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
     private CurriculumDTO convertToDTO(Curriculum curriculum) {
         return new CurriculumDTO(curriculum.getId(), curriculum.getNombre(), curriculum.getApellido(), curriculum.getPdfPath(), curriculum.getEtiquetas().stream().map(Etiqueta::getNombre).collect(Collectors.toList()));
     }

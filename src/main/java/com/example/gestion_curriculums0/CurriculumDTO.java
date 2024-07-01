@@ -1,33 +1,24 @@
 package com.example.gestion_curriculums0;
 
-import jakarta.persistence.*;
 import java.util.List;
 
-@Entity
-@Table(name = "curriculums")
-public class Curriculum {
+public class CurriculumDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
     private String nombre;
-
-    @Column(nullable = false)
     private String apellido;
-
-    @Column(name = "pdf_path")
     private String pdfPath;
+    private List<String> etiquetas;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_id")
-    private Usuario usuario;
+    public CurriculumDTO(Long id, String nombre, String apellido, String pdfPath, List<String> etiquetas) {
+        this.id = id;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.pdfPath = pdfPath;
+        this.etiquetas = etiquetas;
+    }
 
-    @OneToMany(mappedBy = "curriculum", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
-    private List<Etiqueta> etiquetas;
-
-    // Getters and Setters
+    // Getters y Setters
     public Long getId() {
         return id;
     }
@@ -60,19 +51,11 @@ public class Curriculum {
         this.pdfPath = pdfPath;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
-    public List<Etiqueta> getEtiquetas() {
+    public List<String> getEtiquetas() {
         return etiquetas;
     }
 
-    public void setEtiquetas(List<Etiqueta> etiquetas) {
+    public void setEtiquetas(List<String> etiquetas) {
         this.etiquetas = etiquetas;
     }
 }

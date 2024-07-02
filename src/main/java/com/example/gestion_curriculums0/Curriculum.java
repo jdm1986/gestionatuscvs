@@ -20,11 +20,14 @@ public class Curriculum {
     @Column(name = "pdf_path")
     private String pdfPath;
 
+    @Column(name = "resumen_cv", length = 2000)
+    private String resumenCv;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
-    @OneToMany(mappedBy = "curriculum", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "curriculum", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Etiqueta> etiquetas;
 
     // Getters and Setters
@@ -58,6 +61,14 @@ public class Curriculum {
 
     public void setPdfPath(String pdfPath) {
         this.pdfPath = pdfPath;
+    }
+
+    public String getResumenCv() {
+        return resumenCv;
+    }
+
+    public void setResumenCv(String resumenCv) {
+        this.resumenCv = resumenCv;
     }
 
     public Usuario getUsuario() {

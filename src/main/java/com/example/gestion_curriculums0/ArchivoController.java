@@ -1,5 +1,7 @@
 package com.example.gestion_curriculums0;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,9 @@ public class ArchivoController {
     @Autowired
     private CurriculumRepository curriculumRepository;
 
+    @Autowired
+    private CustomOpenAiService openAiService;
+
     @PostMapping("/subir/{id}")
     public ResponseEntity<String> subirArchivo(@PathVariable Long id, @RequestParam("archivo") MultipartFile archivo) {
         try {
@@ -36,11 +41,25 @@ public class ArchivoController {
 
             // Actualizar la ruta del archivo en el curriculum
             curriculum.setPdfPath(filePath.toString());
+
+            // Procesar y resumir el CV
+            String cvText = loadCvText(filePath.toString());
+            String resumenCv = openAiService.getCvSummary(cvText);
+            curriculum.setResumenCv(resumenCv);
+
             curriculumRepository.save(curriculum);
 
-            return ResponseEntity.ok("Archivo subido exitosamente");
+            return ResponseEntity.ok("Archivo subido y procesado exitosamente");
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al subir el archivo");
+        }
+    }
+
+    private String loadCvText(String pdfPath) {
+        try (PDDocument document = PDDocument.load(new File(pdfPath))) {
+            return new PDFTextStripper().getText(document);
+        } catch (IOException e) {
+            throw new RuntimeException("Error al leer el PDF", e);
         }
     }
 }

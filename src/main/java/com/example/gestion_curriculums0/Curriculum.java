@@ -1,6 +1,7 @@
 package com.example.gestion_curriculums0;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -22,6 +23,14 @@ public class Curriculum {
 
     @Column(name = "resumen_cv", length = 2000)
     private String resumenCv;
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime fechaInsercion;
+
+    @PrePersist
+    protected void onCreate() {
+        this.fechaInsercion = LocalDateTime.now();
+    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id")
@@ -69,6 +78,14 @@ public class Curriculum {
 
     public void setResumenCv(String resumenCv) {
         this.resumenCv = resumenCv;
+    }
+
+    public LocalDateTime getFechaInsercion() {
+        return fechaInsercion;
+    }
+
+    public void setFechaInsercion(LocalDateTime fechaInsercion) {
+        this.fechaInsercion = fechaInsercion;
     }
 
     public Usuario getUsuario() {

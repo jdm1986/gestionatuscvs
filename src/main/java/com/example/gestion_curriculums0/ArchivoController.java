@@ -24,7 +24,7 @@ public class ArchivoController {
     private CurriculumRepository curriculumRepository;
 
     @Autowired
-    private CustomOpenAiService openAiService;
+    private CustomOpenAiServiceSimulado openAiService; // Usar el servicio simulado
 
     @PostMapping("/subir/{id}")
     public ResponseEntity<String> subirArchivo(@PathVariable Long id, @RequestParam("archivo") MultipartFile archivo) {

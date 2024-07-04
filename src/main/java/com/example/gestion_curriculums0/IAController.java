@@ -6,21 +6,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
+
 import java.io.File;
 import java.io.IOException;
-
-
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 public class IAController {
 
-    @Autowired
-    private CurriculumRepository curriculumRepository;
+    private final CurriculumRepository curriculumRepository;
+    private final CustomOpenAiService openAiService;
 
     @Autowired
-    private CustomOpenAiService openAiService;
+    public IAController(CurriculumRepository curriculumRepository, CustomOpenAiService openAiService) {
+        this.curriculumRepository = curriculumRepository;
+        this.openAiService = openAiService;
+    }
 
     @GetMapping("/buscar")
     public List<CurriculumDTO> buscarCandidatos(@RequestParam String query) {

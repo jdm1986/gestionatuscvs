@@ -18,11 +18,20 @@ public class Curriculum {
     @Column(nullable = false)
     private String apellido;
 
-    @Column(name = "pdf_path")
+    @Column(name = "pdf_path", nullable = false)
     private String pdfPath;
 
     @Column(name = "resumen_cv", length = 2000)
     private String resumenCv;
+
+    @Column(nullable = false)
+    private String sexo;
+
+    @Column(nullable = false)
+    private String telefono;
+
+    @Column(nullable = false)
+    private String email;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime fechaInsercion;
@@ -78,6 +87,30 @@ public class Curriculum {
 
     public void setResumenCv(String resumenCv) {
         this.resumenCv = resumenCv;
+    }
+
+    public String getSexo() {
+        return sexo;
+    }
+
+    public void setSexo(String sexo) {
+        this.sexo = sexo;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public LocalDateTime getFechaInsercion() {

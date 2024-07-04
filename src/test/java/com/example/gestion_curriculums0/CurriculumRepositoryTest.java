@@ -20,6 +20,11 @@ public class CurriculumRepositoryTest {
         Curriculum curriculum = new Curriculum();
         curriculum.setApellido("Doe");
         curriculum.setNombre("John");
+        curriculum.setPdfPath("path/to/pdf");
+        curriculum.setResumenCv("Este es un resumen");
+        curriculum.setSexo("Masculino");
+        curriculum.setTelefono("123456789");
+        curriculum.setEmail("john.doe@example.com");
 
         Curriculum savedCurriculum = curriculumRepository.save(curriculum);
 

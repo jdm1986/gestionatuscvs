@@ -42,6 +42,16 @@ public class IAController {
     }
 
     private CurriculumDTO convertToDTO(Curriculum curriculum) {
-        return new CurriculumDTO(curriculum.getId(), curriculum.getNombre(), curriculum.getApellido(), curriculum.getPdfPath(), curriculum.getEtiquetas().stream().map(Etiqueta::getNombre).collect(Collectors.toList()));
+        return new CurriculumDTO(
+                curriculum.getId(),
+                curriculum.getNombre(),
+                curriculum.getApellido(),
+                curriculum.getPdfPath(),
+                curriculum.getResumenCv(),  // Adding the missing field
+                curriculum.getSexo(),
+                curriculum.getTelefono(),
+                curriculum.getEmail(),
+                curriculum.getEtiquetas().stream().map(Etiqueta::getNombre).collect(Collectors.toList())
+        );
     }
 }

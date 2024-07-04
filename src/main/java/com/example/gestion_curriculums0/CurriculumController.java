@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,6 +66,9 @@ public class CurriculumController {
         curriculum.setNombre(curriculumDTO.getNombre());
         curriculum.setApellido(curriculumDTO.getApellido());
         curriculum.setPdfPath(curriculumDTO.getPdfPath());
+        curriculum.setSexo(curriculumDTO.getSexo());
+        curriculum.setTelefono(curriculumDTO.getTelefono());
+        curriculum.setEmail(curriculumDTO.getEmail());
         List<Etiqueta> etiquetas = curriculumDTO.getEtiquetas().stream().map(nombre -> {
             Etiqueta etiqueta = new Etiqueta(nombre);
             etiqueta.setCurriculum(curriculum);
@@ -75,7 +79,6 @@ public class CurriculumController {
         return convertToDTO(curriculumRepository.save(curriculum));
     }
 
-
     @PutMapping("/{id}")
     @Transactional
     public CurriculumDTO updateCurriculum(@PathVariable Long id, @RequestBody CurriculumDTO updatedCurriculumDTO) {
@@ -84,6 +87,9 @@ public class CurriculumController {
         curriculum.setNombre(updatedCurriculumDTO.getNombre());
         curriculum.setApellido(updatedCurriculumDTO.getApellido());
         curriculum.setPdfPath(updatedCurriculumDTO.getPdfPath());
+        curriculum.setSexo(updatedCurriculumDTO.getSexo());
+        curriculum.setTelefono(updatedCurriculumDTO.getTelefono());
+        curriculum.setEmail(updatedCurriculumDTO.getEmail());
         List<Etiqueta> etiquetas = updatedCurriculumDTO.getEtiquetas().stream().map(nombre -> {
             Etiqueta etiqueta = new Etiqueta(nombre);
             etiqueta.setCurriculum(curriculum);
@@ -116,6 +122,16 @@ public class CurriculumController {
     }
 
     private CurriculumDTO convertToDTO(Curriculum curriculum) {
-        return new CurriculumDTO(curriculum.getId(), curriculum.getNombre(), curriculum.getApellido(), curriculum.getPdfPath(), curriculum.getEtiquetas().stream().map(Etiqueta::getNombre).collect(Collectors.toList()));
+        return new CurriculumDTO(
+                curriculum.getId(),
+                curriculum.getNombre(),
+                curriculum.getApellido(),
+                curriculum.getPdfPath(),
+                curriculum.getResumenCv(),
+                curriculum.getSexo(),
+                curriculum.getTelefono(),
+                curriculum.getEmail(),
+                curriculum.getEtiquetas().stream().map(Etiqueta::getNombre).collect(Collectors.toList())
+        );
     }
 }

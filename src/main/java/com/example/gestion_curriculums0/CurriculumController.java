@@ -1,5 +1,6 @@
 package com.example.gestion_curriculums0;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -21,11 +22,13 @@ public class CurriculumController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @ApiOperation(value = "View a list of available curriculums", response = List.class)
     @GetMapping
     @Transactional(readOnly = true)
     public List<CurriculumDTO> getAllCurriculums() {
         return curriculumRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
     }
+
 
     @GetMapping("/{id}")
     @Transactional(readOnly = true)
@@ -122,16 +125,9 @@ public class CurriculumController {
     }
 
     private CurriculumDTO convertToDTO(Curriculum curriculum) {
-        return new CurriculumDTO(
-                curriculum.getId(),
-                curriculum.getNombre(),
-                curriculum.getApellido(),
-                curriculum.getPdfPath(),
-                curriculum.getResumenCv(),
-                curriculum.getSexo(),
-                curriculum.getTelefono(),
-                curriculum.getEmail(),
-                curriculum.getEtiquetas().stream().map(Etiqueta::getNombre).collect(Collectors.toList())
-        );
+        return new CurriculumDTO(curriculum.getId(), curriculum.getNombre(), curriculum.getApellido(), curriculum.getPdfPath(),
+                curriculum.getResumenCv(), curriculum.getSexo(), curriculum.getTelefono(), curriculum.getEmail(),
+                curriculum.getEtiquetas().stream().map(Etiqueta::getNombre).collect(Collectors.toList()));
     }
+
 }

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/archivos")
@@ -46,6 +47,7 @@ public class ArchivoController {
             curriculum.setSexo(sexo);
             curriculum.setTelefono(telefono);
             curriculum.setEmail(email);
+            curriculum.setFechaInsercion(LocalDateTime.now());
 
             // Guardar el archivo en el sistema de archivos
             String fileName = archivo.getOriginalFilename();

@@ -16,6 +16,12 @@ public class GestionCurriculums0Application {
 
 /* Iniciar el servidor web:
 
+En terminal dentro de raiz frontend creada src, pegar este comando {{ python -m http.server 8000}}
+
+Pega desde la raiz c: cd cursos\java\IdeaProyect\gestion_curriculums0\frontend y luego el comando de arriba.
+
+http://localhost:8000/
+
 Abre una terminal o línea de comandos.
 Navega al directorio que contiene tu archivo index.html. Puedes usar el comando cd para cambiar de directorio. Por ejemplo:
 

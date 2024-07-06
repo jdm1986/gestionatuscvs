@@ -2,18 +2,19 @@ package com.example.gestion_curriculums0;
 
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/curriculums")
+@CrossOrigin(origins = "http://localhost:8000")
 public class CurriculumController {
 
     @Autowired
@@ -28,7 +29,6 @@ public class CurriculumController {
     public List<CurriculumDTO> getAllCurriculums() {
         return curriculumRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
     }
-
 
     @GetMapping("/{id}")
     @Transactional(readOnly = true)
@@ -129,5 +129,4 @@ public class CurriculumController {
                 curriculum.getResumenCv(), curriculum.getSexo(), curriculum.getTelefono(), curriculum.getEmail(),
                 curriculum.getEtiquetas().stream().map(Etiqueta::getNombre).collect(Collectors.toList()));
     }
-
 }

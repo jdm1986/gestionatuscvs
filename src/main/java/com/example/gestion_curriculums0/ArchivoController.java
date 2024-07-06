@@ -16,9 +16,10 @@ import java.nio.file.Paths;
 
 @RestController
 @RequestMapping("/archivos")
+@CrossOrigin(origins = "http://localhost:8000")
 public class ArchivoController {
 
-    private static String UPLOAD_DIR = "uploads/";
+    public static final String UPLOAD_DIR = "uploads/";
 
     @Autowired
     private CurriculumRepository curriculumRepository;
@@ -26,12 +27,22 @@ public class ArchivoController {
     @Autowired
     private CustomOpenAiService openAiService;
 
-    @PostMapping("/subir/{id}")
-    public ResponseEntity<String> subirArchivo(@PathVariable Long id, @RequestParam("archivo") MultipartFile archivo) {
+    @PostMapping("/subir")
+    public ResponseEntity<String> subirArchivo(
+            @RequestParam("archivo") MultipartFile archivo,
+            @RequestParam("nombre") String nombre,
+            @RequestParam("apellido") String apellido,
+            @RequestParam("sexo") String sexo,
+            @RequestParam("telefono") String telefono,
+            @RequestParam("email") String email) {
         try {
-            // Obtener el curriculum
-            Curriculum curriculum = curriculumRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Curriculum not found"));
+            // Crear un nuevo curriculum
+            Curriculum curriculum = new Curriculum();
+            curriculum.setNombre(nombre);
+            curriculum.setApellido(apellido);
+            curriculum.setSexo(sexo);
+            curriculum.setTelefono(telefono);
+            curriculum.setEmail(email);
 
             // Guardar el archivo en el sistema de archivos
             String fileName = archivo.getOriginalFilename();

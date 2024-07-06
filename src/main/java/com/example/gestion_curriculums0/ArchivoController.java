@@ -3,10 +3,13 @@ package com.example.gestion_curriculums0;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,12 +49,15 @@ public class ArchivoController {
 
             // Guardar el archivo en el sistema de archivos
             String fileName = archivo.getOriginalFilename();
-            Path filePath = Paths.get(UPLOAD_DIR + fileName);
+            Path filePath = Paths.get(UPLOAD_DIR, fileName).toAbsolutePath().normalize();
             Files.createDirectories(filePath.getParent());
             Files.write(filePath, archivo.getBytes());
 
+            // Imprimir detalles del archivo en los logs
+            System.out.println("Archivo subido: " + filePath.toString());
+
             // Actualizar la ruta del archivo en el curriculum
-            curriculum.setPdfPath(filePath.toString());
+            curriculum.setPdfPath(fileName);
 
             // Procesar y resumir el CV
             String cvText = loadCvText(filePath.toString());
@@ -64,6 +70,19 @@ public class ArchivoController {
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al subir el archivo");
         }
+    }
+
+    @GetMapping("/{fileName:.+}")
+    public ResponseEntity<StreamingResponseBody> getFile(@PathVariable String fileName) {
+        Path filePath = Paths.get(UPLOAD_DIR).resolve(fileName).normalize();
+        if (!Files.exists(filePath)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        StreamingResponseBody responseBody = outputStream -> Files.copy(filePath, outputStream);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + fileName + "\"")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(responseBody);
     }
 
     private String loadCvText(String pdfPath) {

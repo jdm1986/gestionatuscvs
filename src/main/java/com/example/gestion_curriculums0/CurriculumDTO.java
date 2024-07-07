@@ -13,8 +13,7 @@ public class CurriculumDTO {
     private String email;
     private List<String> etiquetas;
 
-    // Constructor, getters y setters
-
+    // Constructor
     public CurriculumDTO(Long id, String nombre, String apellido, String pdfPath, String resumenCv, String sexo, String telefono, String email, List<String> etiquetas) {
         this.id = id;
         this.nombre = nombre;
@@ -28,7 +27,6 @@ public class CurriculumDTO {
     }
 
     // Getters y setters
-
     public Long getId() {
         return id;
     }

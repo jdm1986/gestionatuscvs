@@ -2,7 +2,6 @@ package com.example.gestion_curriculums0.controller;
 
 import com.example.gestion_curriculums0.CurriculumDTO;
 import com.example.gestion_curriculums0.model.Curriculum;
-import com.example.gestion_curriculums0.model.Etiqueta;
 import com.example.gestion_curriculums0.repository.CurriculumRepository;
 import com.example.gestion_curriculums0.service.CustomOpenAiService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,11 +51,10 @@ public class IAController {
                 curriculum.getNombre(),
                 curriculum.getApellido(),
                 curriculum.getPdfPath(),
-                curriculum.getResumenCv(),  // Adding the missing field
+                curriculum.getResumenCv(),
                 curriculum.getSexo(),
                 curriculum.getTelefono(),
-                curriculum.getEmail(),
-                curriculum.getEtiquetas().stream().map(Etiqueta::getNombre).collect(Collectors.toList())
+                curriculum.getEmail()
         );
     }
 }

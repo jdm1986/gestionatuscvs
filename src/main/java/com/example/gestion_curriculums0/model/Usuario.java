@@ -21,12 +21,12 @@ public class Usuario {
     private String email;
 
     @Column(name = "roles", nullable = false)
-    private String roles;
+    private String roles; // Almacenar roles como cadena separada por comas
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Curriculum> curriculums;
 
-    // Getters and setters
+    // Getters y setters
     public Long getId() {
         return id;
     }

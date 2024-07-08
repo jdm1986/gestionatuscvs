@@ -34,6 +34,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         Usuario usuario = new Usuario();
         usuario.setNombreUsuario(authRequest.getUsername());
         usuario.setContrasena(passwordEncoder.encode(authRequest.getPassword()));
+        usuario.setEmail(authRequest.getEmail());
+        usuario.setRoles(authRequest.getRoles());
         usuarioRepository.save(usuario);
     }
 }

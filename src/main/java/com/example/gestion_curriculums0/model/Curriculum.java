@@ -2,7 +2,6 @@ package com.example.gestion_curriculums0.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Entity
 @Table(name = "curriculums")
@@ -23,6 +22,9 @@ public class Curriculum {
 
     @Column(name = "resumen_cv", length = 2000)
     private String resumenCv;
+
+    @Column(name = "cv_bruto", length = 4000)
+    private String cvBruto;
 
     @Column(nullable = false)
     private String sexo;
@@ -45,15 +47,7 @@ public class Curriculum {
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(
-            name = "curriculum_etiquetas",
-            joinColumns = @JoinColumn(name = "curriculum_id"),
-            inverseJoinColumns = @JoinColumn(name = "etiqueta_id")
-    )
-    private Set<Etiqueta> etiquetas;
-
-    // Getters and Setters
+    // Getters y Setters
 
     public Long getId() {
         return id;
@@ -95,6 +89,14 @@ public class Curriculum {
         this.resumenCv = resumenCv;
     }
 
+    public String getCvBruto() {
+        return cvBruto;
+    }
+
+    public void setCvBruto(String cvBruto) {
+        this.cvBruto = cvBruto;
+    }
+
     public String getSexo() {
         return sexo;
     }
@@ -133,13 +135,5 @@ public class Curriculum {
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
-    }
-
-    public Set<Etiqueta> getEtiquetas() {
-        return etiquetas;
-    }
-
-    public void setEtiquetas(Set<Etiqueta> etiquetas) {
-        this.etiquetas = etiquetas;
     }
 }

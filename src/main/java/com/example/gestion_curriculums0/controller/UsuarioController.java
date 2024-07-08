@@ -1,11 +1,11 @@
 package com.example.gestion_curriculums0.controller;
 
-import com.example.gestion_curriculums0.*;
+import com.example.gestion_curriculums0.CurriculumDTO;
 import com.example.gestion_curriculums0.model.Curriculum;
-import com.example.gestion_curriculums0.model.Etiqueta;
 import com.example.gestion_curriculums0.model.Usuario;
 import com.example.gestion_curriculums0.model.UsuarioDTO;
 import com.example.gestion_curriculums0.repository.UsuarioRepository;
+import com.example.gestion_curriculums0.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +20,9 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -56,8 +59,7 @@ public class UsuarioController {
                 curriculum.getResumenCv(),
                 curriculum.getSexo(),
                 curriculum.getTelefono(),
-                curriculum.getEmail(),
-                curriculum.getEtiquetas().stream().map(Etiqueta::getNombre).collect(Collectors.toList())
+                curriculum.getEmail()
         );
     }
 

@@ -1,7 +1,5 @@
 package com.example.gestion_curriculums0;
 
-import java.util.List;
-
 public class CurriculumDTO {
     private Long id;
     private String nombre;
@@ -11,10 +9,9 @@ public class CurriculumDTO {
     private String sexo;
     private String telefono;
     private String email;
-    private List<String> etiquetas;
 
     // Constructor
-    public CurriculumDTO(Long id, String nombre, String apellido, String pdfPath, String resumenCv, String sexo, String telefono, String email, List<String> etiquetas) {
+    public CurriculumDTO(Long id, String nombre, String apellido, String pdfPath, String resumenCv, String sexo, String telefono, String email) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -23,10 +20,10 @@ public class CurriculumDTO {
         this.sexo = sexo;
         this.telefono = telefono;
         this.email = email;
-        this.etiquetas = etiquetas;
     }
 
-    // Getters y setters
+    // Getters y Setters
+
     public Long getId() {
         return id;
     }
@@ -89,13 +86,5 @@ public class CurriculumDTO {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public List<String> getEtiquetas() {
-        return etiquetas;
-    }
-
-    public void setEtiquetas(List<String> etiquetas) {
-        this.etiquetas = etiquetas;
     }
 }

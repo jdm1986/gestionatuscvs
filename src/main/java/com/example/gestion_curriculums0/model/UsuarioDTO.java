@@ -2,13 +2,16 @@ package com.example.gestion_curriculums0.model;
 
 import com.example.gestion_curriculums0.CurriculumDTO;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class UsuarioDTO {
     private Long id;
     private String nombreUsuario;
     private String email;
-    private String roles;
+    private List<String> roles;
     private List<CurriculumDTO> curriculums;
 
     // Constructor, getters y setters
@@ -18,7 +21,7 @@ public class UsuarioDTO {
         this.id = id;
         this.nombreUsuario = nombreUsuario;
         this.email = email;
-        this.roles = roles;
+        this.roles = Arrays.asList(roles.split(",")); // Convertir cadena de roles a lista
         this.curriculums = curriculums;
     }
 
@@ -46,12 +49,12 @@ public class UsuarioDTO {
         this.email = email;
     }
 
-    public String getRoles() {
+    public List<String> getRoles() {
         return roles;
     }
 
     public void setRoles(String roles) {
-        this.roles = roles;
+        this.roles = Arrays.asList(roles.split(",")); // Convertir cadena de roles a lista
     }
 
     public List<CurriculumDTO> getCurriculums() {

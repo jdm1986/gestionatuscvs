@@ -8,15 +8,21 @@ import com.example.gestion_curriculums0.repository.UsuarioRepository;
 import com.example.gestion_curriculums0.service.PdfService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -74,6 +80,13 @@ public class CurriculumController {
         return curriculumRepository.findByApellidoContaining(apellido).stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
+    @GetMapping("/buscar/clave")
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
+    public List<CurriculumDTO> buscarPorClave(@RequestParam String clave) {
+        return curriculumRepository.findByCvBrutoContaining(clave).stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
     @PostMapping("/upload")
     @PreAuthorize("hasAuthority('ADMIN')")
     public CurriculumDTO uploadCurriculum(@RequestParam("file") MultipartFile file,
@@ -114,41 +127,68 @@ public class CurriculumController {
     }
 
     @PutMapping("/{id}")
-    @Transactional
     @PreAuthorize("hasAuthority('ADMIN')")
-    public CurriculumDTO updateCurriculum(@PathVariable Long id, @RequestBody CurriculumDTO updatedCurriculumDTO) {
+    public CurriculumDTO updateCurriculum(@PathVariable Long id,
+                                          @RequestParam("file") MultipartFile file,
+                                          @RequestParam @Valid String nombre,
+                                          @RequestParam @Valid String apellido,
+                                          @RequestParam @Valid String sexo,
+                                          @RequestParam @Valid String telefono,
+                                          @RequestParam @Valid String email) {
         Curriculum curriculum = curriculumRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Curriculum not found"));
-        curriculum.setNombre(updatedCurriculumDTO.getNombre());
-        curriculum.setApellido(updatedCurriculumDTO.getApellido());
-        curriculum.setPdfPath(updatedCurriculumDTO.getPdfPath());
-        curriculum.setSexo(updatedCurriculumDTO.getSexo());
-        curriculum.setTelefono(updatedCurriculumDTO.getTelefono());
-        curriculum.setEmail(updatedCurriculumDTO.getEmail());
+
+        if (file != null && !file.isEmpty()) {
+            File convFile = new File(System.getProperty("java.io.tmpdir") + "/" + file.getOriginalFilename());
+            try (FileOutputStream fos = new FileOutputStream(convFile)) {
+                fos.write(file.getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException("Error converting file", e);
+            }
+
+            String extractedText;
+            try {
+                extractedText = pdfService.extractTextFromPdf(convFile);
+            } catch (IOException e) {
+                throw new RuntimeException("Error extracting text from PDF", e);
+            }
+
+            curriculum.setPdfPath(convFile.getPath());
+            curriculum.setCvBruto(extractedText);
+        }
+
+        curriculum.setNombre(nombre);
+        curriculum.setApellido(apellido);
+        curriculum.setSexo(sexo);
+        curriculum.setTelefono(telefono);
+        curriculum.setEmail(email);
+
         return convertToDTO(curriculumRepository.save(curriculum));
     }
 
     @DeleteMapping("/{id}")
-    @Transactional
     @PreAuthorize("hasAuthority('ADMIN')")
-    public void deleteCurriculum(@PathVariable Long id) {
+    public ResponseEntity<?> deleteCurriculum(@PathVariable Long id) {
         Curriculum curriculum = curriculumRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Curriculum not found"));
         curriculumRepository.delete(curriculum);
+        return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/buscar/avanzado")
-    @Transactional(readOnly = true)
+    @GetMapping("/pdf/{id}")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
-    public Page<CurriculumDTO> buscarAvanzado(
-            @RequestParam(required = false) String nombre,
-            @RequestParam(required = false) String apellido,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-        return curriculumRepository.findByAdvancedSearch(nombre, apellido, pageable)
-                .map(this::convertToDTO);
+    public ResponseEntity<Resource> descargarPdf(@PathVariable Long id) {
+        Curriculum curriculum = curriculumRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Curriculum not found"));
+        File file = new File(curriculum.getPdfPath());
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + file.getName());
+        Resource resource = new FileSystemResource(file);
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(file.length())
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(resource);
     }
 
     private CurriculumDTO convertToDTO(Curriculum curriculum) {

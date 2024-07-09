@@ -1,6 +1,6 @@
 package com.example.gestion_curriculums0.controller;
 
-import com.example.gestion_curriculums0.CurriculumDTO;
+import com.example.gestion_curriculums0.model.CurriculumDTO;
 import com.example.gestion_curriculums0.model.Curriculum;
 import com.example.gestion_curriculums0.model.Usuario;
 import com.example.gestion_curriculums0.repository.CurriculumRepository;

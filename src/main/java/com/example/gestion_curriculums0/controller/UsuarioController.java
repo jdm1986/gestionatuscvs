@@ -1,6 +1,6 @@
 package com.example.gestion_curriculums0.controller;
 
-import com.example.gestion_curriculums0.CurriculumDTO;
+import com.example.gestion_curriculums0.model.CurriculumDTO;
 import com.example.gestion_curriculums0.model.Curriculum;
 import com.example.gestion_curriculums0.model.Usuario;
 import com.example.gestion_curriculums0.model.UsuarioDTO;
@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,7 +47,7 @@ public class UsuarioController {
     }
 
     private UsuarioDTO convertToDTO(Usuario usuario) {
-        return new UsuarioDTO(usuario.getId(), usuario.getNombreUsuario(), usuario.getEmail(), usuario.getRoles(),
+        return new UsuarioDTO(usuario.getId(), usuario.getNombreUsuario(), usuario.getEmail(), Collections.singletonList(usuario.getRoles()),
                 usuario.getCurriculums().stream().map(this::convertCurriculumToDTO).collect(Collectors.toList()));
     }
 

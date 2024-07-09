@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CurriculumService {
@@ -17,12 +18,20 @@ public class CurriculumService {
         return curriculumRepository.findAll();
     }
 
-    public Curriculum getCurriculumById(Long id) {
-        return curriculumRepository.findById(id).orElse(null);
+    public Optional<Curriculum> getCurriculumById(Long id) {
+        return curriculumRepository.findById(id);
     }
 
     public List<Curriculum> getCurriculumsByUsuarioId(Long usuarioId) {
         return curriculumRepository.findByUsuarioId(usuarioId);
+    }
+
+    public List<Curriculum> buscarPorNombre(String nombre) {
+        return curriculumRepository.findByNombreContaining(nombre);
+    }
+
+    public List<Curriculum> buscarPorApellido(String apellido) {
+        return curriculumRepository.findByApellidoContaining(apellido);
     }
 
     public Curriculum saveCurriculum(Curriculum curriculum) {

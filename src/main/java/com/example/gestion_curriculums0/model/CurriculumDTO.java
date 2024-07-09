@@ -1,4 +1,4 @@
-package com.example.gestion_curriculums0;
+package com.example.gestion_curriculums0.model;
 
 public class CurriculumDTO {
     private Long id;

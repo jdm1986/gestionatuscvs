@@ -1,29 +1,25 @@
 package com.example.gestion_curriculums0.model;
 
-import com.example.gestion_curriculums0.CurriculumDTO;
-
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class UsuarioDTO {
+
     private Long id;
     private String nombreUsuario;
     private String email;
     private List<String> roles;
     private List<CurriculumDTO> curriculums;
 
-    // Constructor, getters y setters
-    public UsuarioDTO() {}
-
-    public UsuarioDTO(Long id, String nombreUsuario, String email, String roles, List<CurriculumDTO> curriculums) {
+    // Constructor
+    public UsuarioDTO(Long id, String nombreUsuario, String email, List<String> roles, List<CurriculumDTO> curriculums) {
         this.id = id;
         this.nombreUsuario = nombreUsuario;
         this.email = email;
-        this.roles = Arrays.asList(roles.split(",")); // Convertir cadena de roles a lista
+        this.roles = roles;
         this.curriculums = curriculums;
     }
+
+    // Getters y Setters
 
     public Long getId() {
         return id;
@@ -53,8 +49,8 @@ public class UsuarioDTO {
         return roles;
     }
 
-    public void setRoles(String roles) {
-        this.roles = Arrays.asList(roles.split(",")); // Convertir cadena de roles a lista
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
 
     public List<CurriculumDTO> getCurriculums() {

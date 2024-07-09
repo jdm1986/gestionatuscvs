@@ -7,7 +7,6 @@ public class AuthRequest {
     private String roles;
 
     // Getters y setters
-
     public String getUsername() {
         return username;
     }

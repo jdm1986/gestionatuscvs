@@ -30,6 +30,14 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new CustomUserDetails(usuario.get());
     }
 
+    public Long getUserIdByUsername(String username) {
+        Optional<Usuario> usuario = usuarioRepository.findByNombreUsuario(username);
+        if (usuario.isEmpty()) {
+            throw new UsernameNotFoundException("Usuario no encontrado");
+        }
+        return usuario.get().getId();
+    }
+
     public void saveUser(AuthRequest authRequest) {
         Usuario usuario = new Usuario();
         usuario.setNombreUsuario(authRequest.getUsername());

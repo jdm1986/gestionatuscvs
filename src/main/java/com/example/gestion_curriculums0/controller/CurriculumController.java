@@ -3,17 +3,13 @@ package com.example.gestion_curriculums0.controller;
 import com.example.gestion_curriculums0.model.CurriculumDTO;
 import com.example.gestion_curriculums0.model.Curriculum;
 import com.example.gestion_curriculums0.model.Usuario;
-import com.example.gestion_curriculums0.repository.CurriculumRepository;
 import com.example.gestion_curriculums0.repository.UsuarioRepository;
+import com.example.gestion_curriculums0.service.CurriculumService;
 import com.example.gestion_curriculums0.service.PdfService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +31,7 @@ import java.util.stream.Collectors;
 public class CurriculumController {
 
     @Autowired
-    private CurriculumRepository curriculumRepository;
+    private CurriculumService curriculumService;
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -48,14 +44,14 @@ public class CurriculumController {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public List<CurriculumDTO> getAllCurriculums() {
-        return curriculumRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
+        return curriculumService.getAllCurriculums().stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public CurriculumDTO getCurriculumById(@PathVariable Long id) {
-        return curriculumRepository.findById(id).map(this::convertToDTO)
+        return curriculumService.getCurriculumById(id).map(this::convertToDTO)
                 .orElseThrow(() -> new RuntimeException("Curriculum not found"));
     }
 
@@ -63,28 +59,28 @@ public class CurriculumController {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public List<CurriculumDTO> getCurriculumsByUsuarioId(@PathVariable Long usuarioId) {
-        return curriculumRepository.findByUsuarioId(usuarioId).stream().map(this::convertToDTO).collect(Collectors.toList());
+        return curriculumService.getCurriculumsByUsuarioId(usuarioId).stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/buscar/nombre")
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public List<CurriculumDTO> buscarPorNombre(@RequestParam String nombre) {
-        return curriculumRepository.findByNombreContaining(nombre).stream().map(this::convertToDTO).collect(Collectors.toList());
+        return curriculumService.buscarPorNombre(nombre).stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/buscar/apellido")
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public List<CurriculumDTO> buscarPorApellido(@RequestParam String apellido) {
-        return curriculumRepository.findByApellidoContaining(apellido).stream().map(this::convertToDTO).collect(Collectors.toList());
+        return curriculumService.buscarPorApellido(apellido).stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/buscar/clave")
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public List<CurriculumDTO> buscarPorClave(@RequestParam String clave) {
-        return curriculumRepository.findByCvBrutoContaining(clave).stream().map(this::convertToDTO).collect(Collectors.toList());
+        return curriculumService.buscarPorClave(clave).stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @PostMapping("/upload")
@@ -123,7 +119,7 @@ public class CurriculumController {
         curriculum.setEmail(email);
         curriculum.setUsuario(usuario);
 
-        return convertToDTO(curriculumRepository.save(curriculum));
+        return convertToDTO(curriculumService.saveCurriculum(curriculum));
     }
 
     @PutMapping("/{id}")
@@ -135,7 +131,7 @@ public class CurriculumController {
                                           @RequestParam @Valid String sexo,
                                           @RequestParam @Valid String telefono,
                                           @RequestParam @Valid String email) {
-        Curriculum curriculum = curriculumRepository.findById(id)
+        Curriculum curriculum = curriculumService.getCurriculumById(id)
                 .orElseThrow(() -> new RuntimeException("Curriculum not found"));
 
         if (file != null && !file.isEmpty()) {
@@ -163,22 +159,20 @@ public class CurriculumController {
         curriculum.setTelefono(telefono);
         curriculum.setEmail(email);
 
-        return convertToDTO(curriculumRepository.save(curriculum));
+        return convertToDTO(curriculumService.saveCurriculum(curriculum));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> deleteCurriculum(@PathVariable Long id) {
-        Curriculum curriculum = curriculumRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Curriculum not found"));
-        curriculumRepository.delete(curriculum);
+        curriculumService.deleteCurriculum(id);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/pdf/{id}")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public ResponseEntity<Resource> descargarPdf(@PathVariable Long id) {
-        Curriculum curriculum = curriculumRepository.findById(id)
+        Curriculum curriculum = curriculumService.getCurriculumById(id)
                 .orElseThrow(() -> new RuntimeException("Curriculum not found"));
         File file = new File(curriculum.getPdfPath());
         HttpHeaders headers = new HttpHeaders();
@@ -193,6 +187,6 @@ public class CurriculumController {
 
     private CurriculumDTO convertToDTO(Curriculum curriculum) {
         return new CurriculumDTO(curriculum.getId(), curriculum.getNombre(), curriculum.getApellido(), curriculum.getPdfPath(),
-                curriculum.getResumenCv(), curriculum.getSexo(), curriculum.getTelefono(), curriculum.getEmail());
+                curriculum.getResumenCv(), curriculum.getSexo(), curriculum.getTelefono(), curriculum.getEmail(), curriculum.getFechaInsercion());
     }
 }

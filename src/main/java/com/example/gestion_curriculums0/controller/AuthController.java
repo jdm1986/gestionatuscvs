@@ -15,6 +15,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = "http://localhost:8000")
@@ -38,15 +41,25 @@ public class AuthController {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             String jwt = jwtUtil.generateToken(userDetails);
             Long userId = userDetailsService.getUserIdByUsername(userDetails.getUsername());
-            return ResponseEntity.ok(new AuthResponse(jwt, userDetails.getUsername(), userId));
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", jwt);
+            response.put("username", userDetails.getUsername());
+            response.put("userId", userId);
+
+            return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error al iniciar sesión: " + e.getMessage());
         }
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<Map<String, String>> register(@RequestBody AuthRequest authRequest) {
         userDetailsService.saveUser(authRequest);
-        return ResponseEntity.ok("Registro exitoso");
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Registro exitoso");
+
+        return ResponseEntity.ok(response);
     }
 }

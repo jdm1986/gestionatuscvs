@@ -34,6 +34,10 @@ public class CurriculumService {
         return curriculumRepository.findByApellidoContaining(apellido);
     }
 
+    public List<Curriculum> buscarPorClave(String clave) {
+        return curriculumRepository.findByCvBrutoContaining(clave);
+    }
+
     public Curriculum saveCurriculum(Curriculum curriculum) {
         return curriculumRepository.save(curriculum);
     }

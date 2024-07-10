@@ -1,5 +1,7 @@
 package com.example.gestion_curriculums0.model;
 
+import java.time.LocalDateTime;
+
 public class CurriculumDTO {
     private Long id;
     private String nombre;
@@ -9,9 +11,9 @@ public class CurriculumDTO {
     private String sexo;
     private String telefono;
     private String email;
+    private LocalDateTime fechaInsercion;
 
-    // Constructor
-    public CurriculumDTO(Long id, String nombre, String apellido, String pdfPath, String resumenCv, String sexo, String telefono, String email) {
+    public CurriculumDTO(Long id, String nombre, String apellido, String pdfPath, String resumenCv, String sexo, String telefono, String email, LocalDateTime fechaInsercion) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -20,9 +22,10 @@ public class CurriculumDTO {
         this.sexo = sexo;
         this.telefono = telefono;
         this.email = email;
+        this.fechaInsercion = fechaInsercion;
     }
 
-    // Getters y Setters
+    // Getters and setters
 
     public Long getId() {
         return id;
@@ -86,5 +89,13 @@ public class CurriculumDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public LocalDateTime getFechaInsercion() {
+        return fechaInsercion;
+    }
+
+    public void setFechaInsercion(LocalDateTime fechaInsercion) {
+        this.fechaInsercion = fechaInsercion;
     }
 }

@@ -60,7 +60,8 @@ public class UsuarioController {
                 curriculum.getResumenCv(),
                 curriculum.getSexo(),
                 curriculum.getTelefono(),
-                curriculum.getEmail()
+                curriculum.getEmail(),
+                curriculum.getFechaInsercion()
         );
     }
 

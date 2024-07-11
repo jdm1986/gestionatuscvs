@@ -1,14 +1,70 @@
 body {
+    font-family: Arial, sans-serif;
     background-color: #1c1c1c;
     color: #ffffff;
-    margin: 0;
-    padding: 0;
 }
 
 .container {
     width: 80%;
     margin: 0 auto;
     padding-top: 20px;
+    background-color: #333333;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+button {
+    background-color: #6c63ff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-right: 10px;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: #5754d6;
+}
+
+input, select {
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #444444;
+    color: white;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #6c63ff;
+}
+
+.hidden {
+    display: none;
+}
+
+h1 {
+    text-align: center;
+    color: #ffffff;
+}
+
+.buttons, .actions, .search {
+    text-align: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+form input, form select, form button {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 10px;
 }
 
 .actions {
@@ -28,8 +84,9 @@ body {
 
 .search input {
     flex: 1;
-    padding: 10px;
     margin-right: 10px;
+    background-color: #444444;
+    color: white;
 }
 
 .search button {
@@ -41,6 +98,9 @@ body {
 .results {
     max-height: 70vh;
     overflow-y: auto;
+    background-color: #333333;
+    padding: 10px;
+    border-radius: 8px;
 }
 
 table {
@@ -50,6 +110,8 @@ table {
 
 thead {
     background-color: #6c63ff;
+    position: sticky;
+    top: 0;
 }
 
 thead th {

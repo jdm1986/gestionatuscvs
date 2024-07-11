@@ -102,37 +102,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     document.getElementById('searchButton')?.addEventListener('click', async function() {
-        const searchInput = document.getElementById('searchInput').value;
-        const response = await fetch(`${baseUrl}/curriculums/buscar/clave?clave=${searchInput}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
+        performSearch();
+    });
 
-        if (response.ok) {
-            const results = await response.json();
-            const resultsBody = document.getElementById('resultsBody');
-            if (resultsBody) {
-                resultsBody.innerHTML = '';
-                results.forEach(result => {
-                    resultsBody.innerHTML += `
-                        <tr>
-                            <td>${result.nombre}</td>
-                            <td>${result.apellido}</td>
-                            <td>${new Date(result.fechaInsercion).toLocaleDateString()}</td>
-                            <td>${result.sexo}</td>
-                            <td>${result.telefono}</td>
-                            <td>
-                                <button onclick="viewCv(${result.id})">Ver</button>
-                                <button onclick="deleteCv(${result.id})">Eliminar</button>
-                            </td>
-                        </tr>
-                    `;
-                });
-            }
-        } else {
-            alert('Error en la búsqueda');
+    document.getElementById('searchInput')?.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            performSearch();
         }
     });
 
@@ -179,6 +155,41 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Error al subir el currículum');
         }
     });
+
+    async function performSearch() {
+        const searchInput = document.getElementById('searchInput').value;
+        const response = await fetch(`${baseUrl}/curriculums/buscar/clave?clave=${searchInput}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
+            const results = await response.json();
+            const resultsBody = document.getElementById('resultsBody');
+            if (resultsBody) {
+                resultsBody.innerHTML = '';
+                results.forEach(result => {
+                    resultsBody.innerHTML += `
+                        <tr>
+                            <td>${result.nombre}</td>
+                            <td>${result.apellido}</td>
+                            <td>${new Date(result.fechaInsercion).toLocaleDateString()}</td>
+                            <td>${result.sexo}</td>
+                            <td>${result.telefono}</td>
+                            <td>
+                                <button onclick="viewCv(${result.id})">Ver</button>
+                                <button onclick="deleteCv(${result.id})">Eliminar</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+        } else {
+            alert('Error en la búsqueda');
+        }
+    }
 });
 
 async function viewCv(id) {

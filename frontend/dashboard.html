@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Currículums</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>Bienvenido, <span id="username"></span></h1>
+    <div class="actions">
+        <button onclick="location.href='upload.html'">Subir Currículum</button>
+        <button id="logoutButton">Cerrar Sesión</button>
+    </div>
+    <div class="search">
+        <input type="text" id="searchInput" placeholder="Buscar por palabras clave">
+        <button id="searchButton">Buscar</button>
+    </div>
+    <div class="results">
+        <table>
+            <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Fecha de Inserción</th>
+                <th>Sexo</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody id="resultsBody">
+            <!-- Aquí se agregarán los resultados dinámicamente -->
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="scripts.js"></script>
+</body>
+</html>

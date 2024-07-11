@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,11 +56,15 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<Map<String, String>> register(@RequestBody AuthRequest authRequest) {
-        userDetailsService.saveUser(authRequest);
+        try {
+            userDetailsService.saveUser(authRequest);
 
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Registro exitoso");
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Registro exitoso");
 
-        return ResponseEntity.ok(response);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("error", e.getMessage()));
+        }
     }
 }

@@ -22,6 +22,7 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,6 +54,17 @@ public class CurriculumController {
     public CurriculumDTO getCurriculumById(@PathVariable Long id) {
         return curriculumService.getCurriculumById(id).map(this::convertToDTO)
                 .orElseThrow(() -> new RuntimeException("Curriculum not found"));
+    }
+
+    @GetMapping("/usuario")
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
+    public List<CurriculumDTO> getCurriculumsByCurrentUser(Principal principal) {
+        Usuario usuario = usuarioRepository.findByNombreUsuario(principal.getName())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        return curriculumService.getCurriculumsByUsuarioId(usuario.getId()).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/usuario/{usuarioId}")

@@ -37,10 +37,10 @@ public class ArchivoService {
         try {
             Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
             Resource resource = new UrlResource(filePath.toUri());
-            if (resource.exists()) {
+            if (resource.exists() && resource.isReadable()) {
                 return resource;
             } else {
-                throw new RuntimeException("File not found " + fileName);
+                throw new RuntimeException("File not found or not readable: " + fileName);
             }
         } catch (Exception ex) {
             throw new RuntimeException("File not found " + fileName, ex);

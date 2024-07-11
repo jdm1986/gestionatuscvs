@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Currículums</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles-common.css">
+    <link rel="stylesheet" href="styles-dashboard.css">
 </head>
 <body>
 <div class="container">
@@ -16,6 +17,7 @@
     <div class="search">
         <input type="text" id="searchInput" placeholder="Buscar por palabras clave">
         <button id="searchButton">Buscar</button>
+        <button id="clearButton">Limpiar Filtros</button>
     </div>
     <div class="results">
         <table>
@@ -25,6 +27,7 @@
                 <th>Apellido</th>
                 <th>Fecha de Inserción</th>
                 <th>Sexo</th>
+                <th>Teléfono</th>
                 <th>Acciones</th>
             </tr>
             </thead>

@@ -13,38 +13,39 @@ document.addEventListener('DOMContentLoaded', function() {
         if (response.ok) {
             const results = await response.json();
             const resultsBody = document.getElementById('resultsBody');
-            resultsBody.innerHTML = '';
-            results.forEach(result => {
-                resultsBody.innerHTML += `
-                    <tr>
-                        <td>${result.nombre}</td>
-                        <td>${result.apellido}</td>
-                        <td>${new Date(result.fechaInsercion).toLocaleDateString()}</td>
-                        <td>${result.sexo}</td>
-                        <td>
-                            <button onclick="viewCv(${result.id})">Ver</button>
-                            <button onclick="deleteCv(${result.id})">Eliminar</button>
-                        </td>
-                    </tr>
-                `;
-            });
+            if (resultsBody) {
+                resultsBody.innerHTML = '';
+                results.forEach(result => {
+                    resultsBody.innerHTML += `
+                        <tr>
+                            <td>${result.nombre}</td>
+                            <td>${result.apellido}</td>
+                            <td>${new Date(result.fechaInsercion).toLocaleDateString()}</td>
+                            <td>${result.sexo}</td>
+                            <td>${result.telefono}</td>
+                            <td>
+                                <button onclick="viewCv(${result.id})">Ver</button>
+                                <button onclick="deleteCv(${result.id})">Eliminar</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
         } else {
             alert('Error al cargar los currículums');
         }
     }
 
-    // Llamada a fetchCurriculums al cargar el dashboard
     if (window.location.pathname.endsWith('dashboard.html')) {
         fetchCurriculums();
     }
 
-    // Resto del código existente...
     document.getElementById('registerForm')?.addEventListener('submit', async function(event) {
         event.preventDefault();
         const username = document.getElementById('username').value;
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
-        const roles = "USER"; // O puedes dejarlo opcional en el formulario
+        const roles = "USER";
 
         const response = await fetch(`${baseUrl}/auth/register`, {
             method: 'POST',
@@ -112,24 +113,32 @@ document.addEventListener('DOMContentLoaded', function() {
         if (response.ok) {
             const results = await response.json();
             const resultsBody = document.getElementById('resultsBody');
-            resultsBody.innerHTML = '';
-            results.forEach(result => {
-                resultsBody.innerHTML += `
-                    <tr>
-                        <td>${result.nombre}</td>
-                        <td>${result.apellido}</td>
-                        <td>${new Date(result.fechaInsercion).toLocaleDateString()}</td>
-                        <td>${result.sexo}</td>
-                        <td>
-                            <button onclick="viewCv(${result.id})">Ver</button>
-                            <button onclick="deleteCv(${result.id})">Eliminar</button>
-                        </td>
-                    </tr>
-                `;
-            });
+            if (resultsBody) {
+                resultsBody.innerHTML = '';
+                results.forEach(result => {
+                    resultsBody.innerHTML += `
+                        <tr>
+                            <td>${result.nombre}</td>
+                            <td>${result.apellido}</td>
+                            <td>${new Date(result.fechaInsercion).toLocaleDateString()}</td>
+                            <td>${result.sexo}</td>
+                            <td>${result.telefono}</td>
+                            <td>
+                                <button onclick="viewCv(${result.id})">Ver</button>
+                                <button onclick="deleteCv(${result.id})">Eliminar</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
         } else {
             alert('Error en la búsqueda');
         }
+    });
+
+    document.getElementById('clearButton')?.addEventListener('click', function() {
+        document.getElementById('searchInput').value = '';
+        fetchCurriculums();
     });
 
     document.getElementById('uploadForm')?.addEventListener('submit', async function(event) {
@@ -163,7 +172,8 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('uploadMessage').classList.remove('hidden');
             setTimeout(() => {
                 document.getElementById('uploadMessage').classList.add('hidden');
-                fetchCurriculums(); // Actualiza la lista de currículums después de subir uno nuevo
+                fetchCurriculums();
+                document.getElementById('uploadForm').reset();
             }, 3000);
         } else {
             alert('Error al subir el currículum');

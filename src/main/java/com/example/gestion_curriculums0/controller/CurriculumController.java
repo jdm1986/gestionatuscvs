@@ -40,7 +40,7 @@ public class CurriculumController {
     @Autowired
     private PdfService pdfService;
 
-    @ApiOperation(value = "View a list of available curriculums", response = List.class)
+    @ApiOperation(value = "Ver una lista de curriculums disponibles", response = List.class)
     @GetMapping
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
@@ -53,7 +53,7 @@ public class CurriculumController {
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public CurriculumDTO getCurriculumById(@PathVariable Long id) {
         return curriculumService.getCurriculumById(id).map(this::convertToDTO)
-                .orElseThrow(() -> new RuntimeException("Curriculum not found"));
+                .orElseThrow(() -> new RuntimeException("Curriculum no encontrado"));
     }
 
     @GetMapping("/usuario")
@@ -91,8 +91,11 @@ public class CurriculumController {
     @GetMapping("/buscar/clave")
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
-    public List<CurriculumDTO> buscarPorClave(@RequestParam String clave) {
-        return curriculumService.buscarPorClave(clave).stream().map(this::convertToDTO).collect(Collectors.toList());
+    public List<CurriculumDTO> buscarPorClave(@RequestParam String clave, Principal principal) {
+        String username = principal.getName();
+        Usuario usuario = usuarioRepository.findByNombreUsuario(username)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        return curriculumService.buscarPorClaveYUsuario(clave, usuario.getId()).stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @PostMapping("/upload")
@@ -105,20 +108,20 @@ public class CurriculumController {
                                           @RequestParam String telefono,
                                           @RequestParam String email) {
         Usuario usuario = usuarioRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Usuario not found"));
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         File convFile = new File(System.getProperty("java.io.tmpdir") + "/" + file.getOriginalFilename());
         try (FileOutputStream fos = new FileOutputStream(convFile)) {
             fos.write(file.getBytes());
         } catch (IOException e) {
-            throw new RuntimeException("Error converting file", e);
+            throw new RuntimeException("Error convirtiendo el archivo", e);
         }
 
         String extractedText;
         try {
             extractedText = pdfService.extractTextFromPdf(convFile);
         } catch (IOException e) {
-            throw new RuntimeException("Error extracting text from PDF", e);
+            throw new RuntimeException("Error extrayendo texto del PDF", e);
         }
 
         Curriculum curriculum = new Curriculum();
@@ -144,21 +147,21 @@ public class CurriculumController {
                                           @RequestParam @Valid String telefono,
                                           @RequestParam @Valid String email) {
         Curriculum curriculum = curriculumService.getCurriculumById(id)
-                .orElseThrow(() -> new RuntimeException("Curriculum not found"));
+                .orElseThrow(() -> new RuntimeException("Curriculum no encontrado"));
 
         if (file != null && !file.isEmpty()) {
             File convFile = new File(System.getProperty("java.io.tmpdir") + "/" + file.getOriginalFilename());
             try (FileOutputStream fos = new FileOutputStream(convFile)) {
                 fos.write(file.getBytes());
             } catch (IOException e) {
-                throw new RuntimeException("Error converting file", e);
+                throw new RuntimeException("Error convirtiendo el archivo", e);
             }
 
             String extractedText;
             try {
                 extractedText = pdfService.extractTextFromPdf(convFile);
             } catch (IOException e) {
-                throw new RuntimeException("Error extracting text from PDF", e);
+                throw new RuntimeException("Error extrayendo texto del PDF", e);
             }
 
             curriculum.setPdfPath(convFile.getPath());
@@ -185,7 +188,7 @@ public class CurriculumController {
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public ResponseEntity<Resource> descargarPdf(@PathVariable Long id) {
         Curriculum curriculum = curriculumService.getCurriculumById(id)
-                .orElseThrow(() -> new RuntimeException("Curriculum not found"));
+                .orElseThrow(() -> new RuntimeException("Curriculum no encontrado"));
         File file = new File(curriculum.getPdfPath());
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + file.getName());

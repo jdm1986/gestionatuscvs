@@ -9,5 +9,6 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
     List<Curriculum> findByNombreContaining(String nombre);
     List<Curriculum> findByApellidoContaining(String apellido);
     List<Curriculum> findByUsuarioId(Long usuarioId);
-    List<Curriculum> findByCvBrutoContaining(String clave); // Este es el método para la búsqueda avanzada
+    List<Curriculum> findByCvBrutoContainingAndUsuarioId(String clave, Long usuarioId); // Ajuste aquí
 }
+

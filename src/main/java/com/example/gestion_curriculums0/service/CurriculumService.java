@@ -5,6 +5,7 @@ import com.example.gestion_curriculums0.repository.CurriculumRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,8 +35,27 @@ public class CurriculumService {
         return curriculumRepository.findByApellidoContaining(apellido);
     }
 
-    public List<Curriculum> buscarPorClave(String clave) {
-        return curriculumRepository.findByCvBrutoContaining(clave);
+    public List<Curriculum> buscarPorClaveYUsuario(String clave, Long usuarioId) {
+        String[] keywords = clave.split(" ");
+        List<Curriculum> allCurriculums = curriculumRepository.findByUsuarioId(usuarioId);
+        List<Curriculum> matchingCurriculums = new ArrayList<>();
+
+        for (Curriculum curriculum : allCurriculums) {
+            boolean matches = true;
+            for (String keyword : keywords) {
+                if (!(curriculum.getNombre().toLowerCase().contains(keyword.toLowerCase()) ||
+                        curriculum.getApellido().toLowerCase().contains(keyword.toLowerCase()) ||
+                        curriculum.getCvBruto().toLowerCase().contains(keyword.toLowerCase()) ||
+                        curriculum.getSexo().toLowerCase().contains(keyword.toLowerCase()))) {
+                    matches = false;
+                    break;
+                }
+            }
+            if (matches) {
+                matchingCurriculums.add(curriculum);
+            }
+        }
+        return matchingCurriculums;
     }
 
     public Curriculum saveCurriculum(Curriculum curriculum) {

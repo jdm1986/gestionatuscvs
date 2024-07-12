@@ -6,6 +6,7 @@ body {
 
 .container {
     width: 80%;
+    max-width: 1200px;
     margin: 0 auto;
     padding-top: 20px;
     background-color: #333333;
@@ -139,4 +140,62 @@ tbody td button {
 
 tbody td button:hover {
     background-color: #5754d6;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+    .container {
+        width: 95%;
+    }
+
+    .results {
+        overflow-y: auto;
+        background-color: #333333;
+        padding: 10px;
+        border-radius: 8px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    thead {
+        display: none; /* Ocultar encabezado en dispositivos móviles */
+    }
+
+    tbody tr {
+        display: block;
+        border-bottom: 1px solid #333;
+        margin-bottom: 10px;
+    }
+
+    tbody td {
+        display: block;
+        text-align: right;
+        padding: 10px;
+        border-bottom: 1px solid #444;
+        position: relative;
+        padding-left: 50%;
+    }
+
+    tbody td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: bold;
+    }
+
+    tbody td button {
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+
+    tbody td button:hover {
+        background-color: #5754d6;
+    }
 }

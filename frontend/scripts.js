@@ -18,12 +18,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 results.forEach(result => {
                     resultsBody.innerHTML += `
                         <tr>
-                            <td>${result.nombre}</td>
-                            <td>${result.apellido}</td>
-                            <td>${new Date(result.fechaInsercion).toLocaleDateString()}</td>
-                            <td>${result.sexo}</td>
-                            <td>${result.telefono}</td>
-                            <td>
+                            <td data-label="Nombre">${result.nombre}</td>
+                            <td data-label="Apellido">${result.apellido}</td>
+                            <td data-label="Fecha de Inserción">${new Date(result.fechaInsercion).toLocaleDateString()}</td>
+                            <td data-label="Sexo">${result.sexo}</td>
+                            <td data-label="Teléfono">${result.telefono}</td>
+                            <td data-label="Acciones">
                                 <button onclick="viewCv(${result.id})">Ver</button>
                                 <button onclick="deleteCv(${result.id})">Eliminar</button>
                             </td>
@@ -173,12 +173,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 results.forEach(result => {
                     resultsBody.innerHTML += `
                         <tr>
-                            <td>${result.nombre}</td>
-                            <td>${result.apellido}</td>
-                            <td>${new Date(result.fechaInsercion).toLocaleDateString()}</td>
-                            <td>${result.sexo}</td>
-                            <td>${result.telefono}</td>
-                            <td>
+                            <td data-label="Nombre">${result.nombre}</td>
+                            <td data-label="Apellido">${result.apellido}</td>
+                            <td data-label="Fecha de Inserción">${new Date(result.fechaInsercion).toLocaleDateString()}</td>
+                            <td data-label="Sexo">${result.sexo}</td>
+                            <td data-label="Teléfono">${result.telefono}</td>
+                            <td data-label="Acciones">
                                 <button onclick="viewCv(${result.id})">Ver</button>
                                 <button onclick="deleteCv(${result.id})">Eliminar</button>
                             </td>

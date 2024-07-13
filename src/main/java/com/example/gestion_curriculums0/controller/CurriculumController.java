@@ -1,7 +1,7 @@
 package com.example.gestion_curriculums0.controller;
 
-import com.example.gestion_curriculums0.model.CurriculumDTO;
 import com.example.gestion_curriculums0.model.Curriculum;
+import com.example.gestion_curriculums0.model.CurriculumDTO;
 import com.example.gestion_curriculums0.model.Usuario;
 import com.example.gestion_curriculums0.repository.UsuarioRepository;
 import com.example.gestion_curriculums0.service.CurriculumService;
@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -52,8 +53,9 @@ public class CurriculumController {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public CurriculumDTO getCurriculumById(@PathVariable Long id) {
-        return curriculumService.getCurriculumById(id).map(this::convertToDTO)
+        Curriculum curriculum = curriculumService.getCurriculumById(id)
                 .orElseThrow(() -> new RuntimeException("Curriculum no encontrado"));
+        return convertToDTO(curriculum);
     }
 
     @GetMapping("/usuario")

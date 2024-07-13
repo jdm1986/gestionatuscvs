@@ -16,8 +16,10 @@
     </div>
     <div class="search">
         <input type="text" id="searchInput" placeholder="Buscar por palabras clave">
-        <button id="searchButton">Buscar</button>
-        <button id="clearButton">Limpiar Filtros</button>
+        <div class="search-buttons">
+            <button id="searchButton">Buscar</button>
+            <button id="clearButton">Limpiar Filtros</button>
+        </div>
     </div>
     <div class="results">
         <table>
@@ -37,6 +39,18 @@
         </table>
     </div>
 </div>
+
+<!-- Modal para añadir notas -->
+<div id="noteModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Notas</h2>
+        <textarea id="noteText" placeholder="Escribe tu nota aquí..."></textarea>
+        <button id="saveNoteButton">Guardar Nota</button>
+        <div id="notesList"></div>
+    </div>
+</div>
+
 <script src="scripts.js"></script>
 </body>
 </html>

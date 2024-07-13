@@ -12,28 +12,152 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (response.ok) {
             const results = await response.json();
+            // Ordenar los resultados por fecha de inserción del más reciente al menos reciente
+            results.sort((a, b) => new Date(b.fechaInsercion) - new Date(a.fechaInsercion));
             const resultsBody = document.getElementById('resultsBody');
             if (resultsBody) {
                 resultsBody.innerHTML = '';
                 results.forEach(result => {
-                    resultsBody.innerHTML += `
-                        <tr>
-                            <td data-label="Nombre">${result.nombre}</td>
-                            <td data-label="Apellido">${result.apellido}</td>
-                            <td data-label="Fecha de Inserción">${new Date(result.fechaInsercion).toLocaleDateString()}</td>
-                            <td data-label="Sexo">${result.sexo}</td>
-                            <td data-label="Teléfono">${result.telefono}</td>
-                            <td data-label="Acciones">
-                                <button onclick="viewCv(${result.id})">Ver</button>
-                                <button onclick="deleteCv(${result.id})">Eliminar</button>
-                            </td>
-                        </tr>
+                    const tr = document.createElement('tr');
+
+                    tr.innerHTML = `
+                        <td data-label="Nombre">${result.nombre}</td>
+                        <td data-label="Apellido">${result.apellido}</td>
+                        <td data-label="Fecha de Inserción">${new Date(result.fechaInsercion).toLocaleDateString()}</td>
+                        <td data-label="Sexo">${result.sexo}</td>
+                        <td data-label="Teléfono">${result.telefono}</td>
                     `;
+
+                    const actionsTd = document.createElement('td');
+                    actionsTd.setAttribute('data-label', 'Acciones');
+                    actionsTd.classList.add('action-buttons');
+
+                    const viewButton = document.createElement('button');
+                    viewButton.textContent = 'Ver';
+                    viewButton.addEventListener('click', () => viewCv(result.id));
+                    actionsTd.appendChild(viewButton);
+
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Eliminar';
+                    deleteButton.addEventListener('click', () => deleteCv(result.id));
+                    actionsTd.appendChild(deleteButton);
+
+                    const notesButton = document.createElement('button');
+                    notesButton.textContent = 'Notas';
+                    notesButton.addEventListener('click', () => openNoteModal(result.id));
+                    actionsTd.appendChild(notesButton);
+
+                    tr.appendChild(actionsTd);
+                    resultsBody.appendChild(tr);
                 });
             }
         } else {
             alert('Error al cargar los currículums');
         }
+    }
+
+    async function viewCv(id) {
+        const response = await fetch(`${baseUrl}/curriculums/pdf/${id}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+
+        if (response.ok) {
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            window.open(url);
+        } else {
+            alert('Error al ver el currículum');
+        }
+    }
+
+    async function deleteCv(id) {
+        if (confirm('¿Estás seguro?')) {
+            const response = await fetch(`${baseUrl}/curriculums/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+
+            if (response.ok) {
+                fetchCurriculums();
+            } else {
+                alert('Error al eliminar el currículum');
+            }
+        }
+    }
+
+    async function openNoteModal(curriculumId) {
+        const modal = document.getElementById('noteModal');
+        const noteText = document.getElementById('noteText');
+        const saveNoteButton = document.getElementById('saveNoteButton');
+        const notesList = document.getElementById('notesList');
+
+        notesList.innerHTML = ''; // Clear previous notes
+
+        // Fetch existing notes
+        const response = await fetch(`${baseUrl}/curriculums/${curriculumId}/notas`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
+            const notes = await response.json();
+
+            notes.sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion)); //Orden de  la nota más reciente a la menos.
+
+            notes.forEach(note => {
+                const noteElement = document.createElement('div');
+                noteElement.classList.add('note');
+                noteElement.innerHTML = `
+                    <p>${note.contenido}</p>
+                    <span>${new Date(note.fechaCreacion).toLocaleString()}</span>
+                `;
+                notesList.appendChild(noteElement);
+            });
+        } else {
+            alert('Error al cargar las notas');
+        }
+
+        modal.style.display = 'block';
+        saveNoteButton.onclick = async function() {
+            const content = noteText.value.trim();
+            if (content) {
+                const response = await fetch(`${baseUrl}/curriculums/${curriculumId}/notas`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ contenido: content })
+                });
+
+                if (response.ok) {
+                    noteText.value = '';
+                    modal.style.display = 'none';
+                    fetchCurriculums(); // Refresh curriculums to show new note
+                } else {
+                    alert('Error al guardar la nota');
+                }
+            } else {
+                alert('La nota no puede estar vacía');
+            }
+        };
+
+        const closeModal = document.getElementsByClassName('close')[0];
+        closeModal.onclick = function() {
+            modal.style.display = 'none';
+        };
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        };
     }
 
     if (window.location.pathname.endsWith('dashboard.html')) {
@@ -171,19 +295,37 @@ document.addEventListener('DOMContentLoaded', function() {
             if (resultsBody) {
                 resultsBody.innerHTML = '';
                 results.forEach(result => {
-                    resultsBody.innerHTML += `
-                        <tr>
-                            <td data-label="Nombre">${result.nombre}</td>
-                            <td data-label="Apellido">${result.apellido}</td>
-                            <td data-label="Fecha de Inserción">${new Date(result.fechaInsercion).toLocaleDateString()}</td>
-                            <td data-label="Sexo">${result.sexo}</td>
-                            <td data-label="Teléfono">${result.telefono}</td>
-                            <td data-label="Acciones">
-                                <button onclick="viewCv(${result.id})">Ver</button>
-                                <button onclick="deleteCv(${result.id})">Eliminar</button>
-                            </td>
-                        </tr>
+                    const tr = document.createElement('tr');
+
+                    tr.innerHTML = `
+                        <td data-label="Nombre">${result.nombre}</td>
+                        <td data-label="Apellido">${result.apellido}</td>
+                        <td data-label="Fecha de Inserción">${new Date(result.fechaInsercion).toLocaleDateString()}</td>
+                        <td data-label="Sexo">${result.sexo}</td>
+                        <td data-label="Teléfono">${result.telefono}</td>
                     `;
+
+                    const actionsTd = document.createElement('td');
+                    actionsTd.setAttribute('data-label', 'Acciones');
+                    actionsTd.classList.add('action-buttons');
+
+                    const viewButton = document.createElement('button');
+                    viewButton.textContent = 'Ver';
+                    viewButton.addEventListener('click', () => viewCv(result.id));
+                    actionsTd.appendChild(viewButton);
+
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Eliminar';
+                    deleteButton.addEventListener('click', () => deleteCv(result.id));
+                    actionsTd.appendChild(deleteButton);
+
+                    const notesButton = document.createElement('button');
+                    notesButton.textContent = 'Notas';
+                    notesButton.addEventListener('click', () => openNoteModal(result.id));
+                    actionsTd.appendChild(notesButton);
+
+                    tr.appendChild(actionsTd);
+                    resultsBody.appendChild(tr);
                 });
             }
         } else {
@@ -191,37 +333,3 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
-
-async function viewCv(id) {
-    const response = await fetch(`http://localhost:8080/curriculums/pdf/${id}`, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-    });
-
-    if (response.ok) {
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        window.open(url);
-    } else {
-        alert('Error al ver el currículum');
-    }
-}
-
-async function deleteCv(id) {
-    if (confirm('¿Estás seguro?')) {
-        const response = await fetch(`http://localhost:8080/curriculums/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        });
-
-        if (response.ok) {
-            location.reload();
-        } else {
-            alert('Error al eliminar el currículum');
-        }
-    }
-}

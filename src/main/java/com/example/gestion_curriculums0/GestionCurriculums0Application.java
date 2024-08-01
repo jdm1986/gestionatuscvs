@@ -16,7 +16,7 @@ public class GestionCurriculums0Application {
 		SpringApplication.run(GestionCurriculums0Application.class, args);
 	}
 }
-
+//prueba
 
 /* Iniciar el servidor web:
 

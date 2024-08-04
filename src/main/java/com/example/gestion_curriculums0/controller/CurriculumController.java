@@ -6,6 +6,7 @@ import com.example.gestion_curriculums0.model.Usuario;
 import com.example.gestion_curriculums0.repository.UsuarioRepository;
 import com.example.gestion_curriculums0.service.CurriculumService;
 import com.example.gestion_curriculums0.service.PdfService;
+import com.example.gestion_curriculums0.service.OcrService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
@@ -40,6 +41,9 @@ public class CurriculumController {
 
     @Autowired
     private PdfService pdfService;
+
+    @Autowired
+    private OcrService ocrService;
 
     @ApiOperation(value = "Ver una lista de curriculums disponibles", response = List.class)
     @GetMapping
@@ -121,9 +125,13 @@ public class CurriculumController {
 
         String extractedText;
         try {
-            extractedText = pdfService.extractTextFromPdf(convFile);
+            if (file.getContentType().equals("application/pdf")) {
+                extractedText = pdfService.extractTextFromPdf(convFile);
+            } else {
+                extractedText = ocrService.extractTextFromImage(convFile);
+            }
         } catch (IOException e) {
-            throw new RuntimeException("Error extrayendo texto del PDF", e);
+            throw new RuntimeException("Error extrayendo texto del archivo", e);
         }
 
         Curriculum curriculum = new Curriculum();
@@ -161,9 +169,13 @@ public class CurriculumController {
 
             String extractedText;
             try {
-                extractedText = pdfService.extractTextFromPdf(convFile);
+                if (file.getContentType().equals("application/pdf")) {
+                    extractedText = pdfService.extractTextFromPdf(convFile);
+                } else {
+                    extractedText = ocrService.extractTextFromImage(convFile);
+                }
             } catch (IOException e) {
-                throw new RuntimeException("Error extrayendo texto del PDF", e);
+                throw new RuntimeException("Error extrayendo texto del archivo", e);
             }
 
             curriculum.setPdfPath(convFile.getPath());

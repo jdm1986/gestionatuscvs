@@ -241,6 +241,25 @@ document.addEventListener('DOMContentLoaded', function() {
         fetchCurriculums();
     });
 
+    document.getElementById('forgotPasswordForm')?.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+
+            const response = await fetch(`${baseUrl}/auth/forgot-password`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email })
+            });
+
+            if (response.ok) {
+                document.getElementById('message').classList.remove('hidden');
+            } else {
+                alert('Error al enviar la solicitud. Inténtalo de nuevo.');
+            }
+        });
+
     document.getElementById('uploadForm')?.addEventListener('submit', async function(event) {
         event.preventDefault();
         const pdfFile = document.getElementById('pdfFile').files[0];

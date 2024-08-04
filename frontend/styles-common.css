@@ -293,3 +293,9 @@ tbody td button:hover {
     margin-top: 5px;
     text-align: right;
 }
+
+.link-blanco {
+    color: white;
+    text-decoration: underline; /* Para asegurar que el enlace sea visible como tal */
+    font-weight: bold;          /* Para hacerlo más destacable */
+}

@@ -1,7 +1,7 @@
 package com.example.gestion_curriculums0.controller;
 
 import com.example.gestion_curriculums0.service.AuthRequest;
-import com.example.gestion_curriculums0.service.AuthResponse;
+import com.example.gestion_curriculums0.service.PasswordResetService;
 import com.example.gestion_curriculums0.service.CustomUserDetailsService;
 import com.example.gestion_curriculums0.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +32,9 @@ public class AuthController {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private PasswordResetService passwordResetService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) throws AuthenticationException {
@@ -65,6 +68,30 @@ public class AuthController {
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("error", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Map<String, String>> forgotPassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        passwordResetService.sendPasswordResetToken(email);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Se ha enviado un enlace de restablecimiento de contraseña a tu email.");
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Map<String, String>> resetPassword(@RequestParam String token, @RequestParam String newPassword) {
+        boolean result = passwordResetService.resetPassword(token, newPassword);
+
+        if (result) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Contraseña restablecida correctamente.");
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("error", "Token inválido o expirado."));
         }
     }
 }

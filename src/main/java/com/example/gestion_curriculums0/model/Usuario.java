@@ -26,6 +26,9 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Curriculum> curriculums;
 
+    @Column(name = "reset_token")
+    private String resetToken;
+
     // Getters y setters
     public Long getId() {
         return id;
@@ -73,5 +76,13 @@ public class Usuario {
 
     public void setCurriculums(List<Curriculum> curriculums) {
         this.curriculums = curriculums;
+    }
+
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
     }
 }

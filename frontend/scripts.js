@@ -366,7 +366,11 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     });
 
-    document.getElementById('uploadForm').appendChild(captureButton);
+    // Agrega el botón de captura de foto solo si existe el formulario de carga
+    const uploadForm = document.getElementById('uploadForm');
+    if (uploadForm) {
+        uploadForm.appendChild(captureButton);
+    }
 
     async function performSearch() {
         const searchInput = document.getElementById('searchInput').value;

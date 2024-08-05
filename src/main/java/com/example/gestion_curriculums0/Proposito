@@ -1,0 +1,120 @@
+Propósito:
+
+Me vas a ayudar con este proyecto,
+
+Tengo este proyecto bastante avanzado y te voy a proporcionar los códigos enteros para contextualizarte.
+
+Debes tener en cuenta que soy un usuario
+programador muy Junior y que siempre necesitaré que me muestres códigos completos
+para que pueda pegar en mi proyecto a medida que vayamos avanzando. Actualmente estoy
+usando intellijidea comunity version para el backend. Para el Front End de momento estamos
+haciendolo de forma manual, con html, css y script.js, usando un servidorweb en el puerto 8000 con phyton .
+La base de datos está creada con MySql  WorkBench.
+
+   Propósito del proyecto:
+
+   Imagínate que yo soy un usuario cualquiera, y me meto en la página web gestiondecurriculums.com.
+   Una vez que me registro como usuario, a priori sería gratuito, una vez ya me meto dentro con mi
+   nombre de usuario y mi contraseña, dentro de lo que es la aplicación web, yo ya puedo empezar a
+   hacer mis primeros registros. Sería, por ejemplo, como un formulario, donde meto el nombre y apellido
+   del candidato que haya entrevistado, o del currículum que me haya llegado por diferentes medios de
+   difusión, e inserto sus datos de contacto, y su curriculum PDF transoformado en una cadena, de forma que,
+   con un buscador filtrando por palabras clave, pueda extraer los curriculum que tengan esas palabras clave
+   de forma que pueda visualizar esos C.V fácilmente.
+   Con este buscador, el objetivo es que con una serie de palabras clave (por ejmplo pilates, mujer, ciclo indoor)
+   Pueda filtrar todos los C.V de mujeres en los que en su C.V aparezca las palabras pilates, ciclo indoor, mujer,
+   reconociendo y filtrando tanto palabras clave que aparezcan en en campo cv_bruto (pilates, ciclo indoor) como
+   el campo mujer de la propia base de datos. Cuando digo campo mujer, también deben quedar incluidos los campos nombre,
+   apellido, telefono y email de la base de datos.
+
+   Entonces, de lo que se trata es que yo, como usuario registrado, dentro
+   de la aplicación web, pues tenga todos los candidatos, para que pueda filtrar
+   los candidatos que en ese momento yo necesite para hacer una entrevista de trabajo.
+
+   Poder realizar una gestión fácil:
+   1 Ver el C.V del candidato.
+   2 Que tenga su propio cuadro o bloc de notas para poder crear o eliminar notas y que queden registradas con su fecha de creación.
+   3 Poder eliminar el C.V del candidato si se desea (inclusive de la base de datos, para evitar problemas futuros con L.O.P.D)
+
+   más o menos ese sería el planteamiento. Entonces, la cuestión es esa, que la página web de gestiondecurriculums.com,
+   que como ya te digo es un ejemplo, sería lo que me gustaría crear contigo como proyecto.
+
+   Códigos:
+
+   Base de datos: (ya creada y de momento ya tiene algunos registros)
+
+   CREATE TABLE usuarios (
+       id BIGINT AUTO_INCREMENT PRIMARY KEY,
+       nombre_usuario VARCHAR(255) NOT NULL UNIQUE,
+       contrasena VARCHAR(255) NOT NULL,
+       email VARCHAR(255) NOT NULL UNIQUE,
+       roles VARCHAR(255) NOT NULL
+   );
+
+   CREATE TABLE curriculums (
+       id BIGINT AUTO_INCREMENT PRIMARY KEY,
+       nombre VARCHAR(255) NOT NULL,
+       apellido VARCHAR(255) NOT NULL,
+       pdf_path VARCHAR(255) NULL,
+       usuario_id BIGINT,
+       resumen_cv TEXT NULL,
+       fecha_insercion DATETIME(6) NOT NULL,
+       sexo VARCHAR(255) NOT NULL,
+       telefono VARCHAR(255) NOT NULL,
+       email VARCHAR(255) NOT NULL,
+       FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+   );
+
+   CREATE TABLE notas (
+       id BIGINT AUTO_INCREMENT PRIMARY KEY,
+       contenido TEXT NOT NULL,
+       fecha_creacion DATETIME(6) NOT NULL,
+       curriculum_id BIGINT,
+       FOREIGN KEY (curriculum_id) REFERENCES curriculums(id) ON DELETE CASCADE
+   );
+
+
+Frontend:
+
+Ajustar el front end para que la experiencia de usuario sea compatible para navegar tanto en páginas web como en dispositivos
+móviles, con un formato centrado y equilibrado y modo oscuro para un mejor confort visual.
+
+1. Página de Bienvenida: con botones de Iniciar Sesión y Registrarse.
+2. Página de registro: con nombre de Usuario, email y contraseña. Con botón de registro, y botón de volver a la página
+de inicio. Una vez hecho el registro, lanzar mensaje de confirmación de registro que dure 3 segundos que ponga
+"redirigiendo a inicio de sesión" y redirigir a la la página de inicio de sesión.
+3. Página de inicio de sesión: Opción de usar tanto el nombre de usuario como el email para iniciar sesión. Enlace a
+página ¿ha olvidado su contraseña?.
+4. Página de recuperación de contraseña.
+5. Página principal y de gestión de Currículums del usuario una vez logueado: Mensaje de bienvenida con el
+nombre del usuario. Botón de Subir currículum, y botón de cerrar sesión. Bajo estos botones, con interfaz amigable,
+con cuadro de búsqueda "Buscar por palabras clave": Con este buscador, el objetivo es que con una serie de
+palabras clave (por ejemplo pilates, mujer, ciclo indoor) pueda filtrar todos los C.V de mujeres en los que
+en su C.V aparezca las palabras pilates, ciclo indoor, mujer, reconociendo y filtrando tanto palabras clave
+que aparezcan en el campo cv_bruto de la base de datos (pilates, ciclo indoor) como el campo mujer de la propia
+base de datos. Cuando digo campo mujer, también deben quedar incluidos los campos nombre, apellido, telefono y
+email de la base de datos. Bajo el cuadro de búsqueda dos botones, uno "Buscar" (para buscar mediante el cuadro
+de búsqueda con las palabrasclave) y otro "Limpiar Filtros"
+Bajo estos botones, en forma de listado de filas y columnas, con los campos
+Nombre, Apellido, fecha_inserción y sexo (datos que extraerá de la base de datos), y justo al lado de cada registro
+tres botones: botón "ver" para ver el pdf, botón "Notas", para agregar o eliminar notas con su fecha de inserción y botón "eliminar" para eliminar el registro inclusive de la base de datos.
+Al pulsar, dicho botón saltará una advertencia (¿estás seguro?). Si se pulsa si, se eliminará también de la base de datos y todas las notas
+asociadas a este registro.
+Con respecto a los registros, a partir de que el número de registros llegue al límite de la pantalla del dispositivo,
+se tendrá que ser un con un scroll solo en los registros, manteniendo la cabecera.
+Es importante que la interfaz sea amigable tanto en dispositivos móviles, como en pantallas normales de ordenador, adaptándose los
+márgenes según la pantalla, con lo que la interfaz para dispositivos móviles en la página dashboard.html será diferente
+en dispositivos móviles.
+
+6. Página de Subir Currículum: Subida de pdf, y formulario con Nombre, apellido, sexo (un seleccionable con hombre, mujer, otro),
+teléfono y email. Botón de "subir", y botón "ir a Gestión de Curríclums"
+
+
+
+Necesito ayuda con el front end de este proyecto.
+
+idea: recuperar contraseña.
+idea: crear un método para extraer el perfil linkedin o página web del cv_bruto.
+idea: LOPD (garantía)
+
+ybmc yilm isgq byeu ----- pass-g

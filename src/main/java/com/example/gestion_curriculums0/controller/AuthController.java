@@ -3,6 +3,7 @@ package com.example.gestion_curriculums0.controller;
 import com.example.gestion_curriculums0.service.AuthRequest;
 import com.example.gestion_curriculums0.service.PasswordResetService;
 import com.example.gestion_curriculums0.service.CustomUserDetailsService;
+import com.example.gestion_curriculums0.service.EmailService;
 import com.example.gestion_curriculums0.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,6 +37,9 @@ public class AuthController {
     @Autowired
     private PasswordResetService passwordResetService;
 
+    @Autowired
+    private EmailService emailService;  // Asegúrate de tener esta línea para el servicio de email
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) throws AuthenticationException {
         try {
@@ -61,6 +65,7 @@ public class AuthController {
     public ResponseEntity<Map<String, String>> register(@RequestBody AuthRequest authRequest) {
         try {
             userDetailsService.saveUser(authRequest);
+            emailService.sendWelcomeEmail(authRequest.getEmail(), authRequest.getUsername()); // Asegúrate de llamar al servicio de email aquí
 
             Map<String, String> response = new HashMap<>();
             response.put("message", "Registro exitoso");

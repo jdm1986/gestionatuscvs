@@ -6,13 +6,17 @@ import com.example.gestion_curriculums0.model.Usuario;
 import com.example.gestion_curriculums0.model.UsuarioDTO;
 import com.example.gestion_curriculums0.repository.UsuarioRepository;
 import com.example.gestion_curriculums0.service.CustomUserDetailsService;
+import com.example.gestion_curriculums0.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -24,6 +28,9 @@ public class UsuarioController {
 
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
+
+    @Autowired
+    private UsuarioService usuarioService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -40,9 +47,9 @@ public class UsuarioController {
         if (usuario.getEmail() == null || usuario.getEmail().isEmpty()) {
             throw new IllegalArgumentException("El email no puede estar vacío");
         }
-        usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
-        Usuario savedUsuario = usuarioRepository.save(usuario);
+        Usuario savedUsuario = usuarioService.saveUsuario(usuario);
         System.out.println("Usuario registrado: " + savedUsuario.getNombreUsuario());
+
         return convertToDTO(savedUsuario);
     }
 
@@ -74,5 +81,16 @@ public class UsuarioController {
     public UsuarioDTO getUsuario(@PathVariable String username) {
         Usuario usuario = usuarioRepository.findByNombreUsuario(username).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         return convertToDTO(usuario);
+    }
+
+    @DeleteMapping("/delete-user/{username}")
+    public ResponseEntity<String> deleteUser(@PathVariable String username) {
+        Optional<Usuario> usuarioOpt = usuarioService.findByNombreUsuario(username);
+        if (usuarioOpt.isPresent()) {
+            usuarioService.deleteUser(usuarioOpt.get());
+            return ResponseEntity.ok("Usuario eliminado correctamente");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado");
+        }
     }
 }

@@ -1,6 +1,8 @@
 package com.example.gestion_curriculums0.model;
 
 import jakarta.persistence.*;
+
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -10,6 +12,10 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
+    private Date fechaRegistro;
 
     @Column(name = "nombre_usuario", nullable = false, unique = true)
     private String nombreUsuario;
@@ -84,5 +90,20 @@ public class Usuario {
 
     public void setResetToken(String resetToken) {
         this.resetToken = resetToken;
+    }
+
+    public Date getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setFechaRegistro(Date fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        if (this.fechaRegistro == null) {
+            this.fechaRegistro = new Date();
+        }
     }
 }

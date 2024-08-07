@@ -5,11 +5,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @ComponentScan(basePackages = "com.example.gestion_curriculums0")
 @EnableJpaRepositories(basePackages = "com.example.gestion_curriculums0")
 @EntityScan(basePackages = "com.example.gestion_curriculums0")
+@EnableAsync
+@EnableScheduling
 public class GestionCurriculums0Application {
 
 	public static void main(String[] args) {

@@ -111,10 +111,49 @@ teléfono y email. Botón de "subir", y botón "ir a Gestión de Curríclums"
 
 
 
-Necesito ayuda con el front end de este proyecto.
+Opinión sobre Aspectos Legales para el Despliegue de la Página Web
 
-idea: recuperar contraseña.
-idea: crear un método para extraer el perfil linkedin o página web del cv_bruto.
-idea: LOPD (garantía)
 
-ybmc yilm isgq byeu ----- pass-g
+
+El despliegue de una página web que maneja datos personales, incluso por un corto período, tiene varias implicaciones legales que debes considerar para cumplir con las normativas y protegerte legalmente. A continuación, se abordan los puntos clave en relación con tus objetivos:
+
+1. Uso como Administrador
+Seguridad: Asegúrate de implementar medidas de seguridad adecuadas, como la autenticación de dos factores (2FA), contraseñas robustas, y el cifrado de datos en tránsito y en reposo.
+Acceso Restringido: Limita el acceso a la base de datos y a la interfaz de administración solo a usuarios autorizados. Esto puede implicar el uso de roles y permisos dentro de la aplicación.
+2. Entrega como Proyecto Final y Portfolio
+Propiedad Intelectual: Asegúrate de tener los derechos sobre todo el código y contenido que presentas. Si has utilizado bibliotecas o recursos de terceros, verifica las licencias correspondientes y cita adecuadamente.
+Privacidad y Consentimiento: Informa a los usuarios que sus datos serán eliminados después de 30 minutos y asegúrate de obtener su consentimiento para el uso temporal de sus datos. Esto puede hacerse a través de un aviso de privacidad y términos de uso claros.
+3. Pruebas por Usuarios
+Protección de Datos Personales: Aunque los datos se eliminan después de 30 minutos, durante el tiempo que están almacenados, debes asegurarte de proteger estos datos adecuadamente.
+Consentimiento Informado: Antes de que los usuarios ingresen sus datos, deben ser informados claramente de que sus datos serán eliminados después de 30 minutos. Un aviso de privacidad y términos de uso deben estar disponibles y ser aceptados por los usuarios antes de registrar sus datos.
+Recomendaciones Legales y de Buenas Prácticas
+Aviso de Privacidad y Términos de Uso:
+
+Redacta un aviso de privacidad que explique cómo se manejarán los datos personales, incluso el hecho de que se eliminarán después de 30 minutos.
+Incluye términos de uso que los usuarios deben aceptar antes de usar la aplicación.
+Medidas de Seguridad:
+
+Implementa HTTPS para cifrar la comunicación entre el usuario y el servidor.
+Utiliza almacenamiento cifrado para datos sensibles mientras están en la base de datos.
+Asegúrate de que las contraseñas se almacenen usando un hash seguro, como bcrypt.
+Gestión de Consentimiento:
+
+Asegúrate de obtener el consentimiento explícito de los usuarios antes de recopilar cualquier dato personal.
+Mantén un registro del consentimiento dado por los usuarios.
+Registro y Monitoreo:
+
+Implementa registro de auditoría para registrar acciones importantes, como el acceso a datos sensibles y las eliminaciones de usuarios.
+Monitorea el sistema para detectar accesos no autorizados o actividades sospechosas.
+Compliance con Normativas:
+
+Investiga y asegura el cumplimiento con las leyes y regulaciones aplicables, como el Reglamento General de Protección de Datos (GDPR) en Europa, la Ley de Protección de Datos Personales (PDPA) en otras jurisdicciones, o la Ley de Privacidad del Consumidor de California (CCPA) en los Estados Unidos.
+Aunque los datos se eliminan rápidamente, el cumplimiento con estas normativas puede requerir documentación y medidas específicas sobre cómo se manejan y protegen los datos.
+Pruebas de Seguridad:
+
+Realiza pruebas de seguridad, como pruebas de penetración, para identificar y solucionar vulnerabilidades.
+Responsabilidad y Transparencia:
+
+Sé transparente con los usuarios sobre lo que estás haciendo con sus datos y por qué.
+Proporciona información de contacto para que los usuarios puedan hacer preguntas o solicitudes relacionadas con sus datos personales.
+Conclusión
+Con las medidas adecuadas de seguridad y cumplimiento legal, puedes minimizar los riesgos asociados con el manejo temporal de datos personales. Es fundamental mantenerte actualizado sobre las mejores prácticas y las normativas aplicables para asegurar la protección de los datos y el cumplimiento de las leyes. Si la aplicación se va a usar ampliamente o manejará datos más sensibles en el futuro, podrías considerar consultar con un profesional legal especializado en protección de datos y privacidad.

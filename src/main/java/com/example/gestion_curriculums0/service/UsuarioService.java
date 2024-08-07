@@ -45,14 +45,16 @@ public class UsuarioService {
         return usuarioRepository.findByNombreUsuario(nombreUsuario);
     }
 
-    @Scheduled(fixedRate = 60000) // 60000ms Ejecuta cada minuto 1800000 cada 30 minutos
+    @Scheduled(fixedRate = 120000) // Ejecuta cada 30 minutos (1800000 ms)
     @Transactional
     public void checkAndDeleteUsers() {
         System.out.println("Verificando usuarios para eliminar...");
         Instant now = Instant.now();
         List<Usuario> usuarios = usuarioRepository.findAll();
         for (Usuario usuario : usuarios) {
-            if (usuario.getFechaRegistro() != null && usuario.getFechaRegistro().toInstant().isBefore(now.minus(30, ChronoUnit.MINUTES))) { //admite 30 minutos de prueba
+            if (usuario.getFechaRegistro() != null && usuario.getFechaRegistro().toInstant().isBefore(now.minus(30, ChronoUnit.MINUTES))) {
+                System.out.println("Enviando correo de despedida a usuario: " + usuario.getNombreUsuario());
+                sendGoodbyeEmail(usuario.getEmail(), usuario.getNombreUsuario());
                 System.out.println("Eliminando usuario: " + usuario.getNombreUsuario());
                 deleteUser(usuario);
             }
@@ -84,6 +86,22 @@ public class UsuarioService {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error al enviar el correo de bienvenida a: " + to);
+        }
+    }
+
+    @Async
+    public void sendGoodbyeEmail(String to, String username) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject("Gracias por probar nuestra aplicación");
+        message.setText("Hola " + username + ",\n\nGracias por visitar y probar nuestra aplicación. Esperamos que hayas tenido una buena experiencia.\n\nSaludos,\nEl equipo");
+
+        try {
+            mailSender.send(message);
+            System.out.println("Correo de despedida enviado a: " + to);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error al enviar el correo de despedida a: " + to);
         }
     }
 }

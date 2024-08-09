@@ -18,10 +18,11 @@ button {
     background-color: #6c63ff;
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 12px 24px; /* Aumentar tamaño */
     cursor: pointer;
     margin-right: 10px;
     border-radius: 4px;
+    font-size: 16px; /* Aumentar tamaño de fuente */
 }
 
 button:hover {
@@ -29,12 +30,13 @@ button:hover {
 }
 
 input, select {
-    padding: 10px;
-    margin-right: 10px;
+    padding: 12px; /* Aumentar padding */
+    margin-bottom: 10px; /* Añadir margen abajo para mejor separación */
     border: 1px solid #ccc;
     border-radius: 4px;
     background-color: #444444;
     color: white;
+    font-size: 16px; /* Aumentar tamaño de fuente */
 }
 
 input:focus, select:focus {
@@ -46,15 +48,10 @@ input:focus, select:focus {
     display: none;
 }
 
-h1 {
-     text-align: center;
-     color: #ffffff;
- }
-
- h2 {
-     text-align: center;
-     color: #ffffff;
- }
+h1, h2 {
+    text-align: center;
+    color: #ffffff;
+}
 
 .buttons, .actions, .search {
     text-align: center;
@@ -74,12 +71,6 @@ form input, form select, form button {
 
 .actions {
     margin-bottom: 20px;
-}
-
-.actions button {
-    padding: 10px 20px;
-    cursor: pointer;
-    margin-right: 10px;
 }
 
 .search {
@@ -102,12 +93,6 @@ form input, form select, form button {
     width: 100%;
     max-width: 400px;
     margin-top: 10px; /* Espacio entre el cuadro de búsqueda y los botones */
-}
-
-.search button {
-    padding: 10px 20px;
-    cursor: pointer;
-    margin-right: 10px;
 }
 
 .results {
@@ -338,4 +323,24 @@ tbody td button:hover {
 
 form button[type="submit"] {
     margin-top: 20px; /* Dar más espacio entre el mensaje y el botón de "Registrarse" */
+}
+
+/* Footer styles */
+footer {
+    background-color: #222;
+    color: #bbb;
+    padding: 20px 0;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+footer a {
+    color: #6c63ff;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+footer a:hover {
+    text-decoration: underline;
 }

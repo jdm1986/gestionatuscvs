@@ -28,6 +28,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/index.html", "/login.html", "/register.html", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/contact/**").permitAll()  // Permitir acceso sin autenticación a la ruta de contacto
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated()
                 )

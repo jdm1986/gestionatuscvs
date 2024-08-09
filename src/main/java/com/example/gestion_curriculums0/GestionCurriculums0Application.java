@@ -26,6 +26,8 @@ public class GestionCurriculums0Application {
 
 En terminal dentro de raiz frontend creada src, pegar este comando {{ python -m http.server 8000}}
 
+python https_server.py
+
 Pega desde la raiz c: cd cursos\java\IdeaProyect\gestion_curriculums0\gestion_curriculums0\frontend y luego el comando de arriba.
 
 http://localhost:8000/

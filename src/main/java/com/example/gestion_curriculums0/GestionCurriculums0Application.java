@@ -1,5 +1,6 @@
 package com.example.gestion_curriculums0;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -16,9 +17,16 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class GestionCurriculums0Application {
 
-	public static void main(String[] args) {
-		SpringApplication.run(GestionCurriculums0Application.class, args);
-	}
+    public static void main(String[] args) {
+        // Cargar variables de entorno desde el archivo .env
+        Dotenv dotenv = Dotenv.load();
+
+        // Establecer variables de entorno para que Spring las reconozca
+        dotenv.entries().forEach(entry -> {
+            System.setProperty(entry.getKey(), entry.getValue());
+        });
+        SpringApplication.run(GestionCurriculums0Application.class, args);
+    }
 }
 //prueba
 

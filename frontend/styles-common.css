@@ -2,6 +2,7 @@ body {
     font-family: Arial, sans-serif;
     background-color: #1c1c1c;
     color: #ffffff;
+    font-size: 16px; /* Tamaño base */
 }
 
 .container {
@@ -23,10 +24,16 @@ button {
     margin-right: 10px;
     border-radius: 4px;
     font-size: 16px; /* Aumentar tamaño de fuente */
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 button:hover {
     background-color: #5754d6;
+    transform: scale(1.05); /* Aumenta el tamaño ligeramente */
+}
+
+button:active {
+    transform: scale(0.95); /* Reduce el tamaño al hacer clic */
 }
 
 input, select {
@@ -159,9 +166,23 @@ tbody td button:hover {
     .results {
         overflow-y: auto;
         background-color: #333333;
-        padding: 10px;
+        padding: 15px;
         border-radius: 8px;
         margin-top: 20px;
+    }
+
+    .container {
+        width: 90%; /* Ajuste del contenedor para móviles */
+        padding: 20px;
+    }
+
+    .search-buttons {
+        flex-direction: column;
+        gap: 10px; /* Espacio entre los botones en móviles */
+    }
+
+    button {
+        margin-bottom: 10px; /* Espacio entre botones */
     }
 
     table {
@@ -293,6 +314,44 @@ tbody td button:hover {
     font-weight: bold;          /* Para hacerlo más destacable */
 }
 
+/* Footer styles */
+footer {
+    background-color: #222;
+    color: #bbb;
+    padding: 20px 0;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px; /* Espacio entre las opciones del pie de página */
+}
+
+footer a {
+    color: #00bfff; /* Cambiar a un azul más claro */
+    text-decoration: none;
+    margin: 0 5px; /* Ajuste para espacio entre los enlaces */
+}
+
+footer a:hover {
+    text-decoration: underline;
+    color: #1e90ff; /* Color más claro al pasar el ratón */
+}
+
+.hidden {
+    display: none;
+}
+
+.results {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #333333;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
 /* Estilos adicionales */
 .warning {
     text-align: center;
@@ -324,37 +383,13 @@ tbody td button:hover {
 form button[type="submit"] {
     margin-top: 20px; /* Dar más espacio entre el mensaje y el botón de "Registrarse" */
 }
-
-/* Footer styles */
-footer {
-    background-color: #222;
-    color: #bbb;
-    padding: 20px 0;
-    text-align: center;
-    margin-top: 20px;
-    font-size: 14px;
-}
-
-footer a {
-    color: #6c63ff;
+.footer-email {
+    color: #00bfff; /* El mismo color que el resto de los enlaces en el footer */
     text-decoration: none;
-    margin: 0 10px;
 }
 
-footer a:hover {
+.footer-email:hover {
     text-decoration: underline;
-}
-
-.hidden {
-    display: none;
-}
-
-.results {
-    margin-top: 20px;
-    padding: 20px;
-    background-color: #333333;
-    color: white;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    color: #1e90ff; /* Color más claro al pasar el ratón */
 }
 

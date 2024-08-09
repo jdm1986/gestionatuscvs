@@ -32,6 +32,8 @@ public class GestionCurriculums0Application {
 
 /* Iniciar el servidor web:
 
+git clone --mirror https://github.com/jdm1986/gestionatuscv.git
+
 En terminal dentro de raiz frontend creada src, pegar este comando {{ python -m http.server 8000}}
 
 python https_server.py

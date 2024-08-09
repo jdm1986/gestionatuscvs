@@ -1,12 +1,12 @@
-/* Estilos generales */
 body {
     font-family: Arial, sans-serif;
     background-color: #1c1c1c;
     color: #ffffff;
+    font-size: 16px; /* Tamaño de fuente base */
 }
 
 .container {
-    width: 80%;
+    width: 90%;
     margin: 0 auto;
     padding-top: 20px;
     background-color: #333333;
@@ -15,29 +15,41 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+h1, h2 {
+    text-align: center;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
 button {
     background-color: #6c63ff;
     color: white;
     border: none;
-    padding: 12px 24px; /* Aumentar tamaño */
+    padding: 12px 24px;
     cursor: pointer;
     margin-right: 10px;
     border-radius: 4px;
-    font-size: 16px; /* Aumentar tamaño de fuente */
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 button:hover {
     background-color: #5754d6;
+    transform: scale(1.05);
+}
+
+button:active {
+    transform: scale(0.95);
 }
 
 input, select {
-    padding: 12px; /* Aumentar padding */
-    margin-bottom: 10px; /* Añadir margen abajo para mejor separación */
+    padding: 12px;
+    margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     background-color: #444444;
     color: white;
-    font-size: 16px; /* Aumentar tamaño de fuente */
+    font-size: 16px;
 }
 
 input:focus, select:focus {
@@ -45,32 +57,8 @@ input:focus, select:focus {
     border-color: #6c63ff;
 }
 
-.hidden {
-    display: none;
-}
-
-h1 {
+.actions, .search {
     text-align: center;
-    color: #ffffff;
-}
-
-.buttons, .actions, .search {
-    text-align: center;
-}
-
-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-form input, form select, form button {
-    width: 100%;
-    max-width: 400px;
-    margin-bottom: 10px;
-}
-
-.actions {
     margin-bottom: 20px;
 }
 
@@ -78,7 +66,6 @@ form input, form select, form button {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 20px;
 }
 
 .search input {
@@ -93,16 +80,18 @@ form input, form select, form button {
     justify-content: center;
     width: 100%;
     max-width: 400px;
-    margin-top: 10px; /* Espacio entre el cuadro de búsqueda y los botones */
+    margin-top: 10px;
+    flex-direction: row;
+    gap: 10px;
 }
 
 .results {
     max-height: 70vh;
     overflow-y: auto;
     background-color: #333333;
-    padding: 10px;
+    padding: 15px;
     border-radius: 8px;
-    margin-top: 20px; /* Agregado para dar espacio entre la tabla y los botones de arriba */
+    margin-top: 20px;
 }
 
 table {
@@ -145,19 +134,25 @@ tbody td button:hover {
 
 .action-buttons {
     display: flex;
-    justify-content: right; /* Ajuste para centrar los botones */
-    gap: 20px; /* Espacio entre los botones */
+    justify-content: center; /* Centramos los botones */
+    gap: 10px; /* Espacio entre botones */
 }
 
 .action-buttons button {
     flex: 1;
-    min-width: 70px; /* Asegúrate de que los botones tengan un tamaño mínimo adecuado */
+    min-width: 100px; /* Aumentamos el tamaño mínimo de los botones */
     padding: 10px;
 }
 
 /* Responsive adjustments */
 @media (max-width: 767px) {
+    .container {
+        width: 95%;
+        padding: 20px;
+    }
+
     .results {
+        max-height: 50vh; /* Ajustar el tamaño máximo de la tabla para pantallas más pequeñas */
         overflow-y: auto;
         background-color: #333333;
         padding: 10px;
@@ -288,13 +283,6 @@ tbody td button:hover {
     text-align: right;
 }
 
-.link-blanco {
-    color: white;
-    text-decoration: underline; /* Para asegurar que el enlace sea visible como tal */
-    font-weight: bold;          /* Para hacerlo más destacable */
-}
-
-/* Footer styles */
 footer {
     background-color: #222;
     color: #bbb;
@@ -302,14 +290,19 @@ footer {
     text-align: center;
     margin-top: 20px;
     font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
 
 footer a {
-    color: #6c63ff;
+    color: #00bfff; /* Cambiado a un azul más claro */
     text-decoration: none;
     margin: 0 10px;
 }
 
 footer a:hover {
     text-decoration: underline;
+    color: #1e90ff; /* Color más claro al pasar el ratón */
 }

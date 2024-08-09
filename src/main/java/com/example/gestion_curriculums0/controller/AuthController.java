@@ -16,6 +16,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,6 +71,8 @@ public class AuthController {
             userDetailsService.saveUser(authRequest);
             emailService.sendWelcomeEmail(authRequest.getEmail(), authRequest.getUsername()); // Asegúrate de llamar al servicio de email aquí
 
+            logUserRegistration(authRequest.getUsername());
+
             Map<String, String> response = new HashMap<>();
             response.put("message", "Registro exitoso");
 
@@ -75,6 +81,21 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("error", e.getMessage()));
         }
     }
+
+    private void logUserRegistration(String username) {
+        String logFilePath = "registro_usuarios.txt"; // Ruta del archivo donde se guardarán los registros
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String timestamp = LocalDateTime.now().format(formatter);
+
+        String logEntry = String.format("Usuario: %s | Fecha y Hora: %s%n", username, timestamp);
+
+        try (FileWriter writer = new FileWriter(logFilePath, true)) { // true para agregar al final del archivo
+            writer.write(logEntry);
+        } catch (IOException e) {
+            System.err.println("Error al escribir en el archivo de registro: " + e.getMessage());
+        }
+    }
+
 
     @PostMapping("/forgot-password")
     public ResponseEntity<Map<String, String>> forgotPassword(@RequestBody Map<String, String> request) {

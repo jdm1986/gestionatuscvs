@@ -162,6 +162,44 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (window.location.pathname.endsWith('dashboard.html')) {
         fetchCurriculums();
+
+            // Verificar si el usuario es admin para mostrar el botón
+            const username = localStorage.getItem('username');
+            if (username === 'admin') { // Cambia 'admin' al nombre de usuario del administrador en tu base de datos
+                const adminPanel = document.createElement('div');
+                adminPanel.style.marginTop = '20px';
+                adminPanel.style.textAlign = 'center';
+
+                const viewLogsButton = document.createElement('button');
+                viewLogsButton.textContent = 'Ver registros de usuarios';
+                viewLogsButton.style.backgroundColor = '#6c63ff';
+                viewLogsButton.style.color = 'white';
+                viewLogsButton.style.border = 'none';
+                viewLogsButton.style.padding = '10px 20px';
+                viewLogsButton.style.borderRadius = '4px';
+                viewLogsButton.style.cursor = 'pointer';
+                viewLogsButton.style.marginTop = '20px';
+
+                viewLogsButton.addEventListener('click', async function() {
+                    const response = await fetch(`${baseUrl}/admin/registro-usuarios`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (response.ok) {
+                        const logs = await response.text();
+                        alert(logs);
+                    } else {
+                        alert('Error al cargar los registros');
+                    }
+                });
+
+                adminPanel.appendChild(viewLogsButton);
+                document.body.appendChild(adminPanel);
+            }
+
     }
 
     document.getElementById('registerForm')?.addEventListener('submit', async function(event) {

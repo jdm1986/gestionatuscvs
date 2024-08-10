@@ -2633,3 +2633,53 @@ io.jsonwebtoken.MalformedJwtException: JWT strings must contain exactly 2 period
 2024-08-10T17:38:56.173+02:00 DEBUG 20332 --- [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
 2024-08-10T17:38:56.173+02:00 DEBUG 20332 --- [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Writing [[com.example.gestion_curriculums0.model.CurriculumDTO@3d6df6a]]
 2024-08-10T17:38:56.175+02:00 DEBUG 20332 --- [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2024-08-10T18:01:37.752+02:00 DEBUG 20332 --- [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing OPTIONS /auth/login
+2024-08-10T18:01:37.762+02:00 DEBUG 20332 --- [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
+2024-08-10T18:01:37.763+02:00 DEBUG 20332 --- [http-nio-8080-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2024-08-10T18:01:37.763+02:00 DEBUG 20332 --- [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
+2024-08-10T18:01:37.764+02:00 DEBUG 20332 --- [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : POST "/auth/login", parameters={}
+2024-08-10T18:01:37.764+02:00 DEBUG 20332 --- [http-nio-8080-exec-6] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.gestion_curriculums0.controller.AuthController#login(AuthRequest)
+2024-08-10T18:01:37.767+02:00 DEBUG 20332 --- [http-nio-8080-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to [com.example.gestion_curriculums0.service.AuthRequest@4c73f3ef]
+2024-08-10T18:01:37.903+02:00 DEBUG 20332 --- [http-nio-8080-exec-6] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
+2024-08-10T18:01:37.912+02:00 DEBUG 20332 --- [http-nio-8080-exec-6] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2024-08-10T18:01:37.912+02:00 DEBUG 20332 --- [http-nio-8080-exec-6] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{userId=14, token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTcyMzMwNTY5NywiZXhwIjoxNzIzMzQxN (truncated)...]
+2024-08-10T18:01:37.915+02:00 DEBUG 20332 --- [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2024-08-10T18:01:38.816+02:00 DEBUG 20332 --- [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing OPTIONS /curriculums/usuario
+2024-08-10T18:01:38.821+02:00 DEBUG 20332 --- [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing GET /curriculums/usuario
+2024-08-10T18:01:38.837+02:00 DEBUG 20332 --- [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Secured GET /curriculums/usuario
+2024-08-10T18:01:38.837+02:00 DEBUG 20332 --- [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/curriculums/usuario", parameters={}
+2024-08-10T18:01:38.838+02:00 DEBUG 20332 --- [http-nio-8080-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.gestion_curriculums0.controller.CurriculumController#getCurriculumsByCurrentUser(Principal)
+2024-08-10T18:01:38.860+02:00 DEBUG 20332 --- [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2024-08-10T18:01:38.861+02:00 DEBUG 20332 --- [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Writing [[com.example.gestion_curriculums0.model.CurriculumDTO@1de5c24b]]
+2024-08-10T18:01:38.863+02:00 DEBUG 20332 --- [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2024-08-10T18:21:59.104+02:00 DEBUG 20332 --- [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
+2024-08-10T18:21:59.108+02:00 DEBUG 20332 --- [http-nio-8080-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2024-08-10T18:21:59.108+02:00 DEBUG 20332 --- [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
+2024-08-10T18:21:59.108+02:00 DEBUG 20332 --- [http-nio-8080-exec-10] o.s.web.servlet.DispatcherServlet        : POST "/auth/login", parameters={}
+2024-08-10T18:21:59.108+02:00 DEBUG 20332 --- [http-nio-8080-exec-10] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.gestion_curriculums0.controller.AuthController#login(AuthRequest)
+2024-08-10T18:21:59.110+02:00 DEBUG 20332 --- [http-nio-8080-exec-10] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to [com.example.gestion_curriculums0.service.AuthRequest@5eddb521]
+2024-08-10T18:21:59.224+02:00 DEBUG 20332 --- [http-nio-8080-exec-10] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
+2024-08-10T18:21:59.230+02:00 DEBUG 20332 --- [http-nio-8080-exec-10] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2024-08-10T18:21:59.231+02:00 DEBUG 20332 --- [http-nio-8080-exec-10] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{userId=14, token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTcyMzMwNjkxOSwiZXhwIjoxNzIzMzQyO (truncated)...]
+2024-08-10T18:21:59.233+02:00 DEBUG 20332 --- [http-nio-8080-exec-10] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2024-08-10T18:22:00.604+02:00 DEBUG 20332 --- [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /curriculums/usuario
+2024-08-10T18:22:00.621+02:00 DEBUG 20332 --- [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured GET /curriculums/usuario
+2024-08-10T18:22:00.621+02:00 DEBUG 20332 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/curriculums/usuario", parameters={}
+2024-08-10T18:22:00.622+02:00 DEBUG 20332 --- [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.gestion_curriculums0.controller.CurriculumController#getCurriculumsByCurrentUser(Principal)
+2024-08-10T18:22:00.635+02:00 DEBUG 20332 --- [http-nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2024-08-10T18:22:00.636+02:00 DEBUG 20332 --- [http-nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Writing [[com.example.gestion_curriculums0.model.CurriculumDTO@7dd66513]]
+2024-08-10T18:22:00.637+02:00 DEBUG 20332 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2024-08-10T18:24:14.843+02:00 DEBUG 20332 --- [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /curriculums/usuario
+2024-08-10T18:24:14.860+02:00 DEBUG 20332 --- [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured GET /curriculums/usuario
+2024-08-10T18:24:14.860+02:00 DEBUG 20332 --- [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/curriculums/usuario", parameters={}
+2024-08-10T18:24:14.861+02:00 DEBUG 20332 --- [http-nio-8080-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.gestion_curriculums0.controller.CurriculumController#getCurriculumsByCurrentUser(Principal)
+2024-08-10T18:24:14.873+02:00 DEBUG 20332 --- [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2024-08-10T18:24:14.874+02:00 DEBUG 20332 --- [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Writing [[com.example.gestion_curriculums0.model.CurriculumDTO@4ee14606]]
+2024-08-10T18:24:14.875+02:00 DEBUG 20332 --- [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2024-08-10T18:24:25.774+02:00 DEBUG 20332 --- [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /curriculums/usuario
+2024-08-10T18:24:25.791+02:00 DEBUG 20332 --- [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured GET /curriculums/usuario
+2024-08-10T18:24:25.791+02:00 DEBUG 20332 --- [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/curriculums/usuario", parameters={}
+2024-08-10T18:24:25.791+02:00 DEBUG 20332 --- [http-nio-8080-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.example.gestion_curriculums0.controller.CurriculumController#getCurriculumsByCurrentUser(Principal)
+2024-08-10T18:24:25.804+02:00 DEBUG 20332 --- [http-nio-8080-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2024-08-10T18:24:25.804+02:00 DEBUG 20332 --- [http-nio-8080-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Writing [[com.example.gestion_curriculums0.model.CurriculumDTO@68b1f277]]
+2024-08-10T18:24:25.806+02:00 DEBUG 20332 --- [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK

@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     tr.innerHTML = `
                         <td data-label="Nombre">${result.nombre}</td>
                         <td data-label="Apellido">${result.apellido}</td>
-                        <td data-label="Fecha de Inserción">${new Date(result.fechaInsercion).toLocaleDateString()}</td>
+                        <td data-label="Fecha">${new Date(result.fechaInsercion).toLocaleDateString()}</td>
                         <td data-label="Sexo">${result.sexo}</td>
                         <td data-label="Teléfono">${result.telefono}</td>
                     `;
@@ -430,7 +430,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     tr.innerHTML = `
                         <td data-label="Nombre">${result.nombre}</td>
                         <td data-label="Apellido">${result.apellido}</td>
-                        <td data-label="Fecha de Inserción">${new Date(result.fechaInsercion).toLocaleDateString()}</td>
+                        <td data-label="Fecha">${new Date(result.fechaInsercion).toLocaleDateString()}</td>
                         <td data-label="Sexo">${result.sexo}</td>
                         <td data-label="Teléfono">${result.telefono}</td>
                     `;

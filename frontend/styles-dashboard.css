@@ -1,10 +1,12 @@
+/* Estilo general del cuerpo */
 body {
     font-family: Arial, sans-serif;
     background-color: #1c1c1c;
     color: #ffffff;
-    font-size: 16px; /* Tamaño de fuente base */
+    font-size: 16px;
 }
 
+/* Contenedor principal */
 .container {
     width: 90%;
     margin: 0 auto;
@@ -15,12 +17,14 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Estilos para encabezados */
 h1, h2 {
     text-align: center;
     color: #ffffff;
     margin-bottom: 20px;
 }
 
+/* Estilos generales para los botones */
 button {
     background-color: #6c63ff;
     color: white;
@@ -30,7 +34,7 @@ button {
     margin-right: 10px;
     border-radius: 4px;
     font-size: 16px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
 button:hover {
@@ -42,6 +46,7 @@ button:active {
     transform: scale(0.95);
 }
 
+/* Estilos para inputs y selects */
 input, select {
     padding: 12px;
     margin-bottom: 10px;
@@ -57,6 +62,7 @@ input:focus, select:focus {
     border-color: #6c63ff;
 }
 
+/* Estilos para las acciones */
 .actions, .search {
     text-align: center;
     margin-bottom: 20px;
@@ -85,6 +91,7 @@ input:focus, select:focus {
     gap: 10px;
 }
 
+/* Estilos de la tabla */
 .results {
     max-height: 70vh;
     overflow-y: auto;
@@ -97,62 +104,77 @@ input:focus, select:focus {
 table {
     width: 100%;
     border-collapse: collapse;
-}
-
-thead {
-    background-color: #6c63ff;
-    position: sticky;
-    top: 0;
+    background-color: #2c2c2c;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 thead th {
+    background-color: #6c63ff; /* Color de la cabecera */
     color: white;
-    padding: 10px;
+    padding: 12px;
+    font-size: 16px;
+    text-align: left;
 }
 
-tbody tr {
-    border-bottom: 1px solid #333;
+/* Vista escritorio */
+@media (min-width: 768px) {
+    /* Ajuste de ancho para la columna Nombre */
+    th:nth-child(1), td:nth-child(1) {
+        width: 150px; /* Ancho específico para la columna Nombre */
+    }
+    /* Ajuste de ancho para la columna Apellidos */
+    th:nth-child(2), td:nth-child(2) {
+        width: 180px; /* Ancho específico para la columna Apellidos */
+    }
+    /* Ajuste de ancho para la columna Fecha */
+    th:nth-child(3), td:nth-child(3) {
+        width: 80px; /* Ancho específico para la columna Fecha */
+    }
+    /* Ajuste de ancho para la columna Sexo */
+    th:nth-child(4), td:nth-child(4) {
+        width: 80px; /* Ancho específico para la columna Sexo */
+    }
+    /* Ajuste de ancho para la columna Teléfono */
+    th:nth-child(5), td:nth-child(5) {
+        width: 80px; /* Ancho específico para la columna Teléfono */
+    }
+    /* Ajuste de ancho para la columna Acciones */
+    th:nth-child(6), td:nth-child(6) {
+        width: 180px; /* Ancho específico para la columna Acciones */
+    }
 }
 
-tbody tr:hover {
-    background-color: #2c2c2c;
+
+    .action-buttons {
+        display: flex;
+        justify-content: space-around; /* Distribuir los botones uniformemente */
+        gap: 10px;
+    }
+
+    .action-buttons button {
+        flex: 1;
+        padding: 8px 12px;
+        font-size: 14px;
+    }
 }
 
-tbody td {
-    padding: 10px;
-    text-align: center;
-}
-
-tbody td button {
-    padding: 5px 10px;
-    cursor: pointer;
-}
-
-tbody td button:hover {
-    background-color: #5754d6;
-}
-
-.action-buttons {
-    display: flex;
-    justify-content: center; /* Centramos los botones */
-    gap: 10px; /* Espacio entre botones */
-}
-
-.action-buttons button {
-    flex: 1;
-    min-width: 100px; /* Aumentamos el tamaño mínimo de los botones */
-    padding: 10px;
-}
-
-/* Responsive adjustments */
+/* Ajustes responsivos para pantallas pequeñas */
 @media (max-width: 767px) {
+
+    .action-buttons {
+        justify-content: center;
+        flex-direction: column;
+        gap: 5px;
+    }
+
     .container {
         width: 95%;
         padding: 20px;
     }
 
     .results {
-        max-height: 50vh; /* Ajustar el tamaño máximo de la tabla para pantallas más pequeñas */
+        max-height: 50vh;
         overflow-y: auto;
         background-color: #333333;
         padding: 10px;
@@ -196,7 +218,7 @@ tbody td button:hover {
     }
 
     tbody td .action-buttons {
-        justify-content: space-around;
+        justify-content: center;
     }
 
     tbody td button {
@@ -209,7 +231,7 @@ tbody td button:hover {
     }
 }
 
-/* Estilos para el modal de notas */
+/* Estilos para el modal */
 .modal {
     display: none;
     position: fixed;
@@ -283,6 +305,7 @@ tbody td button:hover {
     text-align: right;
 }
 
+/* Estilos del pie de página */
 footer {
     background-color: #222;
     color: #bbb;
@@ -297,12 +320,43 @@ footer {
 }
 
 footer a {
-    color: #00bfff; /* Cambiado a un azul más claro */
+    color: #00bfff;
     text-decoration: none;
     margin: 0 10px;
 }
 
 footer a:hover {
     text-decoration: underline;
-    color: #1e90ff; /* Color más claro al pasar el ratón */
+    color: #1e90ff;
+}
+
+/* Estilos del encabezado */
+header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #1c1c1c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    text-align: left;
+}
+
+header .logo {
+    height: 80px;
+    margin-right: 10px;
+}
+
+header h1 {
+    color: #ffffff;
+    margin: 0;
+    font-size: 24px;
+}
+
+/* Ajustes del contenedor para evitar superposición con el encabezado */
+.container {
+    padding-top: 100px;
 }

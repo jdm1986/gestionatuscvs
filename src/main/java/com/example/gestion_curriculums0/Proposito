@@ -157,3 +157,7 @@ Sé transparente con los usuarios sobre lo que estás haciendo con sus datos y p
 Proporciona información de contacto para que los usuarios puedan hacer preguntas o solicitudes relacionadas con sus datos personales.
 Conclusión
 Con las medidas adecuadas de seguridad y cumplimiento legal, puedes minimizar los riesgos asociados con el manejo temporal de datos personales. Es fundamental mantenerte actualizado sobre las mejores prácticas y las normativas aplicables para asegurar la protección de los datos y el cumplimiento de las leyes. Si la aplicación se va a usar ampliamente o manejará datos más sensibles en el futuro, podrías considerar consultar con un profesional legal especializado en protección de datos y privacidad.
+
+td:nth-child(3) {
+    width: 10%; /* Ajuste del ancho para la columna Fecha de Inserción */
+}

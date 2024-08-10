@@ -143,8 +143,6 @@ thead th {
     th:nth-child(6), td:nth-child(6) {
         width: 180px; /* Ancho específico para la columna Acciones */
     }
-}
-
 
     .action-buttons {
         display: flex;
@@ -161,10 +159,10 @@ thead th {
 
 /* Ajustes responsivos para pantallas pequeñas */
 @media (max-width: 767px) {
-
+    /* Asegurarse de que los botones se apilen en dispositivos móviles */
     .action-buttons {
         justify-content: center;
-        flex-direction: column;
+        flex-direction: column; /* Apilar botones verticalmente */
         gap: 5px;
     }
 

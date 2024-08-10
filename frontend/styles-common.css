@@ -17,7 +17,7 @@ body {
 }
 
 button {
-    background-color: #6c63ff;
+    background-color: #E573FE;
     color: white;
     border: none;
     padding: 12px 24px;
@@ -54,7 +54,7 @@ input, select {
 
 input:focus, select:focus {
     outline: none;
-    border-color: #6c63ff;
+    border-color: #e573fe;
     box-shadow: 0px 0px 8px rgba(108, 99, 255, 0.5); /* Sombra luminosa al enfocar */
 }
 
@@ -129,7 +129,7 @@ table {
 }
 
 thead th {
-    background-color: #6c63ff;
+    background-color: #e573fe;
     color: white;
     padding: 12px; /* Aumentar padding */
     font-size: 16px; /* Aumentar tamaño de fuente */
@@ -285,7 +285,7 @@ tbody td {
 }
 
 #saveNoteButton {
-    background-color: #6c63ff;
+    background-color: #e573fe;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -294,7 +294,7 @@ tbody td {
 }
 
 #saveNoteButton:hover {
-    background-color: #5754d6;
+    background-color: #7C3E8A;;
 }
 
 .note {
@@ -333,14 +333,14 @@ footer {
 }
 
 footer a {
-    color: #00bfff; /* Cambiar a un azul más claro */
+    color: #e573fe; /* Cambiar a un azul más claro */
     text-decoration: none;
     margin: 0 5px; /* Ajuste para espacio entre los enlaces */
 }
 
 footer a:hover {
     text-decoration: underline;
-    color: #1e90ff; /* Color más claro al pasar el ratón */
+    color: #7C3E8A;; /* Color más claro al pasar el ratón */
 }
 
 .hidden {
@@ -388,13 +388,13 @@ form button[type="submit"] {
     margin-top: 20px; /* Dar más espacio entre el mensaje y el botón de "Registrarse" */
 }
 .footer-email {
-    color: #00bfff; /* El mismo color que el resto de los enlaces en el footer */
+    color: #e573fe; /* El mismo color que el resto de los enlaces en el footer */
     text-decoration: none;
 }
 
 .footer-email:hover {
     text-decoration: underline;
-    color: #1e90ff; /* Color más claro al pasar el ratón */
+    color: #7C3E8A;; /* Color más claro al pasar el ratón */
 }
 
 /* Animación de aparición suave en la carga de la página */
@@ -425,7 +425,7 @@ header {
 }
 
 header .logo {
-    height: 80px;
+    height: 100px;
     margin-right: 10px;
 }
 
@@ -437,5 +437,5 @@ header h1 {
 
 /* Adjust the padding for the container to avoid overlapping with the header */
 .container {
-    padding-top: 100px; /* Adjust based on the header's height */
+    padding-top: 110px; /* Adjust based on the header's height */
 }

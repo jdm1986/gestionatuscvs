@@ -26,7 +26,7 @@ h1, h2 {
 
 /* Estilos generales para los botones */
 button {
-    background-color: #6c63ff;
+    background-color: #E573FE;
     color: white;
     border: none;
     padding: 12px 24px;
@@ -38,7 +38,7 @@ button {
 }
 
 button:hover {
-    background-color: #5754d6;
+    background-color: #7C3E8A;
     transform: scale(1.05);
 }
 
@@ -59,7 +59,7 @@ input, select {
 
 input:focus, select:focus {
     outline: none;
-    border-color: #6c63ff;
+    border-color: #e573fe;
 }
 
 /* Estilos para las acciones */
@@ -110,7 +110,7 @@ table {
 }
 
 thead th {
-    background-color: #6c63ff; /* Color de la cabecera */
+    background-color: #e573fe; /* Color de la cabecera */
     color: white;
     padding: 12px;
     font-size: 16px;
@@ -225,7 +225,7 @@ thead th {
     }
 
     tbody td button:hover {
-        background-color: #5754d6;
+        background-color: #7C3E8A;
     }
 }
 
@@ -305,7 +305,7 @@ thead th {
 }
 
 #saveNoteButton {
-    background-color: #6c63ff;
+    background-color: #e573fe;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -314,7 +314,7 @@ thead th {
 }
 
 #saveNoteButton:hover {
-    background-color: #5754d6;
+    background-color: #7C3E8A;
 }
 
 .note {
@@ -347,14 +347,14 @@ footer {
 }
 
 footer a {
-    color: #00bfff;
+    color: #e573fe;
     text-decoration: none;
     margin: 0 10px;
 }
 
 footer a:hover {
     text-decoration: underline;
-    color: #1e90ff;
+    color: #7C3E8A;
 }
 
 /* Estilos del encabezado */
@@ -373,7 +373,7 @@ header {
 }
 
 header .logo {
-    height: 80px;
+    height: 100px;
     margin-right: 10px;
 }
 
@@ -385,5 +385,5 @@ header h1 {
 
 /* Ajustes del contenedor para evitar superposición con el encabezado */
 .container {
-    padding-top: 100px;
+    padding-top: 110px;
 }

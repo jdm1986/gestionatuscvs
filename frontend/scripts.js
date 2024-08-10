@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const viewLogsButton = document.createElement('button');
                 viewLogsButton.textContent = 'Ver registros de usuarios';
-                viewLogsButton.style.backgroundColor = '#6c63ff';
+                viewLogsButton.style.backgroundColor = '#e573fe';
                 viewLogsButton.style.color = 'white';
                 viewLogsButton.style.border = 'none';
                 viewLogsButton.style.padding = '10px 20px';

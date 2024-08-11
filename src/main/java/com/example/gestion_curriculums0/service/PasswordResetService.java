@@ -31,7 +31,7 @@ public class PasswordResetService {
             usuario.setResetToken(token);
             usuarioRepository.save(usuario);
 
-            String resetUrl = "http://localhost:8000/reset-password.html?token=" + token;
+            String resetUrl = "https://localhost:8000/reset-password.html?token=" + token;
             SimpleMailMessage mailMessage = new SimpleMailMessage();
             mailMessage.setTo(email);
             mailMessage.setSubject("Solicitud de restablecimiento de contraseña");

@@ -274,7 +274,7 @@ thead th {
 }
 
 .modal-content {
-    background-color: #fefefe;
+    background-color: #45224D;
     margin: 5% auto;
     padding: 20px;
     border: 1px solid #888;
@@ -311,6 +311,7 @@ thead th {
     padding: 10px 20px;
     cursor: pointer;
     border-radius: 4px;
+    margin-bottom: 10px; /* Añade un margen inferior */
 }
 
 #saveNoteButton:hover {

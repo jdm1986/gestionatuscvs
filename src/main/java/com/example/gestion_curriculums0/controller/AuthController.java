@@ -42,7 +42,7 @@ public class AuthController {
     private PasswordResetService passwordResetService;
 
     @Autowired
-    private EmailService emailService;  // Asegúrate de tener esta línea para el servicio de email
+    private EmailService emailService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) throws AuthenticationException {
@@ -67,19 +67,15 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<Map<String, String>> register(@RequestBody AuthRequest authRequest) {
-        try {
-            userDetailsService.saveUser(authRequest);
-            emailService.sendWelcomeEmail(authRequest.getEmail(), authRequest.getUsername()); // Asegúrate de llamar al servicio de email aquí
+        userDetailsService.saveUser(authRequest);
+        emailService.sendWelcomeEmail(authRequest.getEmail(), authRequest.getUsername());
 
-            logUserRegistration(authRequest.getUsername());
+        logUserRegistration(authRequest.getUsername());
 
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Registro exitoso");
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Registro exitoso");
 
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("error", e.getMessage()));
-        }
+        return ResponseEntity.ok(response);
     }
 
     private void logUserRegistration(String username) {
@@ -95,7 +91,6 @@ public class AuthController {
             System.err.println("Error al escribir en el archivo de registro: " + e.getMessage());
         }
     }
-
 
     @PostMapping("/forgot-password")
     public ResponseEntity<Map<String, String>> forgotPassword(@RequestBody Map<String, String> request) {

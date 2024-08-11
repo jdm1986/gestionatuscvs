@@ -217,16 +217,25 @@ document.addEventListener('DOMContentLoaded', function() {
             body: JSON.stringify({ username, email, password, roles })
         });
 
+        const messageContainer = document.getElementById('message');
+
         if (response.ok) {
-            document.getElementById('message').classList.remove('hidden');
+            messageContainer.classList.remove('hidden');
+            messageContainer.style.color = '#E573FE'; // Color púrpura de éxito
+            messageContainer.textContent = 'Registro exitoso. Redirigiendo a inicio de sesión...';
             setTimeout(() => {
                 window.location.href = 'login.html';
             }, 3000);
         } else {
-            const errorData = await response.json();
-            alert(`Error en el registro: ${errorData.error}`);
+            const errorText = await response.text();
+            messageContainer.classList.remove('hidden');
+            messageContainer.style.color = '#FF6F61'; // Color rojo para el error
+            messageContainer.innerHTML = errorText.replace('<a href=\'/reset-password\'>', '<a href=\'forgot-password.html\' style="color: white;">');
         }
     });
+
+
+
 
     document.getElementById('loginForm')?.addEventListener('submit', async function(event) {
         event.preventDefault();

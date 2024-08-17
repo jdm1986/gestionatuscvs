@@ -1,6 +1,5 @@
 package com.example.gestion_curriculums0;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -18,16 +17,17 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class GestionCurriculums0Application {
 
     public static void main(String[] args) {
-        // Cargar variables de entorno desde el archivo .env
-        Dotenv dotenv = Dotenv.load();
+        // Elimina la carga del archivo .env porque Heroku ya gestiona las variables de entorno
+        // Dotenv dotenv = Dotenv.load();
+        // dotenv.entries().forEach(entry -> {
+        //     System.setProperty(entry.getKey(), entry.getValue());
+        // });
 
-        // Establecer variables de entorno para que Spring las reconozca
-        dotenv.entries().forEach(entry -> {
-            System.setProperty(entry.getKey(), entry.getValue());
-        });
+        // Ejecuta la aplicación Spring Boot
         SpringApplication.run(GestionCurriculums0Application.class, args);
     }
 }
+
 //prueba
 
 /* Iniciar el servidor web:

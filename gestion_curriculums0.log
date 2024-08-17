@@ -299,3 +299,38 @@
 2024-08-17T12:21:57.446+02:00 DEBUG 16876 --- [http-nio-8080-exec-5] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
 2024-08-17T12:21:57.446+02:00 DEBUG 16876 --- [http-nio-8080-exec-5] m.m.a.RequestResponseBodyMethodProcessor : Writing [[com.example.gestion_curriculums0.model.NotaDTO@424c01ec, com.example.gestion_curriculums0.model.Not (truncated)...]
 2024-08-17T12:21:57.446+02:00 DEBUG 16876 --- [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2024-08-17T13:47:52.386+02:00  INFO 16876 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-08-17T13:47:52.386+02:00  INFO 16876 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2024-08-17T13:47:52.402+02:00  INFO 16876 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2024-08-17T14:25:53.370+02:00  INFO 6536 --- [main] c.e.g.GestionCurriculums0Application     : Starting GestionCurriculums0Application using Java 22.0.2 with PID 6536 (C:\Users\Jesus\IdeaProjects\gestion_curriculums0\target\classes started by Jesus in C:\Users\Jesus\IdeaProjects\gestion_curriculums0)
+2024-08-17T14:25:53.376+02:00 DEBUG 6536 --- [main] c.e.g.GestionCurriculums0Application     : Running with Spring Boot v3.3.1, Spring v6.1.10
+2024-08-17T14:25:53.377+02:00  INFO 6536 --- [main] c.e.g.GestionCurriculums0Application     : The following 1 profile is active: "dev"
+2024-08-17T14:25:54.440+02:00  INFO 6536 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-08-17T14:25:54.551+02:00  INFO 6536 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 91 ms. Found 3 JPA repository interfaces.
+2024-08-17T14:25:56.113+02:00  INFO 6536 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-08-17T14:25:56.145+02:00  INFO 6536 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-08-17T14:25:56.146+02:00  INFO 6536 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.25]
+2024-08-17T14:25:56.283+02:00  INFO 6536 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-08-17T14:25:56.284+02:00  INFO 6536 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2802 ms
+2024-08-17T14:25:56.589+02:00  INFO 6536 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-08-17T14:25:56.698+02:00  INFO 6536 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
+2024-08-17T14:25:56.761+02:00  INFO 6536 --- [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2024-08-17T14:25:57.368+02:00  INFO 6536 --- [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-08-17T14:25:57.401+02:00  INFO 6536 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2024-08-17T14:25:57.926+02:00  INFO 6536 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@f1d1463
+2024-08-17T14:25:57.930+02:00  INFO 6536 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2024-08-17T14:25:58.013+02:00  WARN 6536 --- [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-08-17T14:25:59.544+02:00  INFO 6536 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-08-17T14:25:59.696+02:00  INFO 6536 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-08-17T14:26:00.306+02:00 DEBUG 6536 --- [main] c.e.g.security.JwtAuthenticationFilter   : Filter 'jwtAuthenticationFilter' configured for use
+2024-08-17T14:26:00.407+02:00  INFO 6536 --- [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2024-08-17T14:26:01.060+02:00 DEBUG 6536 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 31 mappings in 'requestMappingHandlerMapping'
+2024-08-17T14:26:02.123+02:00 DEBUG 6536 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /frontend/**] in 'resourceHandlerMapping'
+2024-08-17T14:26:02.210+02:00 DEBUG 6536 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, LogoutFilter, JwtAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2024-08-17T14:26:02.482+02:00 DEBUG 6536 --- [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2024-08-17T14:26:02.559+02:00 DEBUG 6536 --- [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2024-08-17T14:26:02.785+02:00  INFO 6536 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-08-17T14:26:02.800+02:00  INFO 6536 --- [main] c.e.g.GestionCurriculums0Application     : Started GestionCurriculums0Application in 10.699 seconds (process running for 11.686)
+2024-08-17T17:38:00.658+02:00  INFO 6536 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-08-17T17:38:00.663+02:00  INFO 6536 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2024-08-17T17:38:00.673+02:00  INFO 6536 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

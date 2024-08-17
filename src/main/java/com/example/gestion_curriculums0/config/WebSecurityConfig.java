@@ -26,7 +26,6 @@ public class WebSecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // Permitir acceso sin autenticación a recursos estáticos y páginas públicas
                         .requestMatchers("/", "/frontend/**", "/index.html", "/login.html", "/register.html", "/contacto.html", "/privacidad.html", "/terminos.html").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()

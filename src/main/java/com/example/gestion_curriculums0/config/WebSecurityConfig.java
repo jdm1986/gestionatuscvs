@@ -26,9 +26,8 @@ public class WebSecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/index.html", "/login.html", "/register.html", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/**").permitAll()  // Permitir acceso sin autenticación a todos los archivos en static
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/contact/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated()
                 )

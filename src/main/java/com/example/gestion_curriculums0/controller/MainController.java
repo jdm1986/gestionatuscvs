@@ -8,6 +8,6 @@ public class MainController {
 
     @GetMapping("/")
     public String index() {
-        return "index";  // Asegúrate de que tienes un archivo "index.html" en tu carpeta de plantillas.
+        return "redirect:/frontend/index.html";  // Redirige al archivo de la carpeta frontend
     }
 }

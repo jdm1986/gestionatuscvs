@@ -1,5 +1,6 @@
 package com.example.gestion_curriculums0;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -17,17 +18,29 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class GestionCurriculums0Application {
 
     public static void main(String[] args) {
-                SpringApplication.run(GestionCurriculums0Application.class, args);
+        // Cargar variables desde .env
+        Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
+
+        // Establecer las variables de entorno en el sistema
+        System.setProperty("DB_URL", dotenv.get("DB_URL"));
+        System.setProperty("DB_USERNAME", dotenv.get("DB_USERNAME"));
+        System.setProperty("DB_PASSWORD", dotenv.get("DB_PASSWORD"));
+        System.setProperty("SPRING_MAIL_PASSWORD", dotenv.get("SPRING_MAIL_PASSWORD"));
+        System.setProperty("JWT_SECRET", dotenv.get("JWT_SECRET"));
+
+        // Iniciar la aplicación
+        SpringApplication.run(GestionCurriculums0Application.class, args);
     }
 }
+
 
 //prueba
 
 /* Iniciar el servidor web:
 
-git clone --mirror https://github.com/jdm1986/gestionatuscv.git
+git lone --mirror https://github.com/jdm1986/gestionatuscv.git
 
-En terminal dentro de raiz frontend creada src, pegar este comando {{ python -m http.server 8000}}
+En terminal dentro de raiz frontend creada src, pegar este comand python -m http.server 8000
 
 python https_server.py
 

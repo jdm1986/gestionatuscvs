@@ -6,7 +6,6 @@ import com.example.gestion_curriculums0.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,10 +43,10 @@ public class UsuarioService {
         return usuarioRepository.findByNombreUsuario(nombreUsuario);
     }
 
-    @Scheduled(fixedRate = 120000) // Ejecuta cada 30 minutos (1800000 ms)
+    @Scheduled(fixedRate = 600000) // Ejecuta cada 10 minutos (600000 ms)
     @Transactional
     public void checkAndDeleteUsers() {
-        System.out.println("Verificando usuarios para eliminar...");
+        System.out.println("Iniciando verificación de usuarios para eliminar...");
         Instant now = Instant.now();
         List<Usuario> usuarios = usuarioRepository.findAll();
         for (Usuario usuario : usuarios) {
@@ -59,6 +57,7 @@ public class UsuarioService {
                 deleteUser(usuario);
             }
         }
+        System.out.println("Verificación de usuarios completada.");
     }
 
     @Transactional
@@ -73,7 +72,6 @@ public class UsuarioService {
         }
     }
 
-    @Async
     public void sendWelcomeEmail(String to, String username) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
@@ -89,7 +87,6 @@ public class UsuarioService {
         }
     }
 
-    @Async
     public void sendGoodbyeEmail(String to, String username) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);

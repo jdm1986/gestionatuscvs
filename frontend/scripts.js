@@ -1,5 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const baseUrl = 'http://localhost:8080';
+    // Definir baseUrl dinámicamente según el entorno
+    const baseUrl = window.location.hostname.includes('localhost')
+        ? 'http://localhost:8080'
+        : 'https://gestionatuscv-187b112a634a.herokuapp.com'; // Reemplaza con la URL de tu app en producción
+
     const token = localStorage.getItem('token');
 
     async function fetchCurriculums() {
@@ -109,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (response.ok) {
             const notes = await response.json();
 
-            notes.sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion)); //Orden de  la nota más reciente a la menos.
+            notes.sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion)); // Ordenar la nota más reciente a la menos reciente.
 
             notes.forEach(note => {
                 const noteElement = document.createElement('div');
@@ -140,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (response.ok) {
                     noteText.value = '';
                     modal.style.display = 'none';
-                    fetchCurriculums(); // Refresh curriculums to show new note
+                    fetchCurriculums(); // Refrescar currículums para mostrar la nueva nota
                 } else {
                     alert('Error al guardar la nota');
                 }
@@ -163,43 +167,42 @@ document.addEventListener('DOMContentLoaded', function() {
     if (window.location.pathname.endsWith('dashboard.html')) {
         fetchCurriculums();
 
-            // Verificar si el usuario es admin para mostrar el botón
-            const username = localStorage.getItem('username');
-            if (username === 'admin') { // Cambia 'admin' al nombre de usuario del administrador en tu base de datos
-                const adminPanel = document.createElement('div');
-                adminPanel.style.marginTop = '20px';
-                adminPanel.style.textAlign = 'center';
+        // Verificar si el usuario es admin para mostrar el botón
+        const username = localStorage.getItem('username');
+        if (username === 'admin') { // Cambia 'admin' al nombre de usuario del administrador en tu base de datos
+            const adminPanel = document.createElement('div');
+            adminPanel.style.marginTop = '20px';
+            adminPanel.style.textAlign = 'center';
 
-                const viewLogsButton = document.createElement('button');
-                viewLogsButton.textContent = 'Ver registros de usuarios';
-                viewLogsButton.style.backgroundColor = '#e573fe';
-                viewLogsButton.style.color = 'white';
-                viewLogsButton.style.border = 'none';
-                viewLogsButton.style.padding = '10px 20px';
-                viewLogsButton.style.borderRadius = '4px';
-                viewLogsButton.style.cursor = 'pointer';
-                viewLogsButton.style.marginTop = '20px';
+            const viewLogsButton = document.createElement('button');
+            viewLogsButton.textContent = 'Ver registros de usuarios';
+            viewLogsButton.style.backgroundColor = '#e573fe';
+            viewLogsButton.style.color = 'white';
+            viewLogsButton.style.border = 'none';
+            viewLogsButton.style.padding = '10px 20px';
+            viewLogsButton.style.borderRadius = '4px';
+            viewLogsButton.style.cursor = 'pointer';
+            viewLogsButton.style.marginTop = '20px';
 
-                viewLogsButton.addEventListener('click', async function() {
-                    const response = await fetch(`${baseUrl}/admin/registro-usuarios`, {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
-
-                    if (response.ok) {
-                        const logs = await response.text();
-                        alert(logs);
-                    } else {
-                        alert('Error al cargar los registros');
+            viewLogsButton.addEventListener('click', async function() {
+                const response = await fetch(`${baseUrl}/admin/registro-usuarios`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
                     }
                 });
 
-                adminPanel.appendChild(viewLogsButton);
-                document.body.appendChild(adminPanel);
-            }
+                if (response.ok) {
+                    const logs = await response.text();
+                    alert(logs);
+                } else {
+                    alert('Error al cargar los registros');
+                }
+            });
 
+            adminPanel.appendChild(viewLogsButton);
+            document.body.appendChild(adminPanel);
+        }
     }
 
     document.getElementById('registerForm')?.addEventListener('submit', async function(event) {
@@ -233,9 +236,6 @@ document.addEventListener('DOMContentLoaded', function() {
             messageContainer.innerHTML = errorText.replace('<a href=\'/reset-password\'>', '<a href=\'forgot-password.html\' style="color: white;">');
         }
     });
-
-
-
 
     document.getElementById('loginForm')?.addEventListener('submit', async function(event) {
         event.preventDefault();

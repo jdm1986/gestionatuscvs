@@ -5,8 +5,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 public class DatabaseController {
 
@@ -16,8 +14,8 @@ public class DatabaseController {
     @GetMapping("/check-connection")
     public String checkConnection() {
         try {
-            List<String> tables = jdbcTemplate.queryForList("SHOW TABLES", String.class);
-            return "Connected! Tables in the database: " + tables;
+            jdbcTemplate.execute("SELECT 1");
+            return "Connection successful!";
         } catch (Exception e) {
             return "Connection failed: " + e.getMessage();
         }

@@ -272,6 +272,25 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = 'index.html';
     });
 
+    // Añadir comportamiento al hacer clic en el logo
+    document.getElementById('logo-link')?.addEventListener('click', function(event) {
+        event.preventDefault(); // Evitar comportamiento por defecto del enlace
+
+        if (token) { // Si hay un token en localStorage, hay sesión iniciada
+            const confirmation = confirm("¿Quieres cerrar sesión y volver a la página principal?");
+            if (confirmation) {
+                // Lógica para cerrar sesión
+                localStorage.removeItem('token');
+                localStorage.removeItem('username');
+                localStorage.removeItem('userId');
+                window.location.href = 'index.html';
+            }
+        } else {
+            // Redirigir a la página principal si no hay sesión iniciada
+            window.location.href = 'index.html';
+        }
+    });
+
     document.getElementById('searchButton')?.addEventListener('click', async function() {
         performSearch();
     });

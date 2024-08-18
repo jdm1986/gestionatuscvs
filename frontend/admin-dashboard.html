@@ -8,7 +8,7 @@
 </head>
 <body>
 <header>
-    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo">
+    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo-link">
 </header>
 <div class="container">
     <h1>Panel de Administración</h1>
@@ -20,6 +20,7 @@
         <pre id="logContent"></pre>
     </div>
 </div>
+<script src="scripts.js"></script>
 <script>
     document.getElementById('viewRegistrationsButton').addEventListener('click', function() {
         fetch('http://localhost:8080/admin/registro-usuarios', {

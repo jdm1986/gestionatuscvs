@@ -8,7 +8,7 @@
 </head>
 <body>
 <header>
-    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo">
+    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo-link">
 </header>
 <div class="container">
     <h1>Contacto</h1>
@@ -22,6 +22,7 @@
     </form>
     <div id="confirmationMessage" class="hidden">Tu mensaje ha sido enviado. Nos pondremos en contacto contigo pronto.</div>
 </div>
+<script src="scripts.js"></script>
 <script>
     document.getElementById('contactForm').addEventListener('submit', async function(event) {
         event.preventDefault();

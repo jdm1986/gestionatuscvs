@@ -50,7 +50,11 @@ public class UsuarioService {
         Instant now = Instant.now();
         List<Usuario> usuarios = usuarioRepository.findAll();
         for (Usuario usuario : usuarios) {
-            if (usuario.getFechaRegistro() != null && usuario.getFechaRegistro().toInstant().isBefore(now.minus(30, ChronoUnit.MINUTES))) {
+            // Evitar eliminar usuarios con roles distintos de "ROLE_USER"
+            if (usuario.getRoles().contains("USER") &&
+                    usuario.getFechaRegistro() != null &&
+                    usuario.getFechaRegistro().toInstant().isBefore(now.minus(30, ChronoUnit.MINUTES))) {
+
                 System.out.println("Enviando correo de despedida a usuario: " + usuario.getNombreUsuario());
                 sendGoodbyeEmail(usuario.getEmail(), usuario.getNombreUsuario());
                 System.out.println("Eliminando usuario: " + usuario.getNombreUsuario());

@@ -17,14 +17,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class GestionCurriculums0Application {
 
     public static void main(String[] args) {
-        // Elimina la carga del archivo .env porque Heroku ya gestiona las variables de entorno
-        // Dotenv dotenv = Dotenv.load();
-        // dotenv.entries().forEach(entry -> {
-        //     System.setProperty(entry.getKey(), entry.getValue());
-        // });
-
-        // Ejecuta la aplicación Spring Boot
-        SpringApplication.run(GestionCurriculums0Application.class, args);
+                SpringApplication.run(GestionCurriculums0Application.class, args);
     }
 }
 

@@ -4071,3 +4071,6 @@ Caused by: java.lang.IllegalArgumentException: URL must start with 'jdbc'
 2024-08-18T22:32:40.269+02:00 DEBUG 17928 --- [http-nio-8080-exec-8] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'text/plain', given [*/*] and supported [text/plain, */*, application/json, application/*+json]
 2024-08-18T22:32:40.270+02:00 DEBUG 17928 --- [http-nio-8080-exec-8] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing ["Mensaje enviado exitosamente"]
 2024-08-18T22:32:40.272+02:00 DEBUG 17928 --- [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2024-08-18T22:34:45.936+02:00  INFO 17928 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-08-18T22:34:45.941+02:00  INFO 17928 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2024-08-18T22:34:46.065+02:00  INFO 17928 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

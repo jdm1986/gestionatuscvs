@@ -1,6 +1,6 @@
 branch-defaults:
   main:
-    environment: null
+    environment: gestion-curriculums-prod
     group_suffix: null
 global:
   application_name: gestion_curriculums0

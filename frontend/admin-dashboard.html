@@ -23,7 +23,7 @@
 <script src="scripts.js"></script>
 <script>
     document.getElementById('viewRegistrationsButton').addEventListener('click', function() {
-        fetch('http://localhost:8080/admin/registro-usuarios', {
+        fetch('https://gestionatuscv.es/admin/registro-usuarios', {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('token')

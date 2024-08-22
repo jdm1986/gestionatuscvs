@@ -11,8 +11,8 @@ httpd = http.server.HTTPServer(server_address, http.server.SimpleHTTPRequestHand
 
 # Crear un contexto SSL
 context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-context.load_cert_chain(certfile="C:/Users/Jesus/IdeaProjects/gestion_curriculums0/certificados/fullchain.pem",
-                        keyfile="C:/Users/Jesus/IdeaProjects/gestion_curriculums0/certificados/privkey.pem")
+context.load_cert_chain(certfile="C:/cursos/java/IdeaProyect/untitled/gestionatuscvs/certificados/fullchain.pem",
+                        keyfile="C:/cursos/java/IdeaProyect/untitled/gestionatuscvs/certificados/privkey.pem")
 
 # Envolver el socket del servidor en SSL
 httpd.socket = context.wrap_socket(httpd.socket, server_side=True)

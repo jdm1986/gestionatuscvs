@@ -1,5 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const baseUrl = 'https://gestionatuscv.es';
+    const baseUrl = window.location.hostname.includes('localhost')
+        ? 'http://localhost:8080'
+        : 'https://gestionatuscv.es';
+
     const token = localStorage.getItem('token');
 
     async function fetchCurriculums() {

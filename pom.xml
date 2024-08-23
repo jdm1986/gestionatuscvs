@@ -246,4 +246,23 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <!-- Perfil de desarrollo -->
+        <profile>
+            <id>dev</id>
+            <properties>
+                <app.baseUrl>http://localhost:8080</app.baseUrl>
+                <spring.profiles.active>dev</spring.profiles.active>
+            </properties>
+        </profile>
+
+        <!-- Perfil de producción -->
+        <profile>
+            <id>prod</id>
+            <properties>
+                <app.baseUrl>https://gestionatuscv.es</app.baseUrl>
+                <spring.profiles.active>prod</spring.profiles.active>
+            </properties>
+        </profile>
+    </profiles>
 </project>

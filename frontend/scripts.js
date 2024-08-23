@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Definir baseUrl dinámicamente según el entorno
     const baseUrl = window.location.hostname.includes('localhost')
-        ? 'https://gestionatuscv.es'
-        : 'https://gestionatuscv-187b112a634a.herokuapp.com'; // Reemplaza con la URL de tu app en producción
+         ? 'http://localhost:8080'
+         : 'https://gestionatuscv.es'; // Reemplaza con la URL de tu app en producción
 
     const token = localStorage.getItem('token');
 

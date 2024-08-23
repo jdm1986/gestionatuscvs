@@ -39,3 +39,7 @@ build/
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+# Logs
+gestion_curriculums0.log
+gestion_curriculums0.log.*

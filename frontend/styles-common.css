@@ -429,6 +429,35 @@ header h1 {
     }
 }
 
+/* Ajuste específico para el contenedor del checkbox en dispositivos móviles */
+@media (max-width: 767px) {
+    .form-check {
+        display: flex;
+        align-items: center;
+        justify-content: center; /* Asegura que el checkbox y el label estén centrados */
+        margin-bottom: 10px;
+    }
+
+    .form-check-label {
+        margin-left: 10px; /* Ajuste el margen entre el checkbox y el texto */
+        text-align: center; /* Centrar el texto del label */
+        font-size: 14px; /* Asegura que el tamaño de la fuente no cause desbordamiento */
+    }
+
+    .form-check-input {
+        margin: 0;
+        width: auto; /* Asegura que el checkbox mantenga su tamaño original */
+        height: auto; /* Asegura que el checkbox mantenga su tamaño original */
+    }
+
+    .form-check-label a {
+        word-wrap: break-word; /* Permite que el texto se divida en varias líneas si es necesario */
+        display: inline-block;
+        text-align: center;
+        margin-left: 5px; /* Ajuste adicional para la separación entre el checkbox y el label */
+    }
+}
+
 /* Estilos para el modal */
 .modal {
     display: none; /* El modal está oculto por defecto */

@@ -17,8 +17,8 @@ public class EmailService {
     public void sendWelcomeEmail(String to, String username) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
-        message.setSubject("Bienvenido a nuestra plataforma");
-        message.setText("Hola " + username + ",\n\n¡Bienvenido a nuestra plataforma! Estamos encantados de tenerte con nosotros.\n\nSaludos,\nEl equipo");
+        message.setSubject("Bienvenid@ a nuestra plataforma");
+        message.setText("Hola " + username + ",\n\n¡Bienvenid@ a nuestra plataforma! Estamos encantados de tenerte con nosotros.\n\nSaludos,\nEl equipo");
 
         try {
             mailSender.send(message);

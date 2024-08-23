@@ -2,6 +2,7 @@ package com.example.gestion_curriculums0.service;
 
 import com.example.gestion_curriculums0.model.Usuario;
 import com.example.gestion_curriculums0.repository.CurriculumRepository;
+import com.example.gestion_curriculums0.repository.NotaRepository;
 import com.example.gestion_curriculums0.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -27,6 +28,9 @@ public class UsuarioService {
 
     @Autowired
     private CurriculumRepository curriculumRepository;
+
+    @Autowired
+    private NotaRepository notaRepository;  // Agregar el repositorio de notas
 
     @Autowired
     private JavaMailSender mailSender;
@@ -67,8 +71,17 @@ public class UsuarioService {
     @Transactional
     public void deleteUser(Usuario usuario) {
         try {
+            // Eliminar todas las notas relacionadas con cada currículum del usuario
+            usuario.getCurriculums().forEach(curriculum -> {
+                notaRepository.deleteByCurriculumId(curriculum.getId());
+            });
+
+            // Luego eliminar los currículums asociados
             curriculumRepository.deleteByUsuarioId(usuario.getId());
+
+            // Finalmente, eliminar el usuario
             usuarioRepository.deleteById(usuario.getId());
+
             System.out.println("Usuario eliminado: " + usuario.getNombreUsuario());
         } catch (Exception e) {
             System.out.println("Error al eliminar usuario: " + usuario.getNombreUsuario());

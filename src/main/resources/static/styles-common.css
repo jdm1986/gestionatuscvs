@@ -402,7 +402,7 @@ footer a:hover {
 .warning {
     font-size: 12px; /* Reduce el tamaño de la fuente para advertencias y consejos */
     text-align: center; /* Centrar el texto de advertencias */
-    margin-bottom: 10px; /* Espacio inferior */
+    margin-bottom: 2px; /* Espacio inferior */
     color: #E7DFFE; /* Color inicial del enlace */
     text-decoration: none; /* Sin subrayado */
     font-weight: bold; /* Texto en negrita */
@@ -416,7 +416,8 @@ footer a:hover {
 .form-check {
     display: flex; /* Usar flexbox para los elementos de verificación */
     align-items: center; /* Alinear elementos en el centro verticalmente */
-    margin-bottom: 20px; /* Espacio inferior */
+    margin-top: 10px;
+    margin-bottom: 0px; /* Espacio inferior */
 }
 
 .form-check-label {
@@ -484,7 +485,7 @@ header .logo {
 header h1 {
     color: #ffffff; /* Color del texto del encabezado */
     margin: 5; /* Espacio alrededor del texto */
-    font-size: 24px; /* Tamaño de la fuente */
+    font-size: 22px; /* Tamaño de la fuente */
 }
 
 /* Ajuste del padding para evitar solapamiento con la cabecera */

@@ -284,7 +284,7 @@ thead th {
 .modal-content {
     background-color: #45224D; /* Color de fondo del contenido del modal */
     margin: 18% auto; /* Centrar el contenido del modal */
-    padding: 20px; /* Relleno interior */
+    padding: 1px; /* Relleno interior */
     border: 1px solid #888; /* Borde del modal */
     width: 90%; /* Ancho del contenido del modal */
     max-width: 500px; /* Ancho máximo del modal */

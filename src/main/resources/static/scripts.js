@@ -4,6 +4,23 @@ document.addEventListener('DOMContentLoaded', function() {
         : 'https://gestionatuscv.es';
 
     const token = localStorage.getItem('token');
+    const logo = document.getElementById('logo');
+
+        if (logo) {
+            logo.addEventListener('click', function() {
+                if (token) {
+                    const confirmLogout = confirm("Se va a cerrar la sesión, ¿estás seguro?");
+                    if (confirmLogout) {
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('username');
+                        localStorage.removeItem('userId');
+                        window.location.href = 'index.html';
+                    }
+                } else {
+                    window.location.href = 'index.html';
+                }
+            });
+        }
 
     async function fetchCurriculums() {
         const response = await fetch(`${baseUrl}/curriculums/usuario`, {

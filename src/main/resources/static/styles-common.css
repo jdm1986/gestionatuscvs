@@ -357,10 +357,60 @@ footer a:hover {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Otros estilos permanecen igual */
+
+.form-check {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    text-align: left; /* Alinea el texto a la izquierda */
+    gap: 10px; /* Espacio entre el checkbox y el texto */
+}
+
+.form-check-input {
+    margin: 0; /* Asegura que no haya margen alrededor del checkbox */
+}
+
+.form-check-label {
+    margin: 0;
+    font-size: 14px;
+    color: #ccc;
+}
+
+.form-check-label a {
+    color: #e573fe; /* Color de los enlaces */
+}
+
+.form-check-label a:hover {
+    color: #fff; /* Color del enlace al pasar el cursor */
+}
+
+/* Ajuste para pantallas pequeñas */
+@media (max-width: 767px) {
+    .form-check {
+        flex-direction: row; /* Mantiene el checkbox y el texto en una fila */
+        align-items: center; /* Asegura que estén alineados verticalmente */
+    }
+
+    .form-check-label {
+        flex: 1; /* El texto ocupará el espacio disponible */
+        word-wrap: break-word; /* Permite que el texto se divida en varias líneas si es necesario */
+    }
+}
+
 /* Estilos adicionales */
 .warning {
+    font-size: 12px; /* Reduce el tamaño de la fuente para advertencias y consejos */
     text-align: center; /* Centrar el texto de advertencias */
-    margin-bottom: 20px; /* Espacio inferior */
+    margin-bottom: 10px; /* Espacio inferior */
+    color: #E7DFFE; /* Color inicial del enlace */
+    text-decoration: none; /* Sin subrayado */
+    font-weight: bold; /* Texto en negrita */
+}
+
+.warning a:hover {
+    color: #FFFFFF; /* Color al pasar el cursor */
+    text-decoration: underline; /* Subrayado al pasar el cursor */
 }
 
 .form-check {
@@ -441,3 +491,5 @@ header h1 {
 .container {
     padding-top: 110px; /* Ajuste basado en la altura de la cabecera */
 }
+
+

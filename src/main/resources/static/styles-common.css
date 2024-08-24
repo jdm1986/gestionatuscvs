@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif; /* Familia de fuentes */
     background-color: #1c1c1c; /* Color de fondo del cuerpo */
     color: #ffffff; /* Color del texto */
-    font-size: 16px; /* Tamaño base del texto */
+    font-size: 15px; /* Tamaño base del texto */
     transition: background-color 0.5s ease; /* Transición suave del color de fondo */
 }
 

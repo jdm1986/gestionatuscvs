@@ -21,17 +21,26 @@ public class GestionCurriculums0Application {
         // Cargar variables desde .env
         Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
 
-        // Establecer las variables de entorno en el sistema
-        System.setProperty("DB_URL", dotenv.get("DB_URL"));
-        System.setProperty("DB_USERNAME", dotenv.get("DB_USERNAME"));
-        System.setProperty("DB_PASSWORD", dotenv.get("DB_PASSWORD"));
-        System.setProperty("SPRING_MAIL_PASSWORD", dotenv.get("SPRING_MAIL_PASSWORD"));
-        System.setProperty("JWT_SECRET", dotenv.get("JWT_SECRET"));
+        // Establecer las variables de entorno en el sistema, solo si no son null
+        setSystemProperty("DB_URL", dotenv.get("DB_URL"));
+        setSystemProperty("DB_USERNAME", dotenv.get("DB_USERNAME"));
+        setSystemProperty("DB_PASSWORD", dotenv.get("DB_PASSWORD"));
+        setSystemProperty("SPRING_MAIL_PASSWORD", dotenv.get("SPRING_MAIL_PASSWORD"));
+        setSystemProperty("JWT_SECRET", dotenv.get("JWT_SECRET"));
 
         // Iniciar la aplicación
         SpringApplication.run(GestionCurriculums0Application.class, args);
     }
+
+    private static void setSystemProperty(String key, String value) {
+        if (value != null) {
+            System.setProperty(key, value);
+        } else {
+            System.err.println("Warning: Environment variable " + key + " is not set.");
+        }
+    }
 }
+
 
 
 //prueba

@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -34,9 +35,13 @@ public class AuthController {
 
     private static final int MAX_FAILED_ATTEMPTS = 3;
     private static final long LOCK_TIME_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+    private static final int MAX_RECOVERY_ATTEMPTS = 5;
+    private static final long IP_LOCK_TIME_DURATION = 60 * 60 * 1000; // 1 hour
 
     private Map<String, AtomicInteger> loginAttempts = new ConcurrentHashMap<>();
     private Map<String, Long> lockTime = new ConcurrentHashMap<>();
+    private Map<String, AtomicInteger> recoveryAttemptsByIp = new ConcurrentHashMap<>();
+    private Map<String, Long> ipLockTime = new ConcurrentHashMap<>();
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -102,29 +107,46 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-    private void logUserRegistration(String username) {
-        String logFilePath = "registro_usuarios.txt"; // Ruta del archivo donde se guardarán los registros
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String timestamp = LocalDateTime.now().format(formatter);
-
-        String logEntry = String.format("Usuario: %s | Fecha y Hora: %s%n", username, timestamp);
-
-        try (FileWriter writer = new FileWriter(logFilePath, true)) { // true para agregar al final del archivo
-            writer.write(logEntry);
-        } catch (IOException e) {
-            System.err.println("Error al escribir en el archivo de registro: " + e.getMessage());
-        }
-    }
-
     @PostMapping("/forgot-password")
-    public ResponseEntity<Map<String, String>> forgotPassword(@RequestBody Map<String, String> request) {
+    public ResponseEntity<Map<String, String>> forgotPassword(@RequestBody Map<String, String> request, HttpServletRequest httpRequest) {
         String email = request.get("email");
-        passwordResetService.sendPasswordResetToken(email);
+        String clientIp = httpRequest.getRemoteAddr();
 
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Se ha enviado un enlace de restablecimiento de contraseña a tu email.");
+        // Verificar si la IP está bloqueada
+        if (isIpBlocked(clientIp)) {
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                    .body(Collections.singletonMap("message", "Demasiados intentos fallidos desde esta IP. Inténtalo más tarde."));
+        }
 
-        return ResponseEntity.ok(response);
+        try {
+            // Verificar si el correo existe en la base de datos
+            if (!userDetailsService.userExistsByEmail(email)) {
+                incrementRecoveryAttempts(clientIp);
+                int attemptsLeft = MAX_RECOVERY_ATTEMPTS - recoveryAttemptsByIp.get(clientIp).get();
+                String responseMessage = (attemptsLeft > 0)
+                        ? "El correo no está registrado. Te quedan " + attemptsLeft + " intentos."
+                        : "Tu IP ha sido bloqueada debido a múltiples intentos fallidos.";
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Collections.singletonMap("message", responseMessage));
+            }
+
+            passwordResetService.sendPasswordResetToken(email);
+
+            // Resetear intentos para esta IP si la solicitud fue exitosa
+            resetRecoveryAttempts(clientIp);
+
+            return ResponseEntity.ok(Collections.singletonMap("message", "Se ha enviado un enlace de restablecimiento de contraseña a tu email."));
+        } catch (Exception e) {
+            incrementRecoveryAttempts(clientIp);
+
+            int attemptsLeft = MAX_RECOVERY_ATTEMPTS - recoveryAttemptsByIp.get(clientIp).get();
+            String responseMessage = (attemptsLeft > 0)
+                    ? "Error al enviar el email de restablecimiento. Te quedan " + attemptsLeft + " intentos."
+                    : "Tu IP ha sido bloqueada debido a múltiples intentos fallidos.";
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("message", responseMessage));
+        }
     }
 
     @PostMapping("/reset-password")
@@ -160,5 +182,46 @@ public class AuthController {
             return true;
         }
         return false;
+    }
+
+    private void incrementRecoveryAttempts(String ip) {
+        recoveryAttemptsByIp.putIfAbsent(ip, new AtomicInteger(0));
+        int attempts = recoveryAttemptsByIp.get(ip).incrementAndGet();
+        if (attempts >= MAX_RECOVERY_ATTEMPTS) {
+            ipLockTime.put(ip, System.currentTimeMillis());
+        }
+    }
+
+    private boolean isIpBlocked(String ip) {
+        Long lockTimeStart = ipLockTime.get(ip);
+        if (lockTimeStart != null) {
+            long timePassed = System.currentTimeMillis() - lockTimeStart;
+            if (timePassed > IP_LOCK_TIME_DURATION) {
+                ipLockTime.remove(ip);
+                recoveryAttemptsByIp.remove(ip);
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private void resetRecoveryAttempts(String ip) {
+        recoveryAttemptsByIp.remove(ip);
+        ipLockTime.remove(ip);
+    }
+
+    private void logUserRegistration(String username) {
+        String logFilePath = "registro_usuarios.txt"; // Ruta del archivo donde se guardarán los registros
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String timestamp = LocalDateTime.now().format(formatter);
+
+        String logEntry = String.format("Usuario: %s | Fecha y Hora: %s%n", username, timestamp);
+
+        try (FileWriter writer = new FileWriter(logFilePath, true)) { // true para agregar al final del archivo
+            writer.write(logEntry);
+        } catch (IOException e) {
+            System.err.println("Error al escribir en el archivo de registro: " + e.getMessage());
+        }
     }
 }

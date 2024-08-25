@@ -51,4 +51,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     public boolean userExists(String usernameOrEmail) {
         return usuarioRepository.findByNombreUsuarioOrEmail(usernameOrEmail, usernameOrEmail).isPresent();
     }
+
+    // Nuevo método para verificar si el email ya está registrado
+    public boolean userExistsByEmail(String email) {
+        return usuarioRepository.existsByEmail(email);
+    }
 }

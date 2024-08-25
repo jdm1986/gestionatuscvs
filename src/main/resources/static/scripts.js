@@ -323,6 +323,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('forgotPasswordForm')?.addEventListener('submit', async function(event) {
         event.preventDefault();
         const email = document.getElementById('email').value;
+        const messageContainer = document.getElementById('message');
 
         const response = await fetch(`${baseUrl}/auth/forgot-password`, {
             method: 'POST',
@@ -333,10 +334,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         if (response.ok) {
-            document.getElementById('message').classList.remove('hidden');
-        } else {
-            alert('Error al enviar la solicitud. Inténtalo de nuevo.');
-        }
+                const data = await response.json();
+                messageContainer.classList.remove('hidden');
+                messageContainer.style.color = '#E573FE'; // Color púrpura para éxito
+                messageContainer.textContent = data.message;
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 3000); // Redirigir después de 3 segundos
+            } else {
+                const errorData = await response.json();
+                messageContainer.classList.remove('hidden');
+                messageContainer.style.color = '#FF6F61'; // Color rojo para el error
+                messageContainer.textContent = errorData.message;
+            }
     });
 
     document.getElementById('uploadForm')?.addEventListener('submit', async function(event) {

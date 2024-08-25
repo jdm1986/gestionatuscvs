@@ -6,21 +6,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const token = localStorage.getItem('token');
     const logo = document.getElementById('logo');
 
-        if (logo) {
-            logo.addEventListener('click', function() {
-                if (token) {
-                    const confirmLogout = confirm("Se va a cerrar la sesión, ¿estás seguro?");
-                    if (confirmLogout) {
-                        localStorage.removeItem('token');
-                        localStorage.removeItem('username');
-                        localStorage.removeItem('userId');
-                        window.location.href = 'index.html';
-                    }
-                } else {
+    if (logo) {
+        logo.addEventListener('click', function() {
+            if (token) {
+                const confirmLogout = confirm("Se va a cerrar la sesión, ¿estás seguro?");
+                if (confirmLogout) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('username');
+                    localStorage.removeItem('userId');
                     window.location.href = 'index.html';
                 }
-            });
-        }
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+    }
 
     async function fetchCurriculums() {
         const response = await fetch(`${baseUrl}/curriculums/usuario`, {
@@ -32,7 +32,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (response.ok) {
             const results = await response.json();
-            // Ordenar los resultados por fecha de inserción del más reciente al menos reciente
             results.sort((a, b) => new Date(b.fechaInsercion) - new Date(a.fechaInsercion));
             const resultsBody = document.getElementById('resultsBody');
             if (resultsBody) {
@@ -129,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (response.ok) {
             const notes = await response.json();
 
-            notes.sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion)); //Orden de  la nota más reciente a la menos.
+            notes.sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion));
 
             notes.forEach(note => {
                 const noteElement = document.createElement('div');
@@ -160,7 +159,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (response.ok) {
                     noteText.value = '';
                     modal.style.display = 'none';
-                    fetchCurriculums(); // Refresh curriculums to show new note
+                    fetchCurriculums();
                 } else {
                     alert('Error al guardar la nota');
                 }
@@ -183,43 +182,41 @@ document.addEventListener('DOMContentLoaded', function() {
     if (window.location.pathname.endsWith('dashboard.html')) {
         fetchCurriculums();
 
-            // Verificar si el usuario es admin para mostrar el botón
-            const username = localStorage.getItem('username');
-            if (username === 'admin') { // Cambia 'admin' al nombre de usuario del administrador en tu base de datos
-                const adminPanel = document.createElement('div');
-                adminPanel.style.marginTop = '20px';
-                adminPanel.style.textAlign = 'center';
+        const username = localStorage.getItem('username');
+        if (username === 'admin') {
+            const adminPanel = document.createElement('div');
+            adminPanel.style.marginTop = '20px';
+            adminPanel.style.textAlign = 'center';
 
-                const viewLogsButton = document.createElement('button');
-                viewLogsButton.textContent = 'Ver registros de usuarios';
-                viewLogsButton.style.backgroundColor = '#e573fe';
-                viewLogsButton.style.color = 'white';
-                viewLogsButton.style.border = 'none';
-                viewLogsButton.style.padding = '10px 20px';
-                viewLogsButton.style.borderRadius = '4px';
-                viewLogsButton.style.cursor = 'pointer';
-                viewLogsButton.style.marginTop = '20px';
+            const viewLogsButton = document.createElement('button');
+            viewLogsButton.textContent = 'Ver registros de usuarios';
+            viewLogsButton.style.backgroundColor = '#e573fe';
+            viewLogsButton.style.color = 'white';
+            viewLogsButton.style.border = 'none';
+            viewLogsButton.style.padding = '10px 20px';
+            viewLogsButton.style.borderRadius = '4px';
+            viewLogsButton.style.cursor = 'pointer';
+            viewLogsButton.style.marginTop = '20px';
 
-                viewLogsButton.addEventListener('click', async function() {
-                    const response = await fetch(`${baseUrl}/admin/registro-usuarios`, {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
-
-                    if (response.ok) {
-                        const logs = await response.text();
-                        alert(logs);
-                    } else {
-                        alert('Error al cargar los registros');
+            viewLogsButton.addEventListener('click', async function() {
+                const response = await fetch(`${baseUrl}/admin/registro-usuarios`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
                     }
                 });
 
-                adminPanel.appendChild(viewLogsButton);
-                document.body.appendChild(adminPanel);
-            }
+                if (response.ok) {
+                    const logs = await response.text();
+                    alert(logs);
+                } else {
+                    alert('Error al cargar los registros');
+                }
+            });
 
+            adminPanel.appendChild(viewLogsButton);
+            document.body.appendChild(adminPanel);
+        }
     }
 
     document.getElementById('registerForm')?.addEventListener('submit', async function(event) {
@@ -254,9 +251,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-
-
-
     document.getElementById('loginForm')?.addEventListener('submit', async function(event) {
         event.preventDefault();
         const username = document.getElementById('login').value;
@@ -270,6 +264,9 @@ document.addEventListener('DOMContentLoaded', function() {
             body: JSON.stringify({ username, password })
         });
 
+        const messageContainer = document.getElementById('loginMessage');
+        messageContainer.style.display = 'block';
+
         if (response.ok) {
             const data = await response.json();
             localStorage.setItem('token', data.token);
@@ -277,7 +274,22 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('userId', data.userId);
             window.location.href = 'dashboard.html';
         } else {
-            alert('Error en el inicio de sesión');
+            const errorData = await response.text();
+            if (errorData.includes('El usuario no existe')) {
+                messageContainer.innerHTML = 'El usuario no existe.';
+            } else if (errorData.includes('Contraseña incorrecta')) {
+                messageContainer.innerHTML = 'Contraseña incorrecta. Inténtalo de nuevo. <a href="forgot-password.html" style="color: white;">¿Olvidaste tu contraseña?</a>';
+            } else if (errorData.includes('La cuenta está bloqueada')) {
+                messageContainer.innerHTML = 'Has alcanzado el límite de intentos. Redirigiendo a la recuperación de contraseña...';
+                setTimeout(() => {
+                    window.location.href = 'forgot-password.html';
+                }, 3000);
+            } else {
+                messageContainer.innerHTML = 'Error en el inicio de sesión';
+            }
+            messageContainer.style.color = '#FF6F61';
+            messageContainer.style.marginTop = '20px';
+            messageContainer.style.textAlign = 'center';
         }
     });
 
@@ -366,7 +378,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Código para capturar foto desde la cámara
     const captureButton = document.createElement('button');
     captureButton.textContent = 'Capturar Foto';
     captureButton.addEventListener('click', () => {
@@ -433,7 +444,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     });
 
-    // Agrega el botón de captura de foto solo si existe el formulario de carga
     const uploadForm = document.getElementById('uploadForm');
     if (uploadForm) {
         uploadForm.appendChild(captureButton);

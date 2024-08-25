@@ -309,7 +309,7 @@ thead th {
 }
 
 #noteText {
-    width: 99%; /* Ancho completo del área de texto */
+    width: 98%; /* Ancho completo del área de texto */
     height: 100px; /* Altura del área de texto */
     margin-bottom: 10px; /* Espacio inferior */
 }

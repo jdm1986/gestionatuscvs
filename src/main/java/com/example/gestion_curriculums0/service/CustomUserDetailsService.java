@@ -46,4 +46,9 @@ public class CustomUserDetailsService implements UserDetailsService {
         usuario.setRoles(authRequest.getRoles() != null ? authRequest.getRoles() : "USER");
         usuarioRepository.save(usuario);
     }
+
+    // Método para verificar si un usuario existe en la base de datos
+    public boolean userExists(String usernameOrEmail) {
+        return usuarioRepository.findByNombreUsuarioOrEmail(usernameOrEmail, usernameOrEmail).isPresent();
+    }
 }

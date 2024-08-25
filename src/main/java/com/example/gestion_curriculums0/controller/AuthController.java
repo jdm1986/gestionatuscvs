@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -23,11 +24,19 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = "http://localhost:8000")
 public class AuthController {
+
+    private static final int MAX_FAILED_ATTEMPTS = 3;
+    private static final long LOCK_TIME_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+
+    private Map<String, AtomicInteger> loginAttempts = new ConcurrentHashMap<>();
+    private Map<String, Long> lockTime = new ConcurrentHashMap<>();
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -46,6 +55,12 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) throws AuthenticationException {
+        String username = authRequest.getUsername();
+
+        if (isAccountLocked(username)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("La cuenta está bloqueada debido a múltiples intentos fallidos. Inténtalo más tarde.");
+        }
+
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
@@ -54,14 +69,23 @@ public class AuthController {
             String jwt = jwtUtil.generateToken(userDetails);
             Long userId = userDetailsService.getUserIdByUsername(userDetails.getUsername());
 
+            // Restablecer el contador de intentos fallidos si el inicio de sesión es exitoso
+            loginAttempts.remove(username);
+            lockTime.remove(username);
+
             Map<String, Object> response = new HashMap<>();
             response.put("token", jwt);
             response.put("username", userDetails.getUsername());
             response.put("userId", userId);
 
             return ResponseEntity.ok(response);
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error al iniciar sesión: " + e.getMessage());
+        } catch (BadCredentialsException e) {
+            incrementFailedAttempts(username);
+            if (userDetailsService.userExists(username)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Contraseña incorrecta. ¿Olvidaste tu contraseña?");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El usuario no existe.");
+            }
         }
     }
 
@@ -114,5 +138,27 @@ public class AuthController {
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("error", "Token inválido o expirado."));
         }
+    }
+
+    private void incrementFailedAttempts(String username) {
+        loginAttempts.putIfAbsent(username, new AtomicInteger(0));
+        int attempts = loginAttempts.get(username).incrementAndGet();
+        if (attempts >= MAX_FAILED_ATTEMPTS) {
+            lockTime.put(username, System.currentTimeMillis());
+        }
+    }
+
+    private boolean isAccountLocked(String username) {
+        Long lockTimeStart = lockTime.get(username);
+        if (lockTimeStart != null) {
+            long timePassed = System.currentTimeMillis() - lockTimeStart;
+            if (timePassed > LOCK_TIME_DURATION) {
+                lockTime.remove(username);
+                loginAttempts.remove(username);
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 }

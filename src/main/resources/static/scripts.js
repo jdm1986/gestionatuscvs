@@ -1,4 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
+
+document.getElementById('loginButton').addEventListener('click', function() {
+    window.location.href = 'login.html';
+});
+
+document.getElementById('registerButton').addEventListener('click', function() {
+    window.location.href = 'register.html';
+});
+
     const baseUrl = window.location.hostname.includes('localhost')
         ? 'http://localhost:8080'
         : 'https://gestionatuscv.es';

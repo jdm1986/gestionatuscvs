@@ -223,16 +223,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
 
                 if (response.ok) {
-                    const logs = await response.text();
-                    alert(logs);
-                } else {
-                    alert('Error al cargar los registros');
-                }
-            });
+                        const logs = await response.json();
+                        let formattedLogs = logs.map(log =>
+                            `Usuario: ${log.username} | Fecha: ${new Date(log.timestamp).toLocaleString()}`
+                        ).join('\n');
 
+                        alert(formattedLogs);
+                    } else {
+                        alert('Error al cargar los registros');
+                    }
+                });
+
+            // Ajustar la posición del botón aquí, por ejemplo, insertándolo en el header o una sección específica
+            const container = document.querySelector('.container'); // o cualquier otro selector donde quieras el botón
+            container.insertBefore(adminPanel, container.firstChild); // Inserta el botón al inicio del contenedor
             adminPanel.appendChild(viewLogsButton);
-            document.body.appendChild(adminPanel);
         }
+
     }
 
     document.getElementById('registerForm')?.addEventListener('submit', async function(event) {

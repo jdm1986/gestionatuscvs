@@ -1,11 +1,15 @@
+/* Estilo general del cuerpo */
 body {
     font-family: Arial, sans-serif; /* Familia de fuentes */
     background-color: #1c1c1c; /* Color de fondo del cuerpo */
     color: #ffffff; /* Color del texto */
     font-size: 15px; /* Tamaño base del texto */
     transition: background-color 0.5s ease; /* Transición suave del color de fondo */
+    margin: 0; /* Elimina margen por defecto */
+    padding: 0; /* Elimina padding por defecto */
 }
 
+/* Contenedor principal */
 .container {
     width: 80%; /* Ancho del contenedor principal */
     margin: 0 auto; /* Centrando el contenedor */
@@ -16,6 +20,7 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
 }
 
+/* Estilos generales para los botones */
 button {
     background-color: #E573FE; /* Color de fondo del botón */
     color: white; /* Color del texto del botón */
@@ -23,6 +28,7 @@ button {
     padding: 12px 24px; /* Relleno interior del botón */
     cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
     margin-right: 10px; /* Espacio a la derecha del botón */
+    margin-bottom: 10px; /* Espacio inferior entre botones */
     border-radius: 8px; /* Bordes redondeados del botón */
     font-size: 16px; /* Tamaño de la fuente del botón */
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave del botón */
@@ -31,15 +37,18 @@ button {
 
 /* Efectos de botón al pasar el cursor */
 button:hover {
+    background-color: #7C3E8A; /* Cambia el color de fondo al pasar el cursor */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada al pasar el cursor */
-    transition: box-shadow 0.3s ease; /* Transición suave de la sombra */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Transición suave de la sombra */
 }
 
+/* Efectos de botón al hacer clic */
 button:active {
     transform: scale(0.95); /* Reduce ligeramente el tamaño del botón al hacer clic */
     transition: transform 0.1s ease; /* Transición suave para la reducción */
 }
 
+/* Estilos para inputs y selects */
 input, select {
     padding: 12px; /* Relleno interior de los campos de entrada */
     margin-bottom: 10px; /* Espacio debajo de los campos de entrada */
@@ -63,15 +72,44 @@ input:focus, select:focus {
     display: none; /* Clase para ocultar elementos */
 }
 
+/* Estilo para encabezados */
 h1, h2 {
     text-align: center; /* Centrar el texto de los encabezados */
     color: #ffffff; /* Color del texto de los encabezados */
+    margin: 15px 0; /* Espacio superior e inferior */
 }
 
+header {
+    display: flex;
+    justify-content: center; /* Centra horizontalmente el contenido dentro del header */
+    align-items: center; /* Centra verticalmente el contenido dentro del header */
+    width: 100%;
+    background-color: #1c1c1c; /* Color de fondo de la cabecera */
+    padding: 10px 0; /* Espacio interior */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* Sombra debajo de la cabecera */
+    z-index: 1000; /* Asegura que esté encima de otros elementos */
+}
+
+
+header .logo {
+    height: 100px; /* Ajusta la altura según lo necesario */
+    width: auto;
+    max-width: 100%; /* Evita que el logo se salga del contenedor */
+    object-fit: contain; /* Mantiene la proporción del logo */
+    margin: 0 auto; /* Asegura que no haya margen lateral */
+    display: block; /* Hace que el logo se trate como un bloque */
+}
+
+.footer-email {
+    color: white; /* Cambia el color del enlace a blanco */
+}
+
+/* Estilos de botones y acciones */
 .buttons, .actions, .search {
     text-align: center; /* Centrar el contenido dentro de estas clases */
 }
 
+/* Estilo para formularios */
 form {
     display: flex; /* Usar flexbox para la disposición del formulario */
     flex-direction: column; /* Disponer los elementos en columna */
@@ -84,6 +122,7 @@ form input, form select, form button {
     margin-bottom: 10px; /* Espacio inferior entre los elementos del formulario */
 }
 
+/* Estilo para el contenedor de acciones */
 .actions {
     display: flex; /* Alineación horizontal de botones */
     justify-content: center; /* Centrar los botones */
@@ -91,6 +130,7 @@ form input, form select, form button {
     margin-bottom: 20px; /* Espacio inferior entre acciones */
 }
 
+/* Estilo para la sección de búsqueda */
 .search {
     display: flex; /* Usar flexbox para la disposición de búsqueda */
     flex-direction: column; /* Disponer los elementos en columna */
@@ -113,13 +153,15 @@ form input, form select, form button {
     margin-top: 10px; /* Espacio superior entre el cuadro de búsqueda y los botones */
 }
 
+/* Estilo para la tabla de resultados */
 .results {
     max-height: 70vh; /* Altura máxima para los resultados */
     overflow-y: auto; /* Scroll vertical si es necesario */
     background-color: #333333; /* Color de fondo para los resultados */
-    padding: 10px; /* Relleno interior de los resultados */
+    padding: 20px; /* Relleno interior de los resultados */
     border-radius: 8px; /* Bordes redondeados */
     margin-top: 20px; /* Espacio superior */
+    color: white; /* Color del texto */
 }
 
 /* Apariencia de las tablas */
@@ -156,6 +198,7 @@ tbody td {
     text-align: left; /* Alinear texto a la izquierda */
 }
 
+/* Estilos para los botones de acción en la tabla */
 .action-buttons {
     display: flex; /* Usar flexbox para los botones de acción */
     justify-content: space-between; /* Distribuir los botones de manera equitativa */
@@ -168,17 +211,8 @@ tbody td {
     padding: 10px; /* Relleno interior de los botones */
 }
 
-/* Ajustes responsivos */
+/* Estilos adicionales para pantallas pequeñas */
 @media (max-width: 767px) {
-
-    .results {
-        overflow-y: auto;
-        background-color: #333333;
-        padding: 15px;
-        border-radius: 8px;
-        margin-top: 20px;
-    }
-
     .container {
         width: 90%; /* Ajuste del ancho del contenedor para móviles */
         padding: 20px;
@@ -190,7 +224,8 @@ tbody td {
     }
 
     button {
-        margin-bottom: 1px; /* Espacio inferior entre botones */
+        width: 100%; /* Ancho completo del botón */
+        margin-bottom: 10px; /* Espacio inferior entre botones */
     }
 
     table {
@@ -221,7 +256,7 @@ tbody td {
         content: attr(data-label); /* Mostrar la etiqueta antes del contenido */
         position: absolute;
         left: 10px;
-        width: 45%;
+        width: 45%; /* Ancho de la etiqueta */
         padding-right: 10px;
         white-space: nowrap;
         text-align: left;
@@ -238,7 +273,7 @@ tbody td {
     }
 
     tbody td button:hover {
-        background-color: #5754d6;
+        background-color: #7C3E8A;
     }
 }
 
@@ -316,6 +351,7 @@ tbody td {
     text-align: right; /* Alinear el texto a la derecha */
 }
 
+/* Enlaces */
 .link-blanco {
     color: white; /* Color del enlace */
     text-decoration: underline; /* Subrayado para asegurar visibilidad */
@@ -339,116 +375,10 @@ footer {
 footer a {
     color: #e573fe; /* Color de los enlaces en el pie de página */
     text-decoration: none; /* Sin subrayado por defecto */
-    margin: 0 5px; /* Espacio entre los enlaces */
+    margin: 0 10px; /* Espacio entre los enlaces */
 }
 
 footer a:hover {
-    text-decoration: underline; /* Subrayado al pasar el cursor */
-    color: #7C3E8A; /* Color más claro al pasar el ratón */
-}
-
-.hidden {
-    display: none; /* Clase para ocultar elementos */
-}
-
-.results {
-    margin-top: 20px;
-    padding: 20px;
-    background-color: #333333;
-    color: white;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Otros estilos permanecen igual */
-
-.form-check {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-    text-align: left; /* Alinea el texto a la izquierda */
-    gap: 10px; /* Espacio entre el checkbox y el texto */
-}
-
-.form-check-input {
-    margin: 0; /* Asegura que no haya margen alrededor del checkbox */
-}
-
-.form-check-label {
-    margin: 0;
-    font-size: 14px;
-    color: #ccc;
-}
-
-.form-check-label a {
-    color: #e573fe; /* Color de los enlaces */
-}
-
-.form-check-label a:hover {
-    color: #fff; /* Color del enlace al pasar el cursor */
-}
-
-/* Ajuste para pantallas pequeñas */
-@media (max-width: 767px) {
-    .form-check {
-        flex-direction: row; /* Mantiene el checkbox y el texto en una fila */
-        align-items: center; /* Asegura que estén alineados verticalmente */
-    }
-
-    .form-check-label {
-        flex: 1; /* El texto ocupará el espacio disponible */
-        word-wrap: break-word; /* Permite que el texto se divida en varias líneas si es necesario */
-    }
-}
-
-/* Estilos adicionales */
-.warning {
-    font-size: 12px; /* Reduce el tamaño de la fuente para advertencias y consejos */
-    text-align: center; /* Centrar el texto de advertencias */
-    margin-bottom: 2px; /* Espacio inferior */
-    color: #E7DFFE; /* Color inicial del enlace */
-    text-decoration: none; /* Sin subrayado */
-    font-weight: bold; /* Texto en negrita */
-}
-
-.warning a:hover {
-    color: #FFFFFF; /* Color al pasar el cursor */
-    text-decoration: underline; /* Subrayado al pasar el cursor */
-}
-
-.form-check {
-    display: flex; /* Usar flexbox para los elementos de verificación */
-    align-items: center; /* Alinear elementos en el centro verticalmente */
-    margin-top: 10px;
-    margin-bottom: 0px; /* Espacio inferior */
-}
-
-.form-check-label {
-    margin-left: 10px; /* Espacio a la izquierda de la etiqueta */
-}
-
-.form-check-input {
-    margin: 0; /* Sin margen */
-}
-
-.form-check-label a {
-    color: #ccc; /* Color del enlace en la etiqueta */
-}
-
-.form-check-label a:hover {
-    color: #fff; /* Color del enlace al pasar el cursor */
-}
-
-form button[type="submit"] {
-    margin-top: 20px; /* Espacio superior antes del botón de "Registrarse" */
-}
-
-.footer-email {
-    color: #e573fe; /* Mismo color que los enlaces en el pie de página */
-    text-decoration: none;
-}
-
-.footer-email:hover {
     text-decoration: underline; /* Subrayado al pasar el cursor */
     color: #7C3E8A; /* Color más claro al pasar el ratón */
 }
@@ -464,57 +394,3 @@ form button[type="submit"] {
         opacity: 1; /* Termina siendo completamente visible */
     }
 }
-
-/* Estilos del logo */
-header {
-    position: fixed; /* Fija la cabecera en la parte superior */
-    top: 0;
-    width: 100%; /* Ancho completo de la cabecera */
-    background-color: #1c1c1c; /* Color de fondo de la cabecera */
-    display: flex; /* Usar flexbox para la disposición */
-    align-items: center; /* Centrar los elementos verticalmente */
-    justify-content: center; /* Centrar el contenido horizontalmente */
-    padding: 10px 0.1px; /* Espacio interior */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* Sombra debajo de la cabecera */
-    z-index: 1000; /* Asegura que esté encima de otros elementos */
-    text-align: left; /* Alinear el texto a la izquierda */
-}
-
-header .logo {
-    height: 100px; /* Altura del logo */
-    margin-right: 10px; /* Espacio a la derecha del logo */
-}
-
-header h1 {
-    color: #ffffff; /* Color del texto del encabezado */
-    margin: 5; /* Espacio alrededor del texto */
-    font-size: 22px; /* Tamaño de la fuente */
-}
-
-/* Ajuste del padding para evitar solapamiento con la cabecera */
-.container {
-    padding-top: 110px; /* Ajuste basado en la altura de la cabecera */
-}
-
-/* Ajustes específicos para el botón de "Ver Registros de Usuarios" */
-.admin-only-button {
-    margin-left: 10px; /* Espacio a la izquierda del botón para separarlo */
-    background-color: #E573FE; /* Mantener el color de fondo coherente */
-    color: white; /* Color del texto */
-    border: none; /* Sin borde */
-    padding: 12px 24px; /* Relleno interior del botón */
-    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
-    border-radius: 8px; /* Bordes redondeados del botón */
-    font-size: 16px; /* Tamaño de la fuente */
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave del botón */
-    transition: background-color 0.3s ease, transform 0.2s ease; /* Efecto de transición */
-}
-
-.admin-only-button:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada al pasar el cursor */
-}
-
-.admin-only-button:active {
-    transform: scale(0.95); /* Reduce ligeramente el tamaño al hacer clic */
-}
-

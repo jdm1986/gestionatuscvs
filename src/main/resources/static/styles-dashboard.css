@@ -4,6 +4,8 @@ body {
     background-color: #1c1c1c; /* Color de fondo del cuerpo */
     color: #ffffff; /* Color del texto */
     font-size: 16px; /* Tamaño de fuente base */
+    margin: 0; /* Elimina margen por defecto */
+    padding: 0; /* Elimina padding por defecto */
 }
 
 /* Contenedor principal */
@@ -33,8 +35,10 @@ button {
     padding: 12px 24px; /* Relleno interior del botón */
     cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
     margin-right: 10px; /* Espacio a la derecha del botón */
+    margin-bottom: 10px; /* Espacio inferior entre botones */
     border-radius: 10px; /* Bordes redondeados */
     font-size: 16px; /* Tamaño de la fuente del botón */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave del botón */
     transition: transform 0.3s ease, background-color 0.3s ease; /* Efecto de transición para la transformación y el color de fondo */
 }
 
@@ -388,9 +392,14 @@ header {
 }
 
 /* Estilo para el logo en la cabecera */
+
 header .logo {
-    height: 100px; /* Altura del logo */
-    margin-right: 10px; /* Espacio a la derecha del logo */
+    height: 100px; /* Ajusta la altura según lo necesario */
+    width: auto;
+    max-width: 100%; /* Evita que el logo se salga del contenedor */
+    object-fit: contain; /* Mantiene la proporción del logo */
+    margin: 0 auto; /* Asegura que no haya margen lateral */
+    display: block; /* Hace que el logo se trate como un bloque */
 }
 
 /* Estilo para el título en la cabecera */

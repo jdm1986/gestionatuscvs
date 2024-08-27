@@ -99,6 +99,8 @@ public class AuthController {
         userDetailsService.saveUser(authRequest);
         emailService.sendWelcomeEmail(authRequest.getEmail(), authRequest.getUsername());
 
+        emailService.sendNotificationToAdmin(authRequest.getUsername(), authRequest.getEmail());
+
         logUserRegistration(authRequest.getUsername()); // Registro de la acción en la base de datos
 
         Map<String, String> response = new HashMap<>();

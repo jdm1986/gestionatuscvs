@@ -4,7 +4,7 @@ import com.example.gestion_curriculums0.service.AuthRequest;
 import com.example.gestion_curriculums0.service.PasswordResetService;
 import com.example.gestion_curriculums0.service.CustomUserDetailsService;
 import com.example.gestion_curriculums0.service.EmailService;
-import com.example.gestion_curriculums0.service.UserLogService; // Importa el servicio UserLogService
+import com.example.gestion_curriculums0.service.UserLogService;
 import com.example.gestion_curriculums0.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,6 +37,8 @@ public class AuthController {
 
     private Map<String, AtomicInteger> loginAttempts = new ConcurrentHashMap<>();
     private Map<String, Long> lockTime = new ConcurrentHashMap<>();
+    private Map<String, AtomicInteger> registrationAttempts = new ConcurrentHashMap<>();
+    private Map<String, Long> registrationLockTime = new ConcurrentHashMap<>();
     private Map<String, AtomicInteger> recoveryAttemptsByIp = new ConcurrentHashMap<>();
     private Map<String, Long> ipLockTime = new ConcurrentHashMap<>();
 
@@ -95,19 +97,46 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String, String>> register(@RequestBody AuthRequest authRequest) {
-        userDetailsService.saveUser(authRequest);
-        emailService.sendWelcomeEmail(authRequest.getEmail(), authRequest.getUsername());
+    public ResponseEntity<?> register(@RequestBody AuthRequest authRequest) {
+        String email = authRequest.getEmail();
 
-        emailService.sendNotificationToAdmin(authRequest.getUsername(), authRequest.getEmail());
+        if (isRegistrationLocked(email)) {
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                    .body("Demasiados intentos fallidos de registro. Inténtalo más tarde.");
+        }
 
-        logUserRegistration(authRequest.getUsername()); // Registro de la acción en la base de datos
+        try {
+            if (userDetailsService.userExistsByEmail(email)) {
+                incrementRegistrationAttempts(email);
+                int attemptsLeft = MAX_FAILED_ATTEMPTS - registrationAttempts.get(email).get();
+                if (attemptsLeft > 0) {
+                    return ResponseEntity.status(HttpStatus.CONFLICT)
+                            .body("El correo electrónico ya está registrado. Te quedan " + attemptsLeft + " intentos.");
+                } else {
+                    return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                            .body("Demasiados intentos fallidos. Redirigiendo a la recuperación de contraseña...");
+                }
+            }
 
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Registro exitoso");
+            userDetailsService.saveUser(authRequest);
+            emailService.sendWelcomeEmail(authRequest.getEmail(), authRequest.getUsername());
+            emailService.sendNotificationToAdmin(authRequest.getUsername(), authRequest.getEmail());
 
-        return ResponseEntity.ok(response);
+            // Restablecer el contador de intentos fallidos si el registro es exitoso
+            registrationAttempts.remove(email);
+            registrationLockTime.remove(email);
+
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Registro exitoso");
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            incrementRegistrationAttempts(email);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("El registro ha fallado. " + e.getMessage());
+        }
     }
+
 
     @PostMapping("/forgot-password")
     public ResponseEntity<Map<String, String>> forgotPassword(@RequestBody Map<String, String> request, HttpServletRequest httpRequest) {
@@ -159,21 +188,43 @@ public class AuthController {
         }
     }
 
-    private void incrementFailedAttempts(String username) {
-        loginAttempts.putIfAbsent(username, new AtomicInteger(0));
-        int attempts = loginAttempts.get(username).incrementAndGet();
+    private void incrementFailedAttempts(String identifier) {
+        loginAttempts.putIfAbsent(identifier, new AtomicInteger(0));
+        int attempts = loginAttempts.get(identifier).incrementAndGet();
         if (attempts >= MAX_FAILED_ATTEMPTS) {
-            lockTime.put(username, System.currentTimeMillis());
+            lockTime.put(identifier, System.currentTimeMillis());
         }
     }
 
-    private boolean isAccountLocked(String username) {
-        Long lockTimeStart = lockTime.get(username);
+    private void incrementRegistrationAttempts(String identifier) {
+        registrationAttempts.putIfAbsent(identifier, new AtomicInteger(0));
+        int attempts = registrationAttempts.get(identifier).incrementAndGet();
+        if (attempts >= MAX_FAILED_ATTEMPTS) {
+            registrationLockTime.put(identifier, System.currentTimeMillis());
+        }
+    }
+
+    private boolean isAccountLocked(String identifier) {
+        Long lockTimeStart = lockTime.get(identifier);
         if (lockTimeStart != null) {
             long timePassed = System.currentTimeMillis() - lockTimeStart;
             if (timePassed > LOCK_TIME_DURATION) {
-                lockTime.remove(username);
-                loginAttempts.remove(username);
+                lockTime.remove(identifier);
+                loginAttempts.remove(identifier);
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isRegistrationLocked(String identifier) {
+        Long lockTimeStart = registrationLockTime.get(identifier);
+        if (lockTimeStart != null) {
+            long timePassed = System.currentTimeMillis() - lockTimeStart;
+            if (timePassed > LOCK_TIME_DURATION) {
+                registrationLockTime.remove(identifier);
+                registrationAttempts.remove(identifier);
                 return false;
             }
             return true;

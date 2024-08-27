@@ -271,6 +271,13 @@ document.addEventListener('DOMContentLoaded', function() {
             messageContainer.classList.remove('hidden');
             messageContainer.style.color = '#FF6F61'; // Color rojo para el error
             messageContainer.innerHTML = errorText.replace('<a href=\'/reset-password\'>', '<a href=\'forgot-password.html\' style="color: white;">');
+
+            // Lógica de redirección basada en el mensaje del servidor
+            if (errorText.includes("Redirigiendo a la recuperación de contraseña")) {
+                setTimeout(() => {
+                    window.location.href = 'forgot-password.html';
+                }, 3000);
+            }
         }
     });
 

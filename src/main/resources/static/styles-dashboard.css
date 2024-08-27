@@ -173,6 +173,8 @@ thead th {
         justify-content: center;
         flex-direction: column; /* Apilar botones verticalmente */
         gap: 5px; /* Espacio entre los botones */
+        width: 48%; /* Ancho de los botones para asegurarse de que ambos ocupen el espacio disponible */
+        margin: 0; /* Elimina el margen inferior */
     }
 
     .container {

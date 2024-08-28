@@ -159,7 +159,12 @@ public class AuthController {
                         .body(Collections.singletonMap("message", responseMessage));
             }
 
+            // Logging antes de enviar el correo
+            System.out.println("Enviando token de restablecimiento de contraseña para el email: " + email);
             passwordResetService.sendPasswordResetToken(email);
+            // Logging después de enviar el correo
+            System.out.println("Token enviado para el email: " + email);
+
             resetRecoveryAttempts(clientIp);
 
             return ResponseEntity.ok(Collections.singletonMap("message", "Se ha enviado un enlace de restablecimiento de contraseña a tu email."));
@@ -174,6 +179,7 @@ public class AuthController {
                     .body(Collections.singletonMap("message", responseMessage));
         }
     }
+
 
     @PostMapping("/reset-password")
     public ResponseEntity<Map<String, String>> resetPassword(@RequestParam String token, @RequestParam String newPassword) {

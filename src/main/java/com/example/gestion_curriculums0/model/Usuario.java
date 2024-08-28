@@ -2,6 +2,7 @@ package com.example.gestion_curriculums0.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -34,6 +35,9 @@ public class Usuario {
 
     @Column(name = "reset_token")
     private String resetToken;
+
+    @Column(name = "fecha_token_generado")
+    private LocalDateTime fechaTokenGenerado;
 
     // Getters y setters
     public Long getId() {
@@ -98,6 +102,14 @@ public class Usuario {
 
     public void setFechaRegistro(Date fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
+    }
+
+    public LocalDateTime getFechaTokenGenerado() {
+        return fechaTokenGenerado;
+    }
+
+    public void setFechaTokenGenerado(LocalDateTime fechaTokenGenerado) {
+        this.fechaTokenGenerado = fechaTokenGenerado;
     }
 
     @PrePersist

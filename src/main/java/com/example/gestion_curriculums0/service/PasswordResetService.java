@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,16 +31,25 @@ public class PasswordResetService {
     @Value("${app.baseUrl}")
     private String baseUrl;
 
-    public void sendPasswordResetToken(String email) {
+    public synchronized void sendPasswordResetToken(String email) {
         Optional<Usuario> optionalUsuario = usuarioRepository.findByEmail(email);
         if (optionalUsuario.isPresent()) {
             Usuario usuario = optionalUsuario.get();
+            LocalDateTime now = LocalDateTime.now();
+
+            if (usuario.getResetToken() != null && usuario.getFechaTokenGenerado() != null) {
+                Duration duration = Duration.between(usuario.getFechaTokenGenerado(), now);
+                if (duration.toMinutes() < 15) {
+                    return;
+                }
+            }
+
             String token = UUID.randomUUID().toString();
             usuario.setResetToken(token);
+            usuario.setFechaTokenGenerado(now);
             usuarioRepository.save(usuario);
 
             String resetUrl = baseUrl + "/reset-password.html?token=" + token;
-            // Agregar log para rastrear el envío del correo
             System.out.println("Enviando correo de restablecimiento a: " + email + " con token: " + token);
 
             SimpleMailMessage mailMessage = new SimpleMailMessage();
@@ -48,6 +59,7 @@ public class PasswordResetService {
             mailSender.send(mailMessage);
         }
     }
+
 
     public boolean resetPassword(String token, String newPassword) {
         Optional<Usuario> optionalUsuario = usuarioRepository.findByResetToken(token);

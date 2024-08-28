@@ -355,6 +355,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const email = document.getElementById('email').value;
         const messageContainer = document.getElementById('message');
 
+        // Desactiva el botón para evitar múltiples envíos
+        document.querySelector('button[type="submit"]').disabled = true;
+
         const response = await fetch(`${baseUrl}/auth/forgot-password`, {
             method: 'POST',
             headers: {
@@ -364,19 +367,22 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         if (response.ok) {
-                const data = await response.json();
-                messageContainer.classList.remove('hidden');
-                messageContainer.style.color = '#E573FE'; // Color púrpura para éxito
-                messageContainer.textContent = data.message;
-                setTimeout(() => {
-                    window.location.href = 'login.html';
-                }, 3000); // Redirigir después de 3 segundos
-            } else {
-                const errorData = await response.json();
-                messageContainer.classList.remove('hidden');
-                messageContainer.style.color = '#FF6F61'; // Color rojo para el error
-                messageContainer.textContent = errorData.message;
-            }
+            const data = await response.json();
+            messageContainer.classList.remove('hidden');
+            messageContainer.style.color = '#E573FE'; // Color púrpura para éxito
+            messageContainer.textContent = data.message;
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 3000); // Redirigir después de 3 segundos
+        } else {
+            const errorData = await response.json();
+            messageContainer.classList.remove('hidden');
+            messageContainer.style.color = '#FF6F61'; // Color rojo para el error
+            messageContainer.textContent = errorData.message;
+        }
+
+        // Reactiva el botón (opcional dependiendo de tu flujo de trabajo)
+        document.querySelector('button[type="submit"]').disabled = false;
     });
 
     document.getElementById('uploadForm')?.addEventListener('submit', async function(event) {

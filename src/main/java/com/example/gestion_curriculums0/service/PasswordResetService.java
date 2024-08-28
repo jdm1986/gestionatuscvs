@@ -2,6 +2,7 @@ package com.example.gestion_curriculums0.service;
 
 import com.example.gestion_curriculums0.model.Usuario;
 import com.example.gestion_curriculums0.repository.UsuarioRepository;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -23,6 +24,19 @@ public class PasswordResetService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    private String baseUrl;
+
+    @PostConstruct
+    public void init() {
+        // Detectar el entorno y ajustar la URL base en consecuencia
+        String environment = System.getenv("ENVIRONMENT");
+        if ("production".equalsIgnoreCase(environment)) {
+            baseUrl = "https://gestionatuscv.es";
+        } else {
+            baseUrl = "http://localhost:8000";
+        }
+    }
+
     public void sendPasswordResetToken(String email) {
         Optional<Usuario> optionalUsuario = usuarioRepository.findByEmail(email);
         if (optionalUsuario.isPresent()) {
@@ -31,7 +45,7 @@ public class PasswordResetService {
             usuario.setResetToken(token);
             usuarioRepository.save(usuario);
 
-            String resetUrl = "https://localhost:8000/reset-password.html?token=" + token;
+            String resetUrl = baseUrl + "/reset-password.html?token=" + token;
             SimpleMailMessage mailMessage = new SimpleMailMessage();
             mailMessage.setTo(email);
             mailMessage.setSubject("Solicitud de restablecimiento de contraseña");

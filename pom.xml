@@ -192,25 +192,21 @@
         </plugins>
     </build>
     <profiles>
-        <!-- Perfil de desarrollo -->
         <profile>
             <id>dev</id>
             <properties>
-                <app.baseUrl>http://localhost:8080</app.baseUrl>
                 <spring.profiles.active>dev</spring.profiles.active>
             </properties>
             <activation>
-                <activeByDefault>true</activeByDefault> <!-- Activa este perfil por defecto -->
+                <activeByDefault>true</activeByDefault> <!-- Este perfil se activa por defecto -->
             </activation>
         </profile>
-
-        <!-- Perfil de producción -->
         <profile>
             <id>prod</id>
             <properties>
-                <app.baseUrl>https://gestionatuscv.es</app.baseUrl>
                 <spring.profiles.active>prod</spring.profiles.active>
             </properties>
         </profile>
     </profiles>
+
 </project>

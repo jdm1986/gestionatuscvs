@@ -29,17 +29,6 @@ public class PasswordResetService {
     @Value("${app.baseUrl}")
     private String baseUrl;
 
-    @PostConstruct
-    public void init() {
-        // Detectar el entorno y ajustar la URL base en consecuencia
-        String environment = System.getenv("ENVIRONMENT");
-        if ("production".equalsIgnoreCase(environment)) {
-            baseUrl = "https://gestionatuscv.es";
-        } else {
-            baseUrl = "http://localhost:8000";
-        }
-    }
-
     public void sendPasswordResetToken(String email) {
         Optional<Usuario> optionalUsuario = usuarioRepository.findByEmail(email);
         if (optionalUsuario.isPresent()) {

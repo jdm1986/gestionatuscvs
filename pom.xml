@@ -199,6 +199,9 @@
                 <app.baseUrl>http://localhost:8080</app.baseUrl>
                 <spring.profiles.active>dev</spring.profiles.active>
             </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault> <!-- Activa este perfil por defecto -->
+            </activation>
         </profile>
 
         <!-- Perfil de producción -->

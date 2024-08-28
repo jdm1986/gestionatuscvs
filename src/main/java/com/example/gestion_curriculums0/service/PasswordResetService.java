@@ -8,6 +8,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
+
 
 import java.util.Optional;
 import java.util.UUID;
@@ -24,6 +26,7 @@ public class PasswordResetService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Value("${app.baseUrl}")
     private String baseUrl;
 
     @PostConstruct
@@ -46,6 +49,9 @@ public class PasswordResetService {
             usuarioRepository.save(usuario);
 
             String resetUrl = baseUrl + "/reset-password.html?token=" + token;
+            // Agregar log para rastrear el envío del correo
+            System.out.println("Enviando correo de restablecimiento a: " + email + " con token: " + token);
+
             SimpleMailMessage mailMessage = new SimpleMailMessage();
             mailMessage.setTo(email);
             mailMessage.setSubject("Solicitud de restablecimiento de contraseña");

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -27,6 +28,12 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.imageio.ImageIO;
+
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.Image;
 
 @RestController
 @RequestMapping("/curriculums")
@@ -127,11 +134,23 @@ public class CurriculumController {
         try {
             if (file.getContentType().equals("application/pdf")) {
                 extractedText = pdfService.extractTextFromPdf(convFile);
-            } else {
+            } else if (file.getContentType().startsWith("image/")) {
+                // Manejo específico de imágenes: convertir a PDF si es necesario
+                BufferedImage bufferedImage = ImageIO.read(convFile);
+                Document document = new Document(new Rectangle(bufferedImage.getWidth(), bufferedImage.getHeight()));
+                String outputPdfPath = convFile.getPath().replace(".jpg", ".pdf").replace(".png", ".pdf");
+                PdfWriter.getInstance(document, new FileOutputStream(outputPdfPath));
+                document.open();
+                Image image = Image.getInstance(convFile.getAbsolutePath());
+                document.add(image);
+                document.close();
+                convFile = new File(outputPdfPath);
                 extractedText = ocrService.extractTextFromImage(convFile);
+            } else {
+                throw new RuntimeException("Tipo de archivo no soportado");
             }
-        } catch (IOException e) {
-            throw new RuntimeException("Error extrayendo texto del archivo", e);
+        } catch (Exception e) {
+            throw new RuntimeException("Error procesando el archivo", e);
         }
 
         Curriculum curriculum = new Curriculum();
@@ -146,6 +165,7 @@ public class CurriculumController {
 
         return convertToDTO(curriculumService.saveCurriculum(curriculum));
     }
+
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -200,19 +220,30 @@ public class CurriculumController {
 
     @GetMapping("/pdf/{id}")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
-    public ResponseEntity<Resource> descargarPdf(@PathVariable Long id) {
+    public ResponseEntity<Resource> descargarArchivo(@PathVariable Long id) {
         Curriculum curriculum = curriculumService.getCurriculumById(id)
                 .orElseThrow(() -> new RuntimeException("Curriculum no encontrado"));
         File file = new File(curriculum.getPdfPath());
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + file.getName());
+        MediaType mediaType = MediaType.APPLICATION_OCTET_STREAM;
+
+        if (file.getName().endsWith(".pdf")) {
+            mediaType = MediaType.APPLICATION_PDF;
+        } else if (file.getName().endsWith(".jpg") || file.getName().endsWith(".jpeg")) {
+            mediaType = MediaType.IMAGE_JPEG;
+        } else if (file.getName().endsWith(".png")) {
+            mediaType = MediaType.IMAGE_PNG;
+        }
+
         Resource resource = new FileSystemResource(file);
         return ResponseEntity.ok()
                 .headers(headers)
                 .contentLength(file.length())
-                .contentType(MediaType.APPLICATION_PDF)
+                .contentType(mediaType)
                 .body(resource);
     }
+
 
     private CurriculumDTO convertToDTO(Curriculum curriculum) {
         return new CurriculumDTO(curriculum.getId(), curriculum.getNombre(), curriculum.getApellido(), curriculum.getPdfPath(),

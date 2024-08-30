@@ -4,9 +4,8 @@ document.addEventListener('DOMContentLoaded', function() {
         : 'https://gestionatuscv.es';
 
     const token = localStorage.getItem('token');
-    
-    const logo = document.getElementById('logo');
     const errorMessage = document.getElementById('errorMessage');
+    const logo = document.getElementById('logo');
 
     if (logo) {
         logo.addEventListener('click', function() {
@@ -21,6 +20,21 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 window.location.href = 'index.html';
             }
+        });
+    }
+
+    const loginButton = document.getElementById('loginButton');
+    const registerButton = document.getElementById('registerButton');
+
+    if (loginButton) {
+        loginButton.addEventListener('click', function() {
+            window.location.href = 'login.html';
+        });
+    }
+
+    if (registerButton) {
+        registerButton.addEventListener('click', function() {
+            window.location.href = 'register.html';
         });
     }
 
@@ -45,58 +59,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
-
-    // Capturar el userId desde la URL si está presente
-    const params = new URLSearchParams(window.location.search);
-    const userId = params.get('user');
-    
-    if (document.getElementById('uploadForm')) {
-        document.getElementById('uploadForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const pdfFile = document.getElementById('pdfFile').files[0];
-    
-            // Verificar que el archivo sea un PDF
-            if (!pdfFile || pdfFile.type !== "application/pdf") {
-                if (errorMessage) errorMessage.style.display = 'block';
-                return;
-            } else {
-                if (errorMessage) errorMessage.style.display = 'none';
-            }
-    
-            // Preparar los datos para enviar al servidor
-            const formData = new FormData();
-            formData.append('file', pdfFile);
-            formData.append('userId', userId);  // Usar el userId capturado
-            formData.append('nombre', document.getElementById('nombre').value);
-            formData.append('apellido', document.getElementById('apellido').value);
-            formData.append('sexo', document.getElementById('sexo').value);
-            formData.append('telefono', document.getElementById('telefono').value);
-            formData.append('email', document.getElementById('email').value);
-    
-            // Hacer la petición para subir el CV
-            fetch(`${baseUrl}/curriculums/upload`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                body: formData
-            }).then(response => {
-                if (response.ok) {
-                    document.getElementById('uploadMessage').classList.remove('hidden');
-                    setTimeout(() => {
-                        document.getElementById('uploadMessage').classList.add('hidden');
-                        location.href = 'dashboard.html';
-                    }, 3000);
-                } else {
-                    alert('Error al subir el currículum');
-                }
-            }).catch(error => {
-                alert('Error en la subida del currículum. Inténtalo de nuevo.');
-            });
-        });
-    }
-
-    // Resto de las funciones (fetchCurriculums, viewCv, deleteCv, openNoteModal, etc.)
 
     async function fetchCurriculums() {
         const response = await fetch(`${baseUrl}/curriculums/usuario`, {
@@ -283,21 +245,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
 
                 if (response.ok) {
-                    const logs = await response.json();
-                    let formattedLogs = logs.map(log =>
-                        `Usuario: ${log.username} | Fecha: ${new Date(log.timestamp).toLocaleString()}`
-                    ).join('\n');
+                        const logs = await response.json();
+                        let formattedLogs = logs.map(log =>
+                            `Usuario: ${log.username} | Fecha: ${new Date(log.timestamp).toLocaleString()}`
+                        ).join('\n');
 
-                    alert(formattedLogs);
-                } else {
-                    alert('Error al cargar los registros');
-                }
-            });
+                        alert(formattedLogs);
+                    } else {
+                        alert('Error al cargar los registros');
+                    }
+                });
 
-            const container = document.querySelector('.container'); 
-            container.insertBefore(adminPanel, container.firstChild); 
+            const container = document.querySelector('.container');
+            container.insertBefore(adminPanel, container.firstChild);
             adminPanel.appendChild(viewLogsButton);
         }
+
     }
 
     document.getElementById('registerForm')?.addEventListener('submit', async function(event) {
@@ -319,7 +282,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (response.ok) {
             messageContainer.classList.remove('hidden');
-            messageContainer.style.color = '#E573FE'; // Color púrpura de éxito
+            messageContainer.style.color = '#E573FE';
             messageContainer.textContent = 'Registro exitoso. Redirigiendo a inicio de sesión...';
             setTimeout(() => {
                 window.location.href = 'login.html';
@@ -327,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             const errorText = await response.text();
             messageContainer.classList.remove('hidden');
-            messageContainer.style.color = '#FF6F61'; // Color rojo para el error
+            messageContainer.style.color = '#FF6F61';
             messageContainer.innerHTML = errorText.replace('<a href=\'/reset-password\'>', '<a href=\'forgot-password.html\' style="color: white;">');
 
             if (errorText.includes("Redirigiendo a la recuperación de contraseña")) {
@@ -405,6 +368,81 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('clearButton')?.addEventListener('click', function() {
         document.getElementById('searchInput').value = '';
         fetchCurriculums();
+    });
+
+    document.getElementById('forgotPasswordForm')?.addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const email = document.getElementById('email').value;
+        const messageContainer = document.getElementById('message');
+
+        document.querySelector('button[type="submit"]').disabled = true;
+
+        const response = await fetch(`${baseUrl}/auth/forgot-password`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            messageContainer.classList.remove('hidden');
+            messageContainer.style.color = '#E573FE';
+            messageContainer.textContent = data.message;
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 3000);
+        } else {
+            const errorData = await response.json();
+            messageContainer.classList.remove('hidden');
+            messageContainer.style.color = '#FF6F61';
+            messageContainer.textContent = errorData.message;
+        }
+
+        document.querySelector('button[type="submit"]').disabled = false;
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    const userId = params.get('user');
+
+    document.getElementById('uploadForm')?.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const pdfFile = document.getElementById('pdfFile').files[0];
+
+        if (!pdfFile || pdfFile.type !== "application/pdf") {
+            errorMessage.style.display = 'block';
+            return;
+        } else {
+            errorMessage.style.display = 'none';
+        }
+
+        const formData = new FormData();
+        formData.append('file', pdfFile);
+        formData.append('userId', userId);
+        formData.append('nombre', document.getElementById('nombre').value);
+        formData.append('apellido', document.getElementById('apellido').value);
+        formData.append('sexo', document.getElementById('sexo').value);
+        formData.append('telefono', document.getElementById('telefono').value);
+        formData.append('email', document.getElementById('email').value);
+
+        fetch(`${baseUrl}/curriculums/upload`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            body: formData
+        }).then(response => {
+            if (response.ok) {
+                document.getElementById('uploadMessage').classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('uploadMessage').classList.add('hidden');
+                    location.href = 'dashboard.html';
+                }, 3000);
+            } else {
+                alert('Error al subir el currículum');
+            }
+        });
     });
 
     async function performSearch() {

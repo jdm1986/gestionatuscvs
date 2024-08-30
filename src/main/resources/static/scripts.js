@@ -448,7 +448,6 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 console.error('Error al subir el currículum:', error);
                 alert('Error al subir el currículum.');
-            }
         });
     });
 

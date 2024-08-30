@@ -96,7 +96,7 @@ input:focus, select:focus {
     display: flex; /* Usar flexbox para la disposición de los botones */
     justify-content: center; /* Centrar los botones */
     width: 100%; /* Ancho completo */
-    max-width: 400px; /* Ancho máximo */
+    max-width: 100px; /* Ancho máximo */
     margin-top: 10px; /* Espacio superior */
     flex-direction: row; /* Disponer los botones en fila */
     gap: 10px; /* Espacio entre los botones */

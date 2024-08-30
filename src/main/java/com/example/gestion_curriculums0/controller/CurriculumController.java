@@ -155,7 +155,14 @@ public class CurriculumController {
         return ResponseEntity.ok(convertToDTO(curriculumService.saveCurriculum(curriculum)));
     }
 
-
+    @PostMapping("/generate-link")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
+    public ResponseEntity<String> generateUploadLink(Principal principal) {
+        Usuario usuario = usuarioRepository.findByNombreUsuario(principal.getName())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        String uniqueLink = "https://gestionatuscv.es/upload.html?user=" + usuario.getId();
+        return ResponseEntity.ok(uniqueLink);
+    }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")

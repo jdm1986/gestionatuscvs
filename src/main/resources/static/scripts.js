@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
         : 'https://gestionatuscv.es';
 
     const token = localStorage.getItem('token');
+    
     const logo = document.getElementById('logo');
     const errorMessage = document.getElementById('errorMessage');
 
@@ -23,21 +24,79 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Mover el código de los botones de Iniciar Sesión y Registrarse aquí
-    const loginButton = document.getElementById('loginButton');
-    const registerButton = document.getElementById('registerButton');
+    const generateLinkButton = document.getElementById('generateLinkButton');
+    const generatedLink = document.getElementById('generatedLink');
 
-    if (loginButton) {
-        loginButton.addEventListener('click', function() {
-            window.location.href = 'login.html';
+    if (generateLinkButton) {
+        generateLinkButton.addEventListener('click', function() {
+            fetch(`${baseUrl}/curriculums/generate-link`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => response.text())
+            .then(link => {
+                generatedLink.textContent = `Enlace generado: ${link}`;
+                generatedLink.classList.remove('hidden');
+            })
+            .catch(error => {
+                alert('Error al generar el enlace.');
+            });
         });
     }
 
-    if (registerButton) {
-        registerButton.addEventListener('click', function() {
-            window.location.href = 'register.html';
+    // Capturar el userId desde la URL si está presente
+    const params = new URLSearchParams(window.location.search);
+    const userId = params.get('user');
+    
+    if (document.getElementById('uploadForm')) {
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const pdfFile = document.getElementById('pdfFile').files[0];
+    
+            // Verificar que el archivo sea un PDF
+            if (!pdfFile || pdfFile.type !== "application/pdf") {
+                if (errorMessage) errorMessage.style.display = 'block';
+                return;
+            } else {
+                if (errorMessage) errorMessage.style.display = 'none';
+            }
+    
+            // Preparar los datos para enviar al servidor
+            const formData = new FormData();
+            formData.append('file', pdfFile);
+            formData.append('userId', userId);  // Usar el userId capturado
+            formData.append('nombre', document.getElementById('nombre').value);
+            formData.append('apellido', document.getElementById('apellido').value);
+            formData.append('sexo', document.getElementById('sexo').value);
+            formData.append('telefono', document.getElementById('telefono').value);
+            formData.append('email', document.getElementById('email').value);
+    
+            // Hacer la petición para subir el CV
+            fetch(`${baseUrl}/curriculums/upload`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            }).then(response => {
+                if (response.ok) {
+                    document.getElementById('uploadMessage').classList.remove('hidden');
+                    setTimeout(() => {
+                        document.getElementById('uploadMessage').classList.add('hidden');
+                        location.href = 'dashboard.html';
+                    }, 3000);
+                } else {
+                    alert('Error al subir el currículum');
+                }
+            }).catch(error => {
+                alert('Error en la subida del currículum. Inténtalo de nuevo.');
+            });
         });
     }
+
+    // Resto de las funciones (fetchCurriculums, viewCv, deleteCv, openNoteModal, etc.)
 
     async function fetchCurriculums() {
         const response = await fetch(`${baseUrl}/curriculums/usuario`, {
@@ -224,23 +283,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
 
                 if (response.ok) {
-                        const logs = await response.json();
-                        let formattedLogs = logs.map(log =>
-                            `Usuario: ${log.username} | Fecha: ${new Date(log.timestamp).toLocaleString()}`
-                        ).join('\n');
+                    const logs = await response.json();
+                    let formattedLogs = logs.map(log =>
+                        `Usuario: ${log.username} | Fecha: ${new Date(log.timestamp).toLocaleString()}`
+                    ).join('\n');
 
-                        alert(formattedLogs);
-                    } else {
-                        alert('Error al cargar los registros');
-                    }
-                });
+                    alert(formattedLogs);
+                } else {
+                    alert('Error al cargar los registros');
+                }
+            });
 
-            // Ajustar la posición del botón aquí, por ejemplo, insertándolo en el header o una sección específica
-            const container = document.querySelector('.container'); // o cualquier otro selector donde quieras el botón
-            container.insertBefore(adminPanel, container.firstChild); // Inserta el botón al inicio del contenedor
+            const container = document.querySelector('.container'); 
+            container.insertBefore(adminPanel, container.firstChild); 
             adminPanel.appendChild(viewLogsButton);
         }
-
     }
 
     document.getElementById('registerForm')?.addEventListener('submit', async function(event) {
@@ -273,7 +330,6 @@ document.addEventListener('DOMContentLoaded', function() {
             messageContainer.style.color = '#FF6F61'; // Color rojo para el error
             messageContainer.innerHTML = errorText.replace('<a href=\'/reset-password\'>', '<a href=\'forgot-password.html\' style="color: white;">');
 
-            // Lógica de redirección basada en el mensaje del servidor
             if (errorText.includes("Redirigiendo a la recuperación de contraseña")) {
                 setTimeout(() => {
                     window.location.href = 'forgot-password.html';
@@ -350,90 +406,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('searchInput').value = '';
         fetchCurriculums();
     });
-
-    document.getElementById('forgotPasswordForm')?.addEventListener('submit', async function(event) {
-        event.preventDefault();
-        const email = document.getElementById('email').value;
-        const messageContainer = document.getElementById('message');
-
-        // Desactiva el botón para evitar múltiples envíos
-        document.querySelector('button[type="submit"]').disabled = true;
-
-        const response = await fetch(`${baseUrl}/auth/forgot-password`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email })
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            messageContainer.classList.remove('hidden');
-            messageContainer.style.color = '#E573FE'; // Color púrpura para éxito
-            messageContainer.textContent = data.message;
-            setTimeout(() => {
-                window.location.href = 'login.html';
-            }, 3000); // Redirigir después de 3 segundos
-        } else {
-            const errorData = await response.json();
-            messageContainer.classList.remove('hidden');
-            messageContainer.style.color = '#FF6F61'; // Color rojo para el error
-            messageContainer.textContent = errorData.message;
-        }
-
-        // Reactiva el botón (opcional dependiendo de tu flujo de trabajo)
-        document.querySelector('button[type="submit"]').disabled = false;
-    });
-
-    document.getElementById('uploadForm')?.addEventListener('submit', function(event) {
-        event.preventDefault(); // Previene el envío predeterminado del formulario
-
-        const pdfFile = document.getElementById('pdfFile').files[0];
-        const errorMessage = document.getElementById('errorMessage');
-
-        // Verificar si el archivo es un PDF
-        if (!pdfFile || pdfFile.type !== "application/pdf") {
-            errorMessage.style.display = 'block';
-            return; // Evita continuar con el envío del formulario
-        } else {
-            errorMessage.style.display = 'none';
-        }
-
-        // Si el archivo es válido, proceder con el envío
-        const formData = new FormData();
-        formData.append('file', pdfFile);
-        formData.append('userId', localStorage.getItem('userId'));
-        formData.append('nombre', document.getElementById('nombre').value);
-        formData.append('apellido', document.getElementById('apellido').value);
-        formData.append('sexo', document.getElementById('sexo').value);
-        formData.append('telefono', document.getElementById('telefono').value);
-        formData.append('email', document.getElementById('email').value);
-
-        const baseUrl = window.location.hostname.includes('localhost')
-            ? 'http://localhost:8080'
-            : 'https://gestionatuscv.es';
-        const token = localStorage.getItem('token');
-
-        fetch(`${baseUrl}/curriculums/upload`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
-            body: formData
-        }).then(response => {
-            if (response.ok) {
-                document.getElementById('uploadMessage').classList.remove('hidden');
-                setTimeout(() => {
-                    document.getElementById('uploadMessage').classList.add('hidden');
-                    location.href = 'dashboard.html';
-                }, 3000);
-            } else {
-                alert('Error al subir el currículum');
-            }
-        });
-    });
-
 
     async function performSearch() {
         const searchInput = document.getElementById('searchInput').value;

@@ -408,6 +408,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('uploadForm')?.addEventListener('submit', function(event) {
         event.preventDefault();
+        const uploadId = document.getElementById('uploadId').value;
+        const password = document.getElementById('password').value;
         const pdfFile = document.getElementById('pdfFile').files[0];
 
         if (!pdfFile || pdfFile.type !== "application/pdf") {
@@ -418,29 +420,34 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         const formData = new FormData();
-        formData.append('file', pdfFile);
-        formData.append('userId', userId);
-        formData.append('nombre', document.getElementById('nombre').value);
-        formData.append('apellido', document.getElementById('apellido').value);
-        formData.append('sexo', document.getElementById('sexo').value);
-        formData.append('telefono', document.getElementById('telefono').value);
-        formData.append('email', document.getElementById('email').value);
+            formData.append('uploadId', uploadId);
+            formData.append('password', password);
+            formData.append('file', pdfFile);
+            formData.append('nombre', document.getElementById('nombre').value);
+            formData.append('apellido', document.getElementById('apellido').value);
+            formData.append('sexo', document.getElementById('sexo').value);
+            formData.append('telefono', document.getElementById('telefono').value);
+            formData.append('email', document.getElementById('email').value);
 
-        fetch(`${baseUrl}/curriculums/upload`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
-            body: formData
-        }).then(response => {
-            if (response.ok) {
-                document.getElementById('uploadMessage').classList.remove('hidden');
-                setTimeout(() => {
-                    document.getElementById('uploadMessage').classList.add('hidden');
-                    location.href = 'dashboard.html';
-                }, 3000);
-            } else {
-                alert('Error al subir el currículum');
+            fetch('/curriculums/upload_with_password', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(text => {
+                if (text === "Currículum subido exitosamente") {
+                    document.getElementById('uploadMessage').classList.remove('hidden');
+                    setTimeout(() => {
+                        document.getElementById('uploadMessage').classList.add('hidden');
+                        location.href = 'success_page.html'; // Redirige a una página de éxito
+                    }, 3000);
+                } else {
+                    alert(text);
+                }
+            })
+            .catch(error => {
+                console.error('Error al subir el currículum:', error);
+                alert('Error al subir el currículum.');
             }
         });
     });

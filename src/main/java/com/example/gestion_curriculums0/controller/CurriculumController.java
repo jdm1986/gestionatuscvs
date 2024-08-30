@@ -113,13 +113,18 @@ public class CurriculumController {
 
     @PostMapping("/upload")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public CurriculumDTO uploadCurriculum(@RequestParam("file") MultipartFile file,
-                                          @RequestParam Long userId,
-                                          @RequestParam String nombre,
-                                          @RequestParam String apellido,
-                                          @RequestParam String sexo,
-                                          @RequestParam String telefono,
-                                          @RequestParam String email) {
+    public ResponseEntity<?> uploadCurriculum(@RequestParam("file") MultipartFile file,
+                                              @RequestParam Long userId,
+                                              @RequestParam String nombre,
+                                              @RequestParam String apellido,
+                                              @RequestParam String sexo,
+                                              @RequestParam String telefono,
+                                              @RequestParam String email) {
+        // Validar que el archivo sea un PDF
+        if (!file.getContentType().equals("application/pdf")) {
+            return ResponseEntity.badRequest().body("Solo se permiten archivos PDF.");
+        }
+
         Usuario usuario = usuarioRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
@@ -132,23 +137,7 @@ public class CurriculumController {
 
         String extractedText;
         try {
-            if (file.getContentType().equals("application/pdf")) {
-                extractedText = pdfService.extractTextFromPdf(convFile);
-            } else if (file.getContentType().startsWith("image/")) {
-                // Manejo específico de imágenes: convertir a PDF si es necesario
-                BufferedImage bufferedImage = ImageIO.read(convFile);
-                Document document = new Document(new Rectangle(bufferedImage.getWidth(), bufferedImage.getHeight()));
-                String outputPdfPath = convFile.getPath().replace(".jpg", ".pdf").replace(".png", ".pdf");
-                PdfWriter.getInstance(document, new FileOutputStream(outputPdfPath));
-                document.open();
-                Image image = Image.getInstance(convFile.getAbsolutePath());
-                document.add(image);
-                document.close();
-                convFile = new File(outputPdfPath);
-                extractedText = ocrService.extractTextFromImage(convFile);
-            } else {
-                throw new RuntimeException("Tipo de archivo no soportado");
-            }
+            extractedText = pdfService.extractTextFromPdf(convFile);
         } catch (Exception e) {
             throw new RuntimeException("Error procesando el archivo", e);
         }
@@ -163,8 +152,9 @@ public class CurriculumController {
         curriculum.setEmail(email);
         curriculum.setUsuario(usuario);
 
-        return convertToDTO(curriculumService.saveCurriculum(curriculum));
+        return ResponseEntity.ok(convertToDTO(curriculumService.saveCurriculum(curriculum)));
     }
+
 
 
     @PutMapping("/{id}")

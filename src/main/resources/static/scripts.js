@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const token = localStorage.getItem('token');
     const logo = document.getElementById('logo');
+    const errorMessage = document.getElementById('errorMessage');
 
     if (logo) {
         logo.addEventListener('click', function() {
@@ -385,44 +386,54 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('button[type="submit"]').disabled = false;
     });
 
-    document.getElementById('uploadForm')?.addEventListener('submit', async function(event) {
-        event.preventDefault();
-        const pdfFile = document.getElementById('pdfFile').files[0];
-        const nombre = document.getElementById('nombre').value;
-        const apellido = document.getElementById('apellido').value;
-        const sexo = document.getElementById('sexo').value;
-        const telefono = document.getElementById('telefono').value;
-        const email = document.getElementById('email').value;
-        const userId = localStorage.getItem('userId');
+    document.getElementById('uploadForm')?.addEventListener('submit', function(event) {
+        event.preventDefault(); // Previene el envío predeterminado del formulario
 
+        const pdfFile = document.getElementById('pdfFile').files[0];
+        const errorMessage = document.getElementById('errorMessage');
+
+        // Verificar si el archivo es un PDF
+        if (!pdfFile || pdfFile.type !== "application/pdf") {
+            errorMessage.style.display = 'block';
+            return; // Evita continuar con el envío del formulario
+        } else {
+            errorMessage.style.display = 'none';
+        }
+
+        // Si el archivo es válido, proceder con el envío
         const formData = new FormData();
         formData.append('file', pdfFile);
-        formData.append('userId', userId);
-        formData.append('nombre', nombre);
-        formData.append('apellido', apellido);
-        formData.append('sexo', sexo);
-        formData.append('telefono', telefono);
-        formData.append('email', email);
+        formData.append('userId', localStorage.getItem('userId'));
+        formData.append('nombre', document.getElementById('nombre').value);
+        formData.append('apellido', document.getElementById('apellido').value);
+        formData.append('sexo', document.getElementById('sexo').value);
+        formData.append('telefono', document.getElementById('telefono').value);
+        formData.append('email', document.getElementById('email').value);
 
-        const response = await fetch(`${baseUrl}/curriculums/upload`, {
+        const baseUrl = window.location.hostname.includes('localhost')
+            ? 'http://localhost:8080'
+            : 'https://gestionatuscv.es';
+        const token = localStorage.getItem('token');
+
+        fetch(`${baseUrl}/curriculums/upload`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`
             },
             body: formData
+        }).then(response => {
+            if (response.ok) {
+                document.getElementById('uploadMessage').classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('uploadMessage').classList.add('hidden');
+                    location.href = 'dashboard.html';
+                }, 3000);
+            } else {
+                alert('Error al subir el currículum');
+            }
         });
-
-        if (response.ok) {
-            document.getElementById('uploadMessage').classList.remove('hidden');
-            setTimeout(() => {
-                document.getElementById('uploadMessage').classList.add('hidden');
-                fetchCurriculums();
-                document.getElementById('uploadForm').reset();
-            }, 3000);
-        } else {
-            alert('Error al subir el currículum');
-        }
     });
+
 
     async function performSearch() {
         const searchInput = document.getElementById('searchInput').value;

@@ -13,7 +13,7 @@
 <div class="container">
     <h1>Subir Currículum</h1>
     <form id="uploadForm">
-        <input type="file" id="pdfFile" accept="application/pdf,image/*" required>
+        <input type="file" id="pdfFile" accept="application/pdf" required>
         <input type="text" id="nombre" placeholder="Nombre" required>
         <input type="text" id="apellido" placeholder="Apellido" required>
         <select id="sexo" required>
@@ -26,6 +26,7 @@
         <input type="email" id="email" placeholder="Email" required>
         <button type="submit">Subir</button>
         <button type="button" onclick="location.href='dashboard.html'">Ir a Gestión de Currículums</button>
+        <p id="errorMessage" style="color: red; display: none;">Solo se permiten archivos PDF.</p>
     </form>
     <div id="uploadMessage" class="hidden">Currículum subido exitosamente.</div>
 </div>

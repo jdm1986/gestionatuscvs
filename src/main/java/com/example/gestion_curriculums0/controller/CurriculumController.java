@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;  // <-- IMPORTACIÓN AGREGADA AQUÍ
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -33,12 +32,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import javax.imageio.ImageIO;
-
-import com.itextpdf.text.Document;
-import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.Image;
 
 @RestController
 @RequestMapping("/curriculums")
@@ -59,7 +52,6 @@ public class CurriculumController {
 
     @Autowired
     private UploadLinkRepository uploadLinkRepository;
-
 
     @ApiOperation(value = "Ver una lista de curriculums disponibles", response = List.class)
     @GetMapping
@@ -121,7 +113,7 @@ public class CurriculumController {
     }
 
     @PostMapping("/upload")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public ResponseEntity<?> uploadCurriculum(@RequestParam("file") MultipartFile file,
                                               @RequestParam Long userId,
                                               @RequestParam String nombre,
@@ -163,7 +155,6 @@ public class CurriculumController {
 
         return ResponseEntity.ok(convertToDTO(curriculumService.saveCurriculum(curriculum)));
     }
-
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -242,38 +233,29 @@ public class CurriculumController {
                 .body(resource);
     }
 
-
     private CurriculumDTO convertToDTO(Curriculum curriculum) {
         return new CurriculumDTO(curriculum.getId(), curriculum.getNombre(), curriculum.getApellido(), curriculum.getPdfPath(),
                 curriculum.getResumenCv(), curriculum.getSexo(), curriculum.getTelefono(), curriculum.getEmail(), curriculum.getFechaInsercion());
     }
 
-    @PostMapping("/curriculums/generate-link")
+    @PostMapping("/generate-upload-link")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> generateUploadLink(Principal principal) {
-        String uploadId = UUID.randomUUID().toString(); // Generar un identificador único
-        String password = generateRandomPassword(); // Método que crea una contraseña aleatoria
+        String token = UUID.randomUUID().toString(); // Generar un token único
 
-        // Guardar `uploadId`, `password`, `userId`, y la fecha de expiración en la base de datos
         UploadLink uploadLink = new UploadLink();
-        uploadLink.setUploadId(uploadId);
-        uploadLink.setPassword(password);
-        uploadLink.setUserId(principal.getName()); // o `principal.getUserId()`, dependiendo de cómo lo tengas implementado
-        uploadLink.setExpiryDate(LocalDateTime.now().plusHours(24)); // Expira en 24 horas
+        uploadLink.setToken(token);
+        uploadLink.setExpirationDate(LocalDateTime.now().plusDays(5)); // Caducidad de 5 días
 
-        uploadLinkRepository.save(uploadLink); // Guardar en la base de datos
+        uploadLinkRepository.save(uploadLink);
 
-        String link = "https://gestionatuscv.es/upload_with_password.html?uploadId=" + uploadId;
-        return ResponseEntity.ok(link + "\nPassword: " + password);
+        String link = "https://gestionatuscv.es/upload.html?token=" + token;
+        return ResponseEntity.ok(link);
     }
 
-    private String generateRandomPassword() {
-        return UUID.randomUUID().toString().replace("-", "").substring(0, 8); // Ejemplo: 8 caracteres
-    }
-
-    @PostMapping("/upload_with_password")
-    public ResponseEntity<?> uploadCurriculumWithPassword(
-            @RequestParam("uploadId") String uploadId,
-            @RequestParam("password") String password,
+    @PostMapping("/upload_with_token")
+    public ResponseEntity<?> uploadCurriculumWithToken(
+            @RequestParam("token") String token,
             @RequestParam("file") MultipartFile file,
             @RequestParam String nombre,
             @RequestParam String apellido,
@@ -286,15 +268,11 @@ public class CurriculumController {
             return ResponseEntity.badRequest().body("Solo se permiten archivos PDF.");
         }
 
-        // Validar el `uploadId` y la `password`
-        UploadLink uploadLink = uploadLinkRepository.findByUploadId(uploadId)
-                .orElseThrow(() -> new RuntimeException("Identificador de subida no válido"));
+        // Validar el token
+        UploadLink uploadLink = uploadLinkRepository.findByToken(token)
+                .orElseThrow(() -> new RuntimeException("Enlace de subida no válido o ha expirado"));
 
-        if (!uploadLink.getPassword().equals(password)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Contraseña incorrecta");
-        }
-
-        if (uploadLink.getExpiryDate().isBefore(LocalDateTime.now())) {
+        if (uploadLink.getExpirationDate().isBefore(LocalDateTime.now())) {
             return ResponseEntity.status(HttpStatus.GONE).body("El enlace ha expirado");
         }
 
@@ -313,10 +291,6 @@ public class CurriculumController {
             throw new RuntimeException("Error procesando el archivo", e);
         }
 
-        // Obtener el usuario a partir del `userId` en el `UploadLink`
-        Usuario usuario = usuarioRepository.findByNombreUsuario(uploadLink.getUserId())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
         Curriculum curriculum = new Curriculum();
         curriculum.setNombre(nombre);
         curriculum.setApellido(apellido);
@@ -325,15 +299,17 @@ public class CurriculumController {
         curriculum.setSexo(sexo);
         curriculum.setTelefono(telefono);
         curriculum.setEmail(email);
-        curriculum.setUsuario(usuario);
 
-        // Guardar el currículum en la base de datos
         curriculumService.saveCurriculum(curriculum);
 
-        // Eliminar el `UploadLink` ya que ha sido utilizado
-        uploadLinkRepository.delete(uploadLink);
+        // Actualizar el contador de subidas
+        uploadLink.setUploadCount(uploadLink.getUploadCount() + 1);
+        uploadLinkRepository.save(uploadLink);
+
+        if (uploadLink.getUploadCount() >= uploadLink.getUploadLimit()) {
+            uploadLinkRepository.delete(uploadLink); // Eliminar el link si ha alcanzado su límite
+        }
 
         return ResponseEntity.ok("Currículum subido exitosamente");
     }
-
 }

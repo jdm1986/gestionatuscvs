@@ -1,9 +1,6 @@
 package com.example.gestion_curriculums0.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -13,13 +10,19 @@ public class UploadLink {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String uploadId;
-    private String password;
-    private String userId;
-    private LocalDateTime expiryDate;
+    @Column(nullable = false, unique = true)
+    private String token; // ID único del enlace
 
-    // Getters y setters...
+    @Column(nullable = false)
+    private LocalDateTime expirationDate; // Fecha de caducidad
 
+    @Column(nullable = false)
+    private int uploadLimit = 5; // Límite de subidas por IP
+
+    @Column(nullable = false)
+    private int uploadCount = 0; // Número de subidas actuales
+
+    // Getters y Setters
     public Long getId() {
         return id;
     }
@@ -28,35 +31,35 @@ public class UploadLink {
         this.id = id;
     }
 
-    public String getUploadId() {
-        return uploadId;
+    public String getToken() {
+        return token;
     }
 
-    public void setUploadId(String uploadId) {
-        this.uploadId = uploadId;
+    public void setToken(String token) {
+        this.token = token;
     }
 
-    public String getPassword() {
-        return password;
+    public LocalDateTime getExpirationDate() {
+        return expirationDate;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setExpirationDate(LocalDateTime expirationDate) {
+        this.expirationDate = expirationDate;
     }
 
-    public String getUserId() {
-        return userId;
+    public int getUploadLimit() {
+        return uploadLimit;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUploadLimit(int uploadLimit) {
+        this.uploadLimit = uploadLimit;
     }
 
-    public LocalDateTime getExpiryDate() {
-        return expiryDate;
+    public int getUploadCount() {
+        return uploadCount;
     }
 
-    public void setExpiryDate(LocalDateTime expiryDate) {
-        this.expiryDate = expiryDate;
+    public void setUploadCount(int uploadCount) {
+        this.uploadCount = uploadCount;
     }
 }

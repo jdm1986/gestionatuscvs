@@ -3,30 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subir Currículum</title>
+    <title>Subir Currículum (Usuario)</title>
     <link rel="stylesheet" href="styles-common.css">
-
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:url" content="https://gestionatuscv.es">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Subir Currículum">
-    <meta property="og:description" content="Sube tu currículum de manera fácil y rápida.">
-    <meta property="og:image" content="https://opengraph.b-cdn.net/production/images/015ed697-6e19-4204-b258-aef38bb49009.png?token=EZkEiXiwUoIgSeffPcVmgxTGCm_zmJ5QURWqrccvebk&height=344&width=486&expires=33260663957">
-
-    <!-- Twitter Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta property="twitter:domain" content="gestionatuscv.es">
-    <meta property="twitter:url" content="https://gestionatuscv.es">
-    <meta name="twitter:title" content="Subir Currículum">
-    <meta name="twitter:description" content="Sube tu currículum de manera fácil y rápida.">
-    <meta name="twitter:image" content="https://opengraph.b-cdn.net/production/images/015ed697-6e19-4204-b258-aef38bb49009.png?token=EZkEiXiwUoIgSeffPcVmgxTGCm_zmJ5QURWqrccvebk&height=344&width=486&expires=33260663957">
 </head>
 <body>
 <header>
     <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
 </header>
 <div class="container">
-    <h1>Subir Currículum</h1>
+    <h1>Subir Currículum (Usuario)</h1>
     <form id="uploadForm">
         <input type="file" id="pdfFile" accept="application/pdf" required>
         <!-- Validación: solo letras y espacios en nombre y apellido -->
@@ -41,16 +26,29 @@
         <!-- Validación: solo números y el signo + al inicio en el teléfono -->
         <input type="text" id="telefono" placeholder="Teléfono" required pattern="^\+?[0-9]{9,15}$" title="El teléfono solo puede contener números y opcionalmente el signo + al inicio.">
         <input type="email" id="email" placeholder="Email" required>
+        <!-- Campo oculto para el userId -->
+        <input type="hidden" id="userId" value="">
         <button type="submit">Subir</button>
+        <button id="volverBtn">Volver</button>
     </form>
     <div id="uploadMessage" class="hidden">Currículum subido exitosamente.</div>
-    <div id="errorMessage" class="hidden">Error: Enlace de subida no válido o ha expirado.</div>
-</div>
+    <div id="errorMessage" class="hidden">Error al subir el currículum.</div>
+    </div>
 <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token');
-
     document.addEventListener("DOMContentLoaded", function() {
+        // Simulando que el userId se obtiene al cargar la página (por ejemplo, desde localStorage)
+        const userId = localStorage.getItem('userId'); // Aquí debes obtener el userId de donde lo estés almacenando
+        if (!userId) {
+            alert('Error: userId no encontrado.');
+            return;
+        }
+        document.getElementById('userId').value = userId;
+
+        // Funcionalidad para el botón "Volver"
+        document.getElementById('volverBtn').addEventListener('click', function() {
+            window.location.href = '/dashboard.html';
+        });
+
         // Añadir confirmación al hacer clic en el logo
         document.getElementById('logo').addEventListener('click', function(event) {
             event.preventDefault();
@@ -69,40 +67,42 @@
             const telefono = document.getElementById('telefono').value;
             const email = document.getElementById('email').value;
 
-            // Validación adicional para asegurarse de que el archivo es un PDF
-            if (!pdfFile || pdfFile.type !== "application/pdf") {
-                alert('Por favor, sube un archivo PDF válido.');
-                return;
-            }
-
             const formData = new FormData();
-            formData.append('token', token);  // Añadimos el token al formData
             formData.append('file', pdfFile);
             formData.append('nombre', nombre);
             formData.append('apellido', apellido);
             formData.append('sexo', sexo);
             formData.append('telefono', telefono);
             formData.append('email', email);
+            formData.append('userId', userId); // Enviamos el userId
 
-            fetch(`/curriculums/upload_with_token`, {  // Cambiamos la URL al endpoint correcto
+            fetch('/curriculums/upload', {  // Endpoint para la subida manual de currículums
                 method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`  // Autenticación con el token del usuario
+                },
                 body: formData
             })
-            .then(response => response.text())
-            .then(message => {
-                if (message.includes("Enlace de subida no válido o ha expirado")) {
-                    document.getElementById('errorMessage').classList.remove('hidden');
-                } else {
-                    document.getElementById('uploadMessage').textContent = message;
-                    document.getElementById('uploadMessage').classList.remove('hidden');
-                    // Redireccionar al index después de 2 segundos
-                    setTimeout(function() {
-                        window.location.href = '/index.html';
-                    }, 2000);
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al subir el currículum.');
                 }
+                return response.json();  // Asumiendo que el servidor devuelve un JSON con la información
+            })
+            .then(data => {
+                console.log(data);  // Para ver qué se está devolviendo desde el servidor
+                document.getElementById('uploadMessage').classList.remove('hidden');
+                document.getElementById('errorMessage').classList.add('hidden');
+
+                // Redireccionar al dashboard después de 2 segundos
+                setTimeout(function() {
+                    window.location.href = '/dashboard.html';
+                }, 2000);
             })
             .catch(error => {
-                alert('Error al subir el currículum.');
+                console.error(error);  // Imprime el error en la consola para depuración
+                document.getElementById('uploadMessage').classList.add('hidden');
+                document.getElementById('errorMessage').classList.remove('hidden');
             });
         });
     });

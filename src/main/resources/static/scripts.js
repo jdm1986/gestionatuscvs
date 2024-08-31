@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (generateLinkButton) {
         generateLinkButton.addEventListener('click', function() {
-            fetch(`${baseUrl}/curriculums/generate-link`, {
+            fetch(`${baseUrl}/curriculums/generate-upload-link`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+
 
     async function fetchCurriculums() {
         const response = await fetch(`${baseUrl}/curriculums/usuario`, {

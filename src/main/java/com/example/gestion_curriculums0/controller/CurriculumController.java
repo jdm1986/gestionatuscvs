@@ -9,6 +9,7 @@ import com.example.gestion_curriculums0.repository.UsuarioRepository;
 import com.example.gestion_curriculums0.service.CurriculumService;
 import com.example.gestion_curriculums0.service.PdfService;
 import com.example.gestion_curriculums0.service.OcrService;
+import com.example.gestion_curriculums0.service.EmailService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
@@ -52,6 +53,9 @@ public class CurriculumController {
 
     @Autowired
     private UploadLinkRepository uploadLinkRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     @ApiOperation(value = "Ver una lista de curriculums disponibles", response = List.class)
     @GetMapping
@@ -307,6 +311,14 @@ public class CurriculumController {
         curriculum.setUsuario(uploadLink.getUsuario()); // Asociar el CV al usuario del enlace
 
         curriculumService.saveCurriculum(curriculum);
+
+        // Enviar correo de confirmación al candidato
+        String subject = "Confirmación de Envío de C.V.";
+        String message = "Estimado/a " + nombre + ",\n\n" +
+                "Su C.V. ha sido enviado correctamente a " + uploadLink.getUsuario().getNombreUsuario() + ".\n\n" +
+                "Gracias por su tiempo.\n\n" +
+                "Saludos cordiales,\nEl equipo de GestionaTusCVs";
+        emailService.sendSimpleEmail(email, subject, message);
 
         // Actualizar el contador de subidas
         uploadLink.setUploadCount(uploadLink.getUploadCount() + 1);

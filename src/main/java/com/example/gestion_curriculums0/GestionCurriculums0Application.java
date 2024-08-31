@@ -40,10 +40,7 @@ public class GestionCurriculums0Application {
         }
     }
 }
-
-
-
-//prueba
+//reseteo upload link
 
 /* Iniciar el servidor web:
 

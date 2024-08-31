@@ -161,12 +161,15 @@ thead th {
         display: flex; /* Usar flexbox para la disposición de botones de acción */
         justify-content: space-around; /* Distribuir los botones uniformemente */
         gap: 10px; /* Espacio entre los botones */
+        flex-wrap: wrap; /* Permitir que los botones se ajusten si es necesario */
     }
 
     .action-buttons button {
-        flex: 1; /* Los botones ocupan el mismo espacio */
+        flex: 1 1 auto; /* Los botones ocuparán el mismo espacio y se ajustarán si es necesario */
+        min-width: 80px; /* Asegura un tamaño mínimo para los botones */
+        max-width: 100px; /* Evita que los botones crezcan demasiado */
         padding: 8px 12px; /* Relleno interior de los botones */
-        font-size: 14px; /* Tamaño de la fuente de los botones */
+        font-size: 14px; /* Tamaño de la fuente del botón */
     }
 }
 

@@ -90,7 +90,6 @@ header {
     z-index: 1000; /* Asegura que esté encima de otros elementos */
 }
 
-
 header .logo {
     height: 100px; /* Ajusta la altura según lo necesario */
     width: auto;
@@ -100,13 +99,18 @@ header .logo {
     display: block; /* Hace que el logo se trate como un bloque */
 }
 
-.footer-email {
-    color: white; /* Cambia el color del enlace a blanco */
-}
-
 /* Estilos de botones y acciones */
 .buttons, .actions, .search {
     text-align: center; /* Centrar el contenido dentro de estas clases */
+}
+
+.actions {
+    display: flex;
+    justify-content: center; /* Centra los botones horizontalmente */
+    align-items: center; /* Alinea los botones verticalmente */
+    gap: 10px; /* Espacio entre los botones */
+    margin-bottom: 20px; /* Espacio inferior entre acciones */
+    flex-wrap: wrap; /* Permite que los botones se ajusten en varias líneas si es necesario */
 }
 
 /* Estilo para formularios */
@@ -120,14 +124,6 @@ form input, form select, form button {
     width: 100%; /* Ancho completo */
     max-width: 400px; /* Ancho máximo */
     margin-bottom: 10px; /* Espacio inferior entre los elementos del formulario */
-}
-
-/* Estilo para el contenedor de acciones */
-.actions {
-    display: flex; /* Alineación horizontal de botones */
-    justify-content: center; /* Centrar los botones */
-    gap: 10px; /* Espacio entre los botones */
-    margin-bottom: 20px; /* Espacio inferior entre acciones */
 }
 
 /* Estilo para la sección de búsqueda */
@@ -203,12 +199,15 @@ tbody td {
     display: flex; /* Usar flexbox para los botones de acción */
     justify-content: space-between; /* Distribuir los botones de manera equitativa */
     gap: 10px; /* Espacio entre los botones */
+    flex-wrap: wrap; /* Permitir que los botones se ajusten en varias líneas si es necesario */
 }
 
 .action-buttons button {
-    flex: 1; /* Los botones ocupan el mismo espacio */
-    min-width: 80px; /* Tamaño mínimo de los botones */
-    padding: 10px; /* Relleno interior de los botones */
+    flex: 1 1 auto; /* Los botones ocuparán el mismo espacio y se ajustarán si es necesario */
+    min-width: 80px; /* Asegura un tamaño mínimo para los botones */
+    max-width: 100px; /* Evita que los botones crezcan demasiado */
+    padding: 8px 12px; /* Relleno interior de los botones */
+    font-size: 14px; /* Tamaño de la fuente del botón */
 }
 
 /* Estilos adicionales para pantallas pequeñas */

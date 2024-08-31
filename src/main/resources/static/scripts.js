@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (logo) {
         logo.addEventListener('click', function() {
             if (token) {
-                const confirmLogout = confirm("Se va a cerrar la sesión, ¿estás seguro?");
+                const confrmLogout = confirm("Se va a cerrar la sesión, ¿estás seguro?");
                 if (confirmLogout) {
                     localStorage.removeItem('token');
                     localStorage.removeItem('username');

@@ -241,11 +241,15 @@ public class CurriculumController {
     @PostMapping("/generate-upload-link")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> generateUploadLink(Principal principal) {
+        Usuario usuario = usuarioRepository.findByNombreUsuario(principal.getName())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
         String token = UUID.randomUUID().toString(); // Generar un token único
 
         UploadLink uploadLink = new UploadLink();
         uploadLink.setToken(token);
         uploadLink.setExpirationDate(LocalDateTime.now().plusDays(5)); // Caducidad de 5 días
+        uploadLink.setUsuario(usuario); // Asignar el usuario que genera el enlace
 
         uploadLinkRepository.save(uploadLink);
 
@@ -291,6 +295,7 @@ public class CurriculumController {
             throw new RuntimeException("Error procesando el archivo", e);
         }
 
+        // Crear y guardar el curriculum asociado al usuario del enlace
         Curriculum curriculum = new Curriculum();
         curriculum.setNombre(nombre);
         curriculum.setApellido(apellido);
@@ -299,6 +304,7 @@ public class CurriculumController {
         curriculum.setSexo(sexo);
         curriculum.setTelefono(telefono);
         curriculum.setEmail(email);
+        curriculum.setUsuario(uploadLink.getUsuario()); // Asociar el CV al usuario del enlace
 
         curriculumService.saveCurriculum(curriculum);
 

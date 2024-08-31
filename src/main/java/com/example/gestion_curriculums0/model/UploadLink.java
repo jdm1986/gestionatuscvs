@@ -22,6 +22,10 @@ public class UploadLink {
     @Column(nullable = false)
     private int uploadCount = 0; // Número de subidas actuales
 
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario; // Referencia al usuario que generó el enlace
+
     // Getters y Setters
     public Long getId() {
         return id;
@@ -61,5 +65,13 @@ public class UploadLink {
 
     public void setUploadCount(int uploadCount) {
         this.uploadCount = uploadCount;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 }

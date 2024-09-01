@@ -146,38 +146,34 @@ thead th {
     }
     /* Ajuste de ancho para la columna Sexo */
     th:nth-child(4), td:nth-child(4) {
-        width: 80px; /* Ancho específico para la columna Sexo */
+        width: 60px; /* Ancho específico para la columna Sexo */
     }
     /* Ajuste de ancho para la columna Teléfono */
     th:nth-child(5), td:nth-child(5) {
-        width: 80px; /* Ancho específico para la columna Teléfono */
+        width: 100px; /* Ancho específico para la columna Teléfono */
     }
     /* Ajuste de ancho para la columna Acciones */
     th:nth-child(6), td:nth-child(6) {
-        width: 180px; /* Ancho específico para la columna Acciones */
+        width: 200px; /* Ancho específico para la columna Acciones */
     }
 
     .action-buttons {
         display: flex; /* Usar flexbox para la disposición de botones de acción */
         justify-content: space-around; /* Distribuir los botones uniformemente */
         gap: 10px; /* Espacio entre los botones */
-        flex-wrap: wrap; /* Permitir que los botones se ajusten si es necesario */
     }
 
     .action-buttons button {
-        flex: 1 1 auto; /* Los botones ocuparán el mismo espacio y se ajustarán si es necesario */
-        min-width: 80px; /* Asegura un tamaño mínimo para los botones */
-        max-width: 100px; /* Evita que los botones crezcan demasiado */
+        flex: 1; /* Los botones ocupan el mismo espacio */
         padding: 8px 12px; /* Relleno interior de los botones */
-        font-size: 14px; /* Tamaño de la fuente del botón */
+        font-size: 14px; /* Tamaño de la fuente de los botones */
     }
 }
 
-/* Ajustes responsivos para pantallas pequeñas */
-@media (max-width: 767px) {
-    /* Asegurarse de que los botones se apilen en dispositivos móviles */
+/* Ajustes responsivos para pantallas pequeñas y tabletas */
+@media (max-width: 1024px) {
     .action-buttons {
-        justify-content: center;
+        justify-content: flex-end; /* Alinear los botones a la derecha */
         flex-direction: column; /* Apilar botones verticalmente */
         gap: 5px; /* Espacio entre los botones */
         width: 48%; /* Ancho de los botones para asegurarse de que ambos ocupen el espacio disponible */
@@ -234,7 +230,7 @@ thead th {
     }
 
     tbody td .action-buttons {
-        justify-content: center; /* Centrar los botones de acción */
+        justify-content: flex-end; /* Alinear los botones a la derecha */
     }
 
     tbody td button {
@@ -270,7 +266,7 @@ thead th {
     }
     .action-buttons {
         display: flex; /* Usar flexbox para la disposición de botones de acción */
-        justify-content: left; /* Alinear los botones a la izquierda */
+        justify-content: flex-end; /* Alinear los botones a la derecha */
         flex-wrap: wrap; /* Permitir que los botones se ajusten a varias líneas */
     }
 }

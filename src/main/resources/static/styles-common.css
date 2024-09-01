@@ -1,5 +1,3 @@
-/* styles-common.css */
-
 /* Estilo general del cuerpo */
 body {
     font-family: Arial, sans-serif;
@@ -213,8 +211,47 @@ tbody td {
 
 /* Estilos para dispositivos móviles */
 @media (max-width: 767px) {
+ /* Estilo para el contenedor del enlace generado */
+    .link-container {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    .link-container.show {
+        display: flex;
+    }
+
+    .generated-link {
+        background-color: #444444;
+        color: white;
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        word-wrap: break-word;
+        text-align: center;
+        max-width: 100%;
+    }
+
+    .copy-button {
+        background-color: #7C3E8A;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 4px;
+        font-size: 14px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease;
+    }
+
+    .copy-button:hover {
+        background-color: #E573FE;
+    }
     .container {
-        width: 95%;
+        width: auto;
         padding: 20px;
     }
 

@@ -40,25 +40,39 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const generateLinkButton = document.getElementById('generateLinkButton');
     const generatedLink = document.getElementById('generatedLink');
+    const copyButton = document.getElementById('copyButton');
+    const linkContainer = document.querySelector(".link-container");
 
     if (generateLinkButton) {
-        generateLinkButton.addEventListener('click', function() {
-            fetch(`${baseUrl}/curriculums/generate-upload-link`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-            .then(response => response.text())
-            .then(link => {
-                generatedLink.textContent = `Enlace generado: ${link}`;
-                generatedLink.classList.remove('hidden');
-            })
-            .catch(error => {
-                alert('Error al generar el enlace.');
+            generateLinkButton.addEventListener('click', function() {
+                fetch(`${baseUrl}/curriculums/generate-upload-link`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                .then(response => response.text())
+                .then(link => {
+                    generatedLink.textContent = `Enlace generado: ${link}`;
+                    generatedLink.classList.remove('hidden');
+                    linkContainer.classList.add('show');
+                    copyButton.classList.add('show'); // Muestra el botón "Copiar enlace"
+                })
+                .catch(error => {
+                    alert('Error al generar el enlace.');
+                });
             });
-        });
-    }
+
+            // Manejo del botón de copiar enlace
+            copyButton.addEventListener('click', function() {
+                navigator.clipboard.writeText(generatedLink.textContent).then(function() {
+                    alert("Enlace copiado al portapapeles");
+                }, function() {
+                    alert("No se pudo copiar el enlace");
+                });
+            });
+        }
+
 
 
     async function fetchCurriculums() {

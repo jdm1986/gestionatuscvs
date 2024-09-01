@@ -1,5 +1,3 @@
-/* styles-dashboard.css */
-
 /* Estilo general del cuerpo */
 body {
     font-family: Arial, sans-serif;
@@ -104,6 +102,51 @@ input:focus, select:focus {
     gap: 10px;
 }
 
+/* Estilo del contenedor de enlace generado */
+.link-container {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.link-container.show {
+    display: flex;
+}
+
+.generated-link {
+    background-color: #444444;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    word-wrap: break-word;
+    text-align: center;
+    max-width: 100%;
+}
+
+.copy-button {
+    display: none;
+    background-color: #7C3E8A;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.copy-button.show {
+    display: inline-block;
+}
+
+.copy-button:hover {
+    background-color: #E573FE;
+}
+
 /* Estilos de la tabla */
 .results {
     max-height: 70vh;
@@ -132,31 +175,69 @@ thead th {
     text-align: left;
 }
 
-/* Vista escritorio */
-@media (min-width: 768px) {
-    th:nth-child(1), td:nth-child(1) {
-        width: 150px; /* Columna Nombre */
-    }
-    th:nth-child(2), td:nth-child(2) {
-        width: 180px; /* Columna Apellidos */
-    }
-    th:nth-child(3), td:nth-child(3) {
-        width: 10%; /* Columna Fecha */
-    }
-    th:nth-child(4), td:nth-child(4) {
-        width: 10%; /* Columna Sexo */
-    }
-    th:nth-child(5), td:nth-child(5) {
-        width: 15%; /* Columna Teléfono */
-    }
-    th:nth-child(6), td:nth-child(6) {
-        width: 25%; /* Columna Acciones */
+/* Icon Buttons Styles */
+.icon-button {
+    background-color: #E573FE;
+    color: white;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-right: 5px;
+}
+
+.icon-button i {
+    font-size: 18px;
+}
+
+.icon-button:hover {
+    background-color: #7C3E8A;
+    transform: scale(1.1);
+}
+
+.icon-button:active {
+    transform: scale(0.95);
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+/* Adjustments for Tablet View */
+@media (min-width: 767px) and (max-width: 1024px) {
+    .action-buttons {
+        justify-content: center;
+        gap: 10px;
     }
 
+    .icon-button {
+        width: 35px;
+        height: 35px;
+        font-size: 14px;
+    }
+}
+
+/* Adjustments for Mobile View */
+@media (max-width: 767px) {
     .action-buttons {
-        display: flex;
-        justify-content: space-between;
-        gap: 5px; /* Reducir espacio entre botones */
+        justify-content: flex-end;
+        width: 100%;
+    }
+
+    .icon-button {
+        width: 30px;
+        height: 30px;
+        font-size: 12px;
     }
 }
 
@@ -171,7 +252,7 @@ thead th {
     }
 
     .container {
-        width: 95%;
+        width: auto;
         padding: 20px;
     }
 
@@ -257,12 +338,12 @@ thead th {
         width: 15%;
     }
     th:nth-child(6), td:nth-child(6) {
-        width: 15%;
         text-align: center; /* Centrar el texto de la columna Acciones */
     }
     .action-buttons {
         display: flex;
         justify-content: flex-end; /* Alinear los botones a la derecha */
+        gap: 10px;
         flex-wrap: wrap;
     }
 }

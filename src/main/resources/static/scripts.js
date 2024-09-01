@@ -6,11 +6,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const token = localStorage.getItem('token');
     const errorMessage = document.getElementById('errorMessage');
     const logo = document.getElementById('logo');
+    const expirationTimeInSeconds = 5 * 24 * 60 * 60; // 5 días en segundos
 
     if (logo) {
         logo.addEventListener('click', function() {
             if (token) {
-                const confrmLogout = confirm("Se va a cerrar la sesión, ¿estás seguro?");
+                const confirmLogout = confirm("Se va a cerrar la sesión, ¿estás seguro?");
                 if (confirmLogout) {
                     localStorage.removeItem('token');
                     localStorage.removeItem('username');
@@ -43,37 +44,79 @@ document.addEventListener('DOMContentLoaded', function() {
     const copyButton = document.getElementById('copyButton');
     const linkContainer = document.querySelector(".link-container");
 
-    if (generateLinkButton) {
-            generateLinkButton.addEventListener('click', function() {
-                fetch(`${baseUrl}/curriculums/generate-upload-link`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                })
-                .then(response => response.text())
-                .then(link => {
-                    generatedLink.textContent = `Enlace generado: ${link}`;
-                    generatedLink.classList.remove('hidden');
-                    linkContainer.classList.add('show');
-                    copyButton.classList.add('show'); // Muestra el botón "Copiar enlace"
-                })
-                .catch(error => {
-                    alert('Error al generar el enlace.');
-                });
-            });
+    function formatTimeDifference(timeDifference) {
+        const days = Math.floor(timeDifference / (24 * 60 * 60));
+        const hours = Math.floor((timeDifference % (24 * 60 * 60)) / (60 * 60));
+        const minutes = Math.floor((timeDifference % (60 * 60)) / 60);
+        return `${days} días, ${hours} horas, y ${minutes} minutos`;
+    }
 
-            // Manejo del botón de copiar enlace
-            copyButton.addEventListener('click', function() {
-                navigator.clipboard.writeText(generatedLink.textContent).then(function() {
-                    alert("Enlace copiado al portapapeles");
-                }, function() {
-                    alert("No se pudo copiar el enlace");
-                });
-            });
+    function checkExistingLink() {
+        const existingLink = localStorage.getItem("generatedLink");
+        const linkExpiration = localStorage.getItem("linkExpiration");
+
+        if (existingLink && linkExpiration) {
+            const currentTime = Math.floor(Date.now() / 1000);
+            const timeDifference = linkExpiration - currentTime;
+
+            if (timeDifference > 0) {
+                generatedLink.textContent = `${existingLink}`;
+                generatedLink.classList.remove('hidden');
+                linkContainer.classList.add('show');
+                copyButton.classList.add('show');
+
+                const timeRemaining = formatTimeDifference(timeDifference);
+                const warningMessage = `Ya tienes un enlace generado que caducará en ${timeRemaining}.`;
+                alert(warningMessage);
+                return true;
+            } else {
+                localStorage.removeItem("generatedLink");
+                localStorage.removeItem("linkExpiration");
+            }
         }
+        return false;
+    }
 
+    if (generateLinkButton) {
+        generateLinkButton.addEventListener('click', function() {
+            if (checkExistingLink()) {
+                return;
+            }
 
+            fetch(`${baseUrl}/curriculums/generate-upload-link`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => response.text())
+            .then(link => {
+                const currentTime = Math.floor(Date.now() / 1000);
+                const expirationTime = currentTime + expirationTimeInSeconds;
+
+                localStorage.setItem("generatedLink", link);
+                localStorage.setItem("linkExpiration", expirationTime);
+
+                generatedLink.textContent = `${link}`;
+                generatedLink.classList.remove('hidden');
+                linkContainer.classList.add('show');
+                copyButton.classList.add('show');
+            })
+            .catch(error => {
+                alert('Error al generar el enlace.');
+            });
+        });
+
+        copyButton.addEventListener('click', function() {
+            navigator.clipboard.writeText(generatedLink.textContent).then(function() {
+                alert("Enlace copiado al portapapeles");
+            }, function() {
+                alert("No se pudo copiar el enlace");
+            });
+        });
+
+        checkExistingLink();
+    }
 
     async function fetchCurriculums() {
         const response = await fetch(`${baseUrl}/curriculums/usuario`, {
@@ -101,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     `;
 
                     const actionsTd = document.createElement('td');
-                    actionsTd.setAttribute('data-label', '');
+                    actionsTd.setAttribute('data-label', 'Acciones');
                     actionsTd.classList.add('action-buttons');
 
                     const viewButton = document.createElement('button');
@@ -170,7 +213,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         notesList.innerHTML = ''; // Clear previous notes
 
-        // Fetch existing notes
         const response = await fetch(`${baseUrl}/curriculums/${curriculumId}/notas`, {
             method: 'GET',
             headers: {
@@ -180,7 +222,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (response.ok) {
             const notes = await response.json();
-
             notes.sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion));
 
             notes.forEach(note => {
@@ -260,16 +301,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
 
                 if (response.ok) {
-                        const logs = await response.json();
-                        let formattedLogs = logs.map(log =>
-                            `Usuario: ${log.username} | Fecha: ${new Date(log.timestamp).toLocaleString()}`
-                        ).join('\n');
+                    const logs = await response.json();
+                    let formattedLogs = logs.map(log =>
+                        `Usuario: ${log.username} | Fecha: ${new Date(log.timestamp).toLocaleString()}`
+                    ).join('\n');
 
-                        alert(formattedLogs);
-                    } else {
-                        alert('Error al cargar los registros');
-                    }
-                });
+                    alert(formattedLogs);
+                } else {
+                    alert('Error al cargar los registros');
+                }
+            });
 
             const container = document.querySelector('.container');
             container.insertBefore(adminPanel, container.firstChild);
@@ -435,34 +476,34 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         const formData = new FormData();
-            formData.append('uploadId', uploadId);
-            formData.append('password', password);
-            formData.append('file', pdfFile);
-            formData.append('nombre', document.getElementById('nombre').value);
-            formData.append('apellido', document.getElementById('apellido').value);
-            formData.append('sexo', document.getElementById('sexo').value);
-            formData.append('telefono', document.getElementById('telefono').value);
-            formData.append('email', document.getElementById('email').value);
+        formData.append('uploadId', uploadId);
+        formData.append('password', password);
+        formData.append('file', pdfFile);
+        formData.append('nombre', document.getElementById('nombre').value);
+        formData.append('apellido', document.getElementById('apellido').value);
+        formData.append('sexo', document.getElementById('sexo').value);
+        formData.append('telefono', document.getElementById('telefono').value);
+        formData.append('email', document.getElementById('email').value);
 
-            fetch('/curriculums/upload_with_password', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.text())
-            .then(text => {
-                if (text === "Currículum subido exitosamente") {
-                    document.getElementById('uploadMessage').classList.remove('hidden');
-                    setTimeout(() => {
-                        document.getElementById('uploadMessage').classList.add('hidden');
-                        location.href = 'success_page.html'; // Redirige a una página de éxito
-                    }, 3000);
-                } else {
-                    alert(text);
-                }
-            })
-            .catch(error => {
-                console.error('Error al subir el currículum:', error);
-                alert('Error al subir el currículum.');
+        fetch('/curriculums/upload_with_password', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(text => {
+            if (text === "Currículum subido exitosamente") {
+                document.getElementById('uploadMessage').classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('uploadMessage').classList.add('hidden');
+                    location.href = 'success_page.html'; // Redirige a una página de éxito
+                }, 3000);
+            } else {
+                alert(text);
+            }
+        })
+        .catch(error => {
+            console.error('Error al subir el currículum:', error);
+            alert('Error al subir el currículum.');
         });
     });
 

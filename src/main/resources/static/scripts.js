@@ -4,9 +4,12 @@ document.addEventListener('DOMContentLoaded', function() {
         : 'https://gestionatuscv.es';
 
     const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId'); // Obtener el ID del usuario actual
+    const linkKey = `generatedLink_${userId}`; // Clave específica para almacenar el enlace de este usuario
+    const expirationKey = `linkExpiration_${userId}`; // Clave para almacenar la fecha de caducidad
+    const expirationTimeInSeconds = 5 * 24 * 60 * 60; // 5 días en segundos
     const errorMessage = document.getElementById('errorMessage');
     const logo = document.getElementById('logo');
-    const expirationTimeInSeconds = 5 * 24 * 60 * 60; // 5 días en segundos
 
     if (logo) {
         logo.addEventListener('click', function() {
@@ -52,8 +55,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function checkExistingLink() {
-        const existingLink = localStorage.getItem("generatedLink");
-        const linkExpiration = localStorage.getItem("linkExpiration");
+        const existingLink = localStorage.getItem(linkKey);
+        const linkExpiration = localStorage.getItem(expirationKey);
 
         if (existingLink && linkExpiration) {
             const currentTime = Math.floor(Date.now() / 1000);
@@ -70,8 +73,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert(warningMessage);
                 return true;
             } else {
-                localStorage.removeItem("generatedLink");
-                localStorage.removeItem("linkExpiration");
+                localStorage.removeItem(linkKey);
+                localStorage.removeItem(expirationKey);
             }
         }
         return false;
@@ -94,8 +97,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 const currentTime = Math.floor(Date.now() / 1000);
                 const expirationTime = currentTime + expirationTimeInSeconds;
 
-                localStorage.setItem("generatedLink", link);
-                localStorage.setItem("linkExpiration", expirationTime);
+                localStorage.setItem(linkKey, link);
+                localStorage.setItem(expirationKey, expirationTime);
 
                 generatedLink.textContent = `${link}`;
                 generatedLink.classList.remove('hidden');
@@ -460,7 +463,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     const params = new URLSearchParams(window.location.search);
-    const userId = params.get('user');
+    const userIdParam = params.get('user');
 
     document.getElementById('uploadForm')?.addEventListener('submit', function(event) {
         event.preventDefault();

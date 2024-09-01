@@ -1,3 +1,459 @@
+/* Eliminar media queries para tablets */
+
+/* Estilo general del cuerpo */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1c1c1c;
+    color: #ffffff;
+    font-size: 15px;
+    transition: background-color 0.5s ease;
+    margin: 0;
+    padding: 0;
+}
+
+/* Contenedor principal */
+.container {
+    width: 80%;
+    margin: 0 auto;
+    padding-top: 20px;
+    background-color: #333333;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos generales para los botones */
+button {
+    background-color: #E573FE;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    cursor: pointer;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    font-size: 16px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Efectos de botón al pasar el cursor */
+button:hover {
+    background-color: #7C3E8A;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Efectos de botón al hacer clic */
+button:active {
+    transform: scale(0.95);
+    transition: transform 0.1s ease;
+}
+
+/* Estilos para inputs y selects */
+input, select {
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #444444;
+    color: white;
+    font-size: 16px;
+    box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Estilo de los campos de entrada al enfocarse */
+input:focus, select:focus {
+    outline: none;
+    border-color: #e573fe;
+    box-shadow: 0px 0px 8px rgba(108, 99, 255, 0.5);
+}
+
+/* Ocultar elementos */
+.hidden {
+    display: none;
+}
+
+/* Estilo para encabezados */
+h1, h2 {
+    text-align: center;
+    color: #ffffff;
+    margin: 15px 0;
+}
+
+/* Estilos del header */
+header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background-color: #1c1c1c;
+    padding: 10px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+/* Estilo para el logo */
+header .logo {
+    height: 100px;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    margin: 0 auto;
+    display: block;
+}
+
+/* Estilos de botones y acciones */
+.buttons, .actions, .search {
+    text-align: center;
+}
+
+/* Estilo para formularios */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+form input, form select, form button {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 10px;
+}
+
+/* Estilo para el contenedor de acciones */
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* Estilo para la sección de búsqueda */
+.search {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search input {
+    flex: 1;
+    margin-right: 10px;
+    background-color: #444444;
+    color: white;
+}
+
+/* Colocar los botones de búsqueda en una sola fila */
+.search-buttons {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%; /* Ajustado para que utilicen todo el ancho disponible */
+    margin-top: 10px;
+    gap: 10px;
+    flex-wrap: nowrap; /* Evita que los botones se apilen */
+}
+
+.search-buttons button {
+    flex: 1; /* Asegura que los botones crezcan para llenar el espacio disponible */
+    min-width: 120px; /* Puedes ajustar este valor según el tamaño mínimo deseado */
+}
+
+/* Estilo para la tabla de resultados */
+.results {
+    max-height: 70vh;
+    overflow-y: auto;
+    background-color: #333333;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+    color: white;
+}
+
+/* Apariencia de las tablas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #2c2c2c;
+    border-radius: 8px;
+    overflow: hidden;
+    table-layout: fixed;
+}
+
+thead th {
+    background-color: #e573fe;
+    color: white;
+    padding: 12px;
+    font-size: 16px;
+    text-align: left;
+}
+
+tbody tr {
+    border-bottom: 1px solid #444;
+}
+
+tbody tr:hover {
+    background-color: #3a3a3a;
+    transition: background-color 0.3s ease;
+}
+
+tbody td {
+    padding: 12px;
+    color: #ccc;
+    font-size: 14px;
+    text-align: left;
+}
+
+/* Estilos para los botones de acción en la tabla */
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.action-buttons button {
+    flex: 1;
+    min-width: 80px;
+    padding: 10px;
+}
+
+/* Estilos para dispositivos móviles */
+@media (max-width: 767px) {
+ /* Estilo para el contenedor del enlace generado */
+    .link-container {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    .link-container.show {
+        display: flex;
+    }
+
+    .generated-link {
+        background-color: #444444;
+        color: white;
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        word-wrap: break-word;
+        text-align: center;
+        max-width: 100%;
+    }
+
+    .copy-button {
+        background-color: #7C3E8A;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 4px;
+        font-size: 14px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease;
+    }
+
+    .copy-button:hover {
+        background-color: #E573FE;
+    }
+    .container {
+        width: auto;
+        padding: 20px;
+    }
+
+    .search-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    thead {
+        display: none; /* Ocultar el encabezado en dispositivos móviles */
+    }
+
+    tbody tr {
+        display: block;
+        border-bottom: 1px solid #333;
+        margin-bottom: 10px;
+    }
+
+    tbody td {
+        display: block;
+        text-align: right;
+        padding: 10px;
+        border-bottom: 1px solid #444;
+        position: relative;
+        padding-left: 50%;
+    }
+
+    tbody td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: bold;
+    }
+
+    tbody td .action-buttons {
+        justify-content: flex-end; /* Mover botones a la derecha */
+    }
+
+    tbody td button {
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+
+    tbody td button:hover {
+        background-color: #7C3E8A;
+    }
+
+    /* Ajustar tamaño del botón "Ver registros de usuarios" y centrar */
+    #viewLogsButton {
+        width: 80%;
+        margin: 10px auto;
+    }
+}
+
+/* Centrar la palabra "Acciones" */
+@media (max-width: 1024px) {
+    th:nth-child(6) {
+        text-align: center;
+    }
+}
+
+/* Estilos para el modal de notas */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+    padding-top: 60px;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#noteText {
+    width: 100%;
+    height: 150px;
+    margin-bottom: 10px;
+}
+
+#saveNoteButton {
+    background-color: #e573fe;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+#saveNoteButton:hover {
+    background-color: #7C3E8A;
+}
+
+.note {
+    background-color: #444;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.note span {
+    display: block;
+    color: #ccc;
+    font-size: 0.9em;
+    margin-top: 5px;
+    text-align: right;
+}
+
+/* Enlaces */
+.link-blanco {
+    color: white;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+/* Estilos para el pie de página */
+footer {
+    background-color: #222;
+    color: #bbb;
+    padding: 20px 0;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+footer a {
+    color: #e573fe;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+footer a:hover {
+    text-decoration: underline;
+    color: #7C3E8A;
+}
+
+/* Animación de aparición suave en la carga de la página */
+.fade-in {
+    opacity: 0;
+    animation: fadeInAnimation 1.5s forwards ease-in-out;
+}
+
+@keyframes fadeInAnimation {
+    to {
+        opacity: 1;
+    }
+}
+
 /* Estilo general del cuerpo */
 body {
     font-family: Arial, sans-serif;
@@ -213,21 +669,7 @@ thead th {
     gap: 5px;
 }
 
-/* Adjustments for Tablet View */
-@media (min-width: 767px) and (max-width: 1024px) {
-    .action-buttons {
-        justify-content: center;
-        gap: 10px;
-    }
-
-    .icon-button {
-        width: 35px;
-        height: 35px;
-        font-size: 14px;
-    }
-}
-
-/* Adjustments for Mobile View */
+/* Ajustments for Mobile View */
 @media (max-width: 767px) {
     .action-buttons {
         justify-content: flex-end;
@@ -317,34 +759,6 @@ thead th {
     #viewLogsButton {
         width: 80%;
         margin: 10px auto;
-    }
-}
-
-/* Vista intermedia para tablets */
-@media (min-width: 767px) and (max-width: 1024px) {
-    th:nth-child(1), td:nth-child(1) {
-        width: 20%;
-    }
-    th:nth-child(2), td:nth-child(2) {
-        width: 20%;
-    }
-    th:nth-child(3), td:nth-child(3) {
-        width: 15%;
-    }
-    th:nth-child(4), td:nth-child(4) {
-        width: 15%;
-    }
-    th:nth-child(5), td:nth-child(5) {
-        width: 15%;
-    }
-    th:nth-child(6), td:nth-child(6) {
-        text-align: center; /* Centrar el texto de la columna Acciones */
-    }
-    .action-buttons {
-        display: flex;
-        justify-content: flex-end; /* Alinear los botones a la derecha */
-        gap: 10px;
-        flex-wrap: wrap;
     }
 }
 

@@ -126,6 +126,7 @@ form input, form select, form button {
     justify-content: center;
     gap: 10px;
     margin-bottom: 20px;
+    flex-wrap: wrap; /* Permite que los botones se apilen si no hay espacio */
 }
 
 /* Estilo para la sección de búsqueda */
@@ -149,6 +150,8 @@ form input, form select, form button {
     width: 100%;
     max-width: 400px;
     margin-top: 10px;
+    flex-wrap: wrap; /* Permite que los botones se apilen si no hay espacio */
+    gap: 10px;
 }
 
 /* Estilo para la tabla de resultados */
@@ -201,6 +204,7 @@ tbody td {
     display: flex;
     justify-content: space-between;
     gap: 10px;
+    flex-wrap: wrap; /* Permite que los botones se apilen si no hay espacio */
 }
 
 .action-buttons button {

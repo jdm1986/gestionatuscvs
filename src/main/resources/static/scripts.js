@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     `;
 
                     const actionsTd = document.createElement('td');
-                    actionsTd.setAttribute('data-label', 'Acciones');
+                    actionsTd.setAttribute('data-label', '');
                     actionsTd.classList.add('action-buttons');
 
                     const viewButton = document.createElement('button');

@@ -1,202 +1,192 @@
+/* styles-dashboard.css */
+
 /* Estilo general del cuerpo */
 body {
-    font-family: Arial, sans-serif; /* Familia de fuentes */
-    background-color: #1c1c1c; /* Color de fondo del cuerpo */
-    color: #ffffff; /* Color del texto */
-    font-size: 16px; /* Tamaño de fuente base */
-    margin: 0; /* Elimina margen por defecto */
-    padding: 0; /* Elimina padding por defecto */
+    font-family: Arial, sans-serif;
+    background-color: #1c1c1c;
+    color: #ffffff;
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
 }
 
 /* Contenedor principal */
 .container {
-    width: 90%; /* Ancho del contenedor principal */
-    margin: 0 auto; /* Centrando el contenedor */
-    padding-top: 20px; /* Espacio en la parte superior */
-    background-color: #333333; /* Color de fondo del contenedor */
-    padding: 20px; /* Relleno interior del contenedor */
-    border-radius: 8px; /* Bordes redondeados */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    width: 90%;
+    margin: 0 auto;
+    padding-top: 20px;
+    background-color: #333333;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Estilos para encabezados */
 h1, h2 {
-    text-align: center; /* Centrar el texto de los encabezados */
-    color: #ffffff; /* Color del texto */
-    margin-bottom: 15px; /* Espacio inferior */
-    margin-top: 15px; /* Espacio inferior */
+    text-align: center;
+    color: #ffffff;
+    margin-bottom: 15px;
+    margin-top: 15px;
 }
 
 /* Estilos generales para los botones */
 button {
-    background-color: #E573FE; /* Color de fondo del botón */
-    color: white; /* Color del texto del botón */
-    border: none; /* Sin borde */
-    padding: 12px 24px; /* Relleno interior del botón */
-    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
-    margin-right: 10px; /* Espacio a la derecha del botón */
-    margin-bottom: 10px; /* Espacio inferior entre botones */
-    border-radius: 10px; /* Bordes redondeados */
-    font-size: 16px; /* Tamaño de la fuente del botón */
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave del botón */
-    transition: transform 0.3s ease, background-color 0.3s ease; /* Efecto de transición para la transformación y el color de fondo */
+    background-color: #E573FE;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    cursor: pointer;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    font-size: 16px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
 /* Efecto al pasar el cursor sobre el botón */
 button:hover {
-    background-color: #7C3E8A; /* Cambia el color de fondo */
-    transform: scale(1.05); /* Aumenta ligeramente el tamaño */
+    background-color: #7C3E8A;
+    transform: scale(1.05);
 }
 
 /* Efecto al hacer clic en el botón */
 button:active {
-    transform: scale(0.95); /* Reduce ligeramente el tamaño */
+    transform: scale(0.95);
 }
 
 /* Estilos para inputs y selects */
 input, select {
-    padding: 12px; /* Relleno interior */
-    margin-bottom: 10px; /* Espacio inferior */
-    border: 1px solid #ccc; /* Borde de los campos */
-    border-radius: 4px; /* Bordes redondeados */
-    background-color: #444444; /* Color de fondo */
-    color: white; /* Color del texto */
-    font-size: 16px; /* Tamaño de la fuente */
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #444444;
+    color: white;
+    font-size: 16px;
 }
 
 /* Estilos para los campos al enfocarse */
 input:focus, select:focus {
-    outline: none; /* Quita el borde exterior */
-    border-color: #e573fe; /* Cambia el color del borde */
+    outline: none;
+    border-color: #e573fe;
 }
 
 /* Estilos para las acciones */
 .actions, .search {
-    text-align: center; /* Centrar el contenido */
-    margin-bottom: 20px; /* Espacio inferior */
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 /* Estilo para la sección de búsqueda */
 .search {
-    display: flex; /* Usar flexbox para la disposición */
-    flex-direction: column; /* Disponer los elementos en columna */
-    align-items: center; /* Centrar los elementos */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* Estilo para el input dentro de la búsqueda */
 .search input {
-    flex: 1; /* Ocupa todo el espacio disponible */
-    margin-right: 10px; /* Espacio a la derecha del input */
-    background-color: #444444; /* Color de fondo del input */
-    color: white; /* Color del texto del input */
+    flex: 1;
+    margin-right: 10px;
+    background-color: #444444;
+    color: white;
 }
 
 /* Estilo para los botones de búsqueda */
 .search-buttons {
-    display: flex; /* Usar flexbox para la disposición de los botones */
-    justify-content: center; /* Centrar los botones */
-    width: 100%; /* Ancho completo */
-    max-width: 100px; /* Ancho máximo */
-    margin-top: 10px; /* Espacio superior */
-    flex-direction: row; /* Disponer los botones en fila */
-    gap: 10px; /* Espacio entre los botones */
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-width: 100px;
+    margin-top: 10px;
+    flex-direction: row;
+    gap: 10px;
 }
 
 /* Estilos de la tabla */
 .results {
-    max-height: 70vh; /* Altura máxima para la sección de resultados */
-    overflow-y: auto; /* Scroll vertical si es necesario */
-    background-color: #333333; /* Color de fondo */
-    padding: 15px; /* Relleno interior */
-    border-radius: 8px; /* Bordes redondeados */
-    margin-top: 20px; /* Espacio superior */
+    max-height: 70vh;
+    overflow-y: auto;
+    background-color: #333333;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
 }
 
 /* Estilos para la tabla */
 table {
-    width: 100%; /* Ancho completo de la tabla */
-    border-collapse: collapse; /* Colapsar bordes de la tabla */
-    background-color: #2c2c2c; /* Color de fondo de la tabla */
-    border-radius: 8px; /* Bordes redondeados */
-    overflow: hidden; /* Ocultar desbordamientos */
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #2c2c2c;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 /* Estilos para los encabezados de la tabla */
 thead th {
-    background-color: #e573fe; /* Color de fondo de los encabezados */
-    color: white; /* Color del texto de los encabezados */
-    padding: 12px; /* Relleno interior de los encabezados */
-    font-size: 16px; /* Tamaño de la fuente de los encabezados */
-    text-align: left; /* Alinear el texto a la izquierda */
+    background-color: #e573fe;
+    color: white;
+    padding: 12px;
+    font-size: 16px;
+    text-align: left;
 }
 
 /* Vista escritorio */
 @media (min-width: 768px) {
-    /* Ajuste de ancho para la columna Nombre */
     th:nth-child(1), td:nth-child(1) {
-        width: 150px; /* Ancho específico para la columna Nombre */
+        width: 150px; /* Columna Nombre */
     }
-    /* Ajuste de ancho para la columna Apellidos */
     th:nth-child(2), td:nth-child(2) {
-        width: 180px; /* Ancho específico para la columna Apellidos */
+        width: 180px; /* Columna Apellidos */
     }
-    /* Ajuste de ancho para la columna Fecha */
     th:nth-child(3), td:nth-child(3) {
-        width: 80px; /* Ancho específico para la columna Fecha */
+        width: 10%; /* Columna Fecha */
     }
-    /* Ajuste de ancho para la columna Sexo */
     th:nth-child(4), td:nth-child(4) {
-        width: 60px; /* Ancho específico para la columna Sexo */
+        width: 10%; /* Columna Sexo */
     }
-    /* Ajuste de ancho para la columna Teléfono */
     th:nth-child(5), td:nth-child(5) {
-        width: 100px; /* Ancho específico para la columna Teléfono */
+        width: 15%; /* Columna Teléfono */
     }
-    /* Ajuste de ancho para la columna Acciones */
     th:nth-child(6), td:nth-child(6) {
-        width: 200px; /* Ancho específico para la columna Acciones */
+        width: 25%; /* Columna Acciones */
     }
 
     .action-buttons {
-        display: flex; /* Usar flexbox para la disposición de botones de acción */
-        justify-content: space-around; /* Distribuir los botones uniformemente */
-        gap: 10px; /* Espacio entre los botones */
-    }
-
-    .action-buttons button {
-        flex: 1; /* Los botones ocupan el mismo espacio */
-        padding: 8px 12px; /* Relleno interior de los botones */
-        font-size: 14px; /* Tamaño de la fuente de los botones */
+        display: flex;
+        justify-content: space-between;
+        gap: 5px; /* Reducir espacio entre botones */
     }
 }
 
-/* Ajustes responsivos para pantallas pequeñas y tabletas */
-@media (max-width: 1024px) {
+/* Ajustes responsivos para pantallas pequeñas */
+@media (max-width: 767px) {
+    /* Asegurarse de que los botones se apilen en dispositivos móviles */
     .action-buttons {
-        justify-content: flex-end; /* Alinear los botones a la derecha */
-        flex-direction: column; /* Apilar botones verticalmente */
-        gap: 5px; /* Espacio entre los botones */
-        width: 48%; /* Ancho de los botones para asegurarse de que ambos ocupen el espacio disponible */
-        margin: 0; /* Elimina el margen inferior */
+        justify-content: flex-end;
+        gap: 5px;
+        width: 48%;
+        margin: 0;
     }
 
     .container {
-        width: 95%; /* Ancho del contenedor en pantallas pequeñas */
-        padding: 20px; /* Relleno interior del contenedor */
+        width: 95%;
+        padding: 20px;
     }
 
     .results {
-        max-height: 50vh; /* Altura máxima para la sección de resultados en pantallas pequeñas */
-        overflow-y: auto; /* Scroll vertical si es necesario */
-        background-color: #333333; /* Color de fondo */
-        padding: 10px; /* Relleno interior */
-        border-radius: 8px; /* Bordes redondeados */
-        margin-top: 20px; /* Espacio superior */
+        max-height: 50vh;
+        overflow-y: auto;
+        background-color: #333333;
+        padding: 10px;
+        border-radius: 8px;
+        margin-top: 20px;
     }
 
     table {
-        width: 100%; /* Ancho completo de la tabla */
-        border-collapse: collapse; /* Colapsar bordes de la tabla */
+        width: 100%;
+        border-collapse: collapse;
     }
 
     thead {
@@ -204,211 +194,215 @@ thead th {
     }
 
     tbody tr {
-        display: block; /* Hacer que las filas se comporten como bloques */
+        display: block;
         border-bottom: 1px solid #333;
         margin-bottom: 10px;
     }
 
     tbody td {
-        display: block; /* Hacer que las celdas se comporten como bloques */
-        text-align: right; /* Alinear texto a la derecha */
+        display: block;
+        text-align: right;
         padding: 10px;
         border-bottom: 1px solid #444;
         position: relative;
-        padding-left: 50%; /* Ajuste del padding para mostrar etiquetas */
+        padding-left: 50%;
     }
 
     tbody td::before {
-        content: attr(data-label); /* Mostrar la etiqueta antes del contenido */
+        content: attr(data-label);
         position: absolute;
         left: 10px;
-        width: 45%; /* Ancho de la etiqueta */
+        width: 45%;
         padding-right: 10px;
         white-space: nowrap;
         text-align: left;
-        font-weight: bold; /* Texto en negrita */
+        font-weight: bold;
     }
 
     tbody td .action-buttons {
-        justify-content: flex-end; /* Alinear los botones a la derecha */
+        justify-content: flex-end; /* Mover botones a la derecha */
     }
 
     tbody td button {
-        padding: 5px 10px; /* Relleno interior de los botones */
-        cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+        padding: 5px 10px;
+        cursor: pointer;
     }
 
     tbody td button:hover {
-        background-color: #7C3E8A; /* Cambia el color de fondo al pasar el cursor */
+        background-color: #7C3E8A;
+    }
+
+    /* Ajustar tamaño del botón "Ver registros de usuarios" y centrar */
+    #viewLogsButton {
+        width: 80%;
+        margin: 10px auto;
     }
 }
 
 /* Vista intermedia para tablets */
 @media (min-width: 767px) and (max-width: 1024px) {
-    th:nth-child(1), td:nth-child(1) { /* Columna Nombre */
+    th:nth-child(1), td:nth-child(1) {
         width: 20%;
     }
-    th:nth-child(2), td:nth-child(2) { /* Columna Apellidos */
+    th:nth-child(2), td:nth-child(2) {
         width: 20%;
     }
-    th:nth-child(3), td:nth-child(3) { /* Columna Fecha */
+    th:nth-child(3), td:nth-child(3) {
         width: 15%;
     }
-    th:nth-child(4), td:nth-child(4) { /* Columna Sexo */
+    th:nth-child(4), td:nth-child(4) {
         width: 15%;
     }
-    th:nth-child(5), td:nth-child(5) { /* Columna Teléfono */
+    th:nth-child(5), td:nth-child(5) {
         width: 15%;
     }
-    th:nth-child(6), td:nth-child(6) { /* Columna Acciones */
+    th:nth-child(6), td:nth-child(6) {
         width: 15%;
         text-align: center; /* Centrar el texto de la columna Acciones */
     }
     .action-buttons {
-        display: flex; /* Usar flexbox para la disposición de botones de acción */
+        display: flex;
         justify-content: flex-end; /* Alinear los botones a la derecha */
-        flex-wrap: wrap; /* Permitir que los botones se ajusten a varias líneas */
+        flex-wrap: wrap;
     }
 }
 
 /* Estilos para el modal */
 .modal {
-    display: none; /* El modal está oculto por defecto */
-    position: fixed; /* Posición fija en la pantalla */
-    z-index: 1; /* Asegura que esté sobre otros elementos */
+    display: none;
+    position: fixed;
+    z-index: 1;
     left: 0;
     top: 0;
-    width: 100%; /* Ancho completo */
-    height: 100%; /* Altura completa */
-    overflow: auto; /* Permite hacer scroll si es necesario */
-    background-color: rgb(0,0,0); /* Color de fondo del modal */
-    background-color: rgba(0,0,0,0.4); /* Fondo semi-transparente */
-    padding-top: 60px; /* Espacio superior */
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+    padding-top: 60px;
 }
 
 .modal-content {
-    background-color: #45224D; /* Color de fondo del contenido del modal */
-    margin: 18% auto; /* Centrar el contenido del modal */
-    padding: 1px; /* Relleno interior */
-    border: 1px solid #888; /* Borde del modal */
-    width: 90%; /* Ancho del contenido del modal */
-    max-width: 500px; /* Ancho máximo del modal */
-    border-radius: 8px; /* Bordes redondeados */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    background-color: #45224D;
+    margin: 18% auto;
+    padding: 1px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .close {
-    color: #aaa; /* Color del botón de cerrar */
-    float: right; /* Alinear a la derecha */
-    font-size: 40px; /* Tamaño de la fuente del botón de cerrar */
-    font-weight: bold; /* Negrita para el botón de cerrar */
-    margin-right: 15px; /* Espacio adicional a la derecha */
-    margin-top: 0px; /* Espacio adicional en la parte superior */
+    color: #aaa;
+    float: right;
+    font-size: 40px;
+    font-weight: bold;
+    margin-right: 15px;
+    margin-top: 0px;
 }
 
 .close:hover,
 .close:focus {
-    color: black; /* Cambia el color al pasar el cursor */
-    text-decoration: none; /* Sin subrayado */
-    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 #noteText {
-    width: 98%; /* Ancho completo del área de texto */
-    height: 100px; /* Altura del área de texto */
-    margin-bottom: 10px; /* Espacio inferior */
+    width: 98%;
+    height: 100px;
+    margin-bottom: 10px;
 }
 
 #saveNoteButton {
-    background-color: #e573fe; /* Color de fondo del botón */
-    color: white; /* Color del texto del botón */
-    border: none; /* Sin borde */
-    padding: 10px 20px; /* Relleno interior del botón */
-    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
-    border-radius: 4px; /* Bordes redondeados */
-    margin-bottom: 10px; /* Espacio inferior */
+    background-color: #e573fe;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-bottom: 10px;
 }
 
 /* Efecto al pasar el cursor sobre el botón de guardar */
 #saveNoteButton:hover {
-    background-color: #7C3E8A; /* Cambia el color de fondo */
+    background-color: #7C3E8A;
 }
 
 /* Estilo de las notas */
 .note {
-    background-color: #444; /* Color de fondo de las notas */
-    padding: 10px; /* Relleno interior de las notas */
-    margin-bottom: 10px; /* Espacio inferior entre notas */
-    border-radius: 4px; /* Bordes redondeados */
+    background-color: #444;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
 }
 
 .note span {
-    display: block; /* Mostrar como bloque */
-    color: #ccc; /* Color del texto de las notas */
-    font-size: 0.9em; /* Tamaño de la fuente de las notas */
-    margin-top: 5px; /* Espacio superior */
-    text-align: right; /* Alinear el texto a la derecha */
+    display: block;
+    color: #ccc;
+    font-size: 0.9em;
+    margin-top: 5px;
+    text-align: right;
 }
 
 /* Estilos del pie de página */
 footer {
-    background-color: #222; /* Color de fondo del pie de página */
-    color: #bbb; /* Color del texto del pie de página */
-    padding: 20px 0; /* Relleno superior e inferior */
-    text-align: center; /* Centrar el texto */
-    margin-top: 20px; /* Espacio superior */
-    font-size: 14px; /* Tamaño de la fuente */
-    display: flex; /* Usar flexbox en el pie de página */
-    flex-direction: column; /* Disponer los elementos en columna */
-    align-items: center; /* Centrar los elementos */
-    gap: 10px; /* Espacio entre las opciones del pie de página */
+    background-color: #222;
+    color: #bbb;
+    padding: 20px 0;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
 
 footer a {
-    color: #e573fe; /* Color de los enlaces en el pie de página */
-    text-decoration: none; /* Sin subrayado por defecto */
-    margin: 0 10px; /* Espacio entre los enlaces */
+    color: #e573fe;
+    text-decoration: none;
+    margin: 0 10px;
 }
 
 footer a:hover {
-    text-decoration: underline; /* Subrayado al pasar el cursor */
-    color: #7C3E8A; /* Color más claro al pasar el ratón */
+    text-decoration: underline;
+    color: #7C3E8A;
 }
 
 /* Estilos del encabezado */
 header {
-    position: fixed; /* Fija la cabecera en la parte superior */
+    position: fixed;
     top: 0;
-    width: 100%; /* Ancho completo de la cabecera */
-    background-color: #1c1c1c; /* Color de fondo de la cabecera */
-    display: flex; /* Usar flexbox para la disposición */
-    align-items: center; /* Centrar los elementos verticalmente */
-    justify-content: center; /* Centrar el contenido horizontalmente */
-    padding: 10px 0; /* Espacio interior */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* Sombra debajo de la cabecera */
-    z-index: 1000; /* Asegura que esté encima de otros elementos */
-    text-align: left; /* Alinear el texto a la izquierda */
+    width: 100%;
+    background-color: #1c1c1c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    text-align: left;
 }
 
 /* Estilo para el logo en la cabecera */
-
 header .logo {
-    height: 100px; /* Ajusta la altura según lo necesario */
+    height: 100px;
     width: auto;
-    max-width: 100%; /* Evita que el logo se salga del contenedor */
-    object-fit: contain; /* Mantiene la proporción del logo */
-    margin: 0 auto; /* Asegura que no haya margen lateral */
-    display: block; /* Hace que el logo se trate como un bloque */
+    max-width: 100%;
+    object-fit: contain;
+    margin: 0 auto;
+    display: block;
 }
 
 /* Estilo para el título en la cabecera */
 header h1 {
-    color: #ffffff; /* Color del texto del encabezado */
-    margin: 0; /* Sin margen */
-    font-size: 24px; /* Tamaño de la fuente */
+    color: #ffffff;
+    margin: 0;
+    font-size: 24px;
 }
 
 /* Ajustes del contenedor para evitar superposición con el encabezado */
 .container {
-    padding-top: 110px; /* Ajuste del padding para evitar solapamiento */
+    padding-top: 110px;
 }

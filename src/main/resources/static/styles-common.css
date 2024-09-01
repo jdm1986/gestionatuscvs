@@ -1,234 +1,235 @@
+/* styles-common.css */
+
 /* Estilo general del cuerpo */
 body {
-    font-family: Arial, sans-serif; /* Familia de fuentes */
-    background-color: #1c1c1c; /* Color de fondo del cuerpo */
-    color: #ffffff; /* Color del texto */
-    font-size: 15px; /* Tamaño base del texto */
-    transition: background-color 0.5s ease; /* Transición suave del color de fondo */
-    margin: 0; /* Elimina margen por defecto */
-    padding: 0; /* Elimina padding por defecto */
+    font-family: Arial, sans-serif;
+    background-color: #1c1c1c;
+    color: #ffffff;
+    font-size: 15px;
+    transition: background-color 0.5s ease;
+    margin: 0;
+    padding: 0;
 }
 
 /* Contenedor principal */
 .container {
-    width: 80%; /* Ancho del contenedor principal */
-    margin: 0 auto; /* Centrando el contenedor */
-    padding-top: 20px; /* Espacio en la parte superior */
-    background-color: #333333; /* Color de fondo del contenedor */
-    padding: 20px; /* Relleno interior del contenedor */
-    border-radius: 8px; /* Bordes redondeados del contenedor */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    width: 80%;
+    margin: 0 auto;
+    padding-top: 20px;
+    background-color: #333333;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Estilos generales para los botones */
 button {
-    background-color: #E573FE; /* Color de fondo del botón */
-    color: white; /* Color del texto del botón */
-    border: none; /* Sin borde */
-    padding: 12px 24px; /* Relleno interior del botón */
-    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
-    margin-right: 10px; /* Espacio a la derecha del botón */
-    margin-bottom: 10px; /* Espacio inferior entre botones */
-    border-radius: 8px; /* Bordes redondeados del botón */
-    font-size: 16px; /* Tamaño de la fuente del botón */
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave del botón */
-    transition: background-color 0.3s ease, transform 0.2s ease; /* Efecto de transición para el color de fondo y la transformación */
+    background-color: #E573FE;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    cursor: pointer;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    font-size: 16px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 /* Efectos de botón al pasar el cursor */
 button:hover {
-    background-color: #7C3E8A; /* Cambia el color de fondo al pasar el cursor */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada al pasar el cursor */
-    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Transición suave de la sombra */
+    background-color: #7C3E8A;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Efectos de botón al hacer clic */
 button:active {
-    transform: scale(0.95); /* Reduce ligeramente el tamaño del botón al hacer clic */
-    transition: transform 0.1s ease; /* Transición suave para la reducción */
+    transform: scale(0.95);
+    transition: transform 0.1s ease;
 }
 
 /* Estilos para inputs y selects */
 input, select {
-    padding: 12px; /* Relleno interior de los campos de entrada */
-    margin-bottom: 10px; /* Espacio debajo de los campos de entrada */
-    border: 1px solid #ccc; /* Borde de los campos de entrada */
-    border-radius: 8px; /* Bordes redondeados de los campos de entrada */
-    background-color: #444444; /* Color de fondo de los campos de entrada */
-    color: white; /* Color del texto de los campos de entrada */
-    font-size: 16px; /* Tamaño de la fuente de los campos de entrada */
-    box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.1); /* Sombra interna para dar efecto de profundidad */
-    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Efecto de transición para el borde y la sombra */
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #444444;
+    color: white;
+    font-size: 16px;
+    box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Estilo de los campos de entrada al enfocarse */
 input:focus, select:focus {
-    outline: none; /* Quita el borde exterior al enfocar */
-    border-color: #e573fe; /* Cambia el color del borde al enfocarse */
-    box-shadow: 0px 0px 8px rgba(108, 99, 255, 0.5); /* Sombra luminosa al enfocar */
+    outline: none;
+    border-color: #e573fe;
+    box-shadow: 0px 0px 8px rgba(108, 99, 255, 0.5);
 }
 
+/* Ocultar elementos */
 .hidden {
-    display: none; /* Clase para ocultar elementos */
+    display: none;
 }
 
 /* Estilo para encabezados */
 h1, h2 {
-    text-align: center; /* Centrar el texto de los encabezados */
-    color: #ffffff; /* Color del texto de los encabezados */
-    margin: 15px 0; /* Espacio superior e inferior */
+    text-align: center;
+    color: #ffffff;
+    margin: 15px 0;
 }
 
+/* Estilos del header */
 header {
     display: flex;
-    justify-content: center; /* Centra horizontalmente el contenido dentro del header */
-    align-items: center; /* Centra verticalmente el contenido dentro del header */
+    justify-content: center;
+    align-items: center;
     width: 100%;
-    background-color: #1c1c1c; /* Color de fondo de la cabecera */
-    padding: 10px 0; /* Espacio interior */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* Sombra debajo de la cabecera */
-    z-index: 1000; /* Asegura que esté encima de otros elementos */
+    background-color: #1c1c1c;
+    padding: 10px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
 }
 
+/* Estilo para el logo */
 header .logo {
-    height: 100px; /* Ajusta la altura según lo necesario */
+    height: 100px;
     width: auto;
-    max-width: 100%; /* Evita que el logo se salga del contenedor */
-    object-fit: contain; /* Mantiene la proporción del logo */
-    margin: 0 auto; /* Asegura que no haya margen lateral */
-    display: block; /* Hace que el logo se trate como un bloque */
+    max-width: 100%;
+    object-fit: contain;
+    margin: 0 auto;
+    display: block;
 }
 
 /* Estilos de botones y acciones */
 .buttons, .actions, .search {
-    text-align: center; /* Centrar el contenido dentro de estas clases */
-}
-
-.actions {
-    display: flex;
-    justify-content: center; /* Centra los botones horizontalmente */
-    align-items: center; /* Alinea los botones verticalmente */
-    gap: 10px; /* Espacio entre los botones */
-    margin-bottom: 20px; /* Espacio inferior entre acciones */
-    flex-wrap: wrap; /* Permite que los botones se ajusten en varias líneas si es necesario */
+    text-align: center;
 }
 
 /* Estilo para formularios */
 form {
-    display: flex; /* Usar flexbox para la disposición del formulario */
-    flex-direction: column; /* Disponer los elementos en columna */
-    align-items: center; /* Centrar los elementos del formulario */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 form input, form select, form button {
-    width: 100%; /* Ancho completo */
-    max-width: 400px; /* Ancho máximo */
-    margin-bottom: 10px; /* Espacio inferior entre los elementos del formulario */
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 10px;
+}
+
+/* Estilo para el contenedor de acciones */
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
 /* Estilo para la sección de búsqueda */
 .search {
-    display: flex; /* Usar flexbox para la disposición de búsqueda */
-    flex-direction: column; /* Disponer los elementos en columna */
-    align-items: center; /* Centrar los elementos */
-    margin-bottom: 20px; /* Espacio inferior para la búsqueda */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
 .search input {
-    flex: 1; /* Ocupa todo el espacio disponible */
-    margin-right: 10px; /* Espacio a la derecha del input de búsqueda */
-    background-color: #444444; /* Color de fondo del input de búsqueda */
-    color: white; /* Color del texto del input de búsqueda */
+    flex: 1;
+    margin-right: 10px;
+    background-color: #444444;
+    color: white;
 }
 
 .search-buttons {
-    display: flex; /* Usar flexbox para los botones de búsqueda */
-    justify-content: center; /* Centrar los botones */
-    width: 100%; /* Ancho completo */
-    max-width: 400px; /* Ancho máximo */
-    margin-top: 10px; /* Espacio superior entre el cuadro de búsqueda y los botones */
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-width: 400px;
+    margin-top: 10px;
 }
 
 /* Estilo para la tabla de resultados */
 .results {
-    max-height: 70vh; /* Altura máxima para los resultados */
-    overflow-y: auto; /* Scroll vertical si es necesario */
-    background-color: #333333; /* Color de fondo para los resultados */
-    padding: 20px; /* Relleno interior de los resultados */
-    border-radius: 8px; /* Bordes redondeados */
-    margin-top: 20px; /* Espacio superior */
-    color: white; /* Color del texto */
+    max-height: 70vh;
+    overflow-y: auto;
+    background-color: #333333;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+    color: white;
 }
 
 /* Apariencia de las tablas */
 table {
-    width: 100%; /* Ancho completo de la tabla */
-    border-collapse: collapse; /* Colapsar bordes de la tabla */
-    background-color: #2c2c2c; /* Color de fondo de la tabla */
-    border-radius: 8px; /* Bordes redondeados */
-    overflow: hidden; /* Ocultar desbordamientos */
-    table-layout: fixed; /* Evita que las celdas se expandan */
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #2c2c2c;
+    border-radius: 8px;
+    overflow: hidden;
+    table-layout: fixed;
 }
 
 thead th {
-    background-color: #e573fe; /* Color de fondo de los encabezados */
-    color: white; /* Color del texto de los encabezados */
-    padding: 12px; /* Relleno interior de los encabezados */
-    font-size: 16px; /* Tamaño de la fuente de los encabezados */
-    text-align: left; /* Alinear texto a la izquierda */
+    background-color: #e573fe;
+    color: white;
+    padding: 12px;
+    font-size: 16px;
+    text-align: left;
 }
 
 tbody tr {
-    border-bottom: 1px solid #444; /* Borde inferior de las filas */
+    border-bottom: 1px solid #444;
 }
 
 tbody tr:hover {
-    background-color: #3a3a3a; /* Color más claro al pasar el cursor sobre una fila */
-    transition: background-color 0.3s ease; /* Transición suave del fondo */
+    background-color: #3a3a3a;
+    transition: background-color 0.3s ease;
 }
 
 tbody td {
-    padding: 12px; /* Relleno interior de las celdas */
-    color: #ccc; /* Color del texto de las celdas */
-    font-size: 14px; /* Tamaño de la fuente de las celdas */
-    text-align: left; /* Alinear texto a la izquierda */
+    padding: 12px;
+    color: #ccc;
+    font-size: 14px;
+    text-align: left;
 }
 
 /* Estilos para los botones de acción en la tabla */
 .action-buttons {
-    display: flex; /* Usar flexbox para los botones de acción */
-    justify-content: space-between; /* Distribuir los botones de manera equitativa */
-    gap: 10px; /* Espacio entre los botones */
-    flex-wrap: wrap; /* Permitir que los botones se ajusten en varias líneas si es necesario */
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
 }
 
 .action-buttons button {
-    flex: 1 1 auto; /* Los botones ocuparán el mismo espacio y se ajustarán si es necesario */
-    min-width: 80px; /* Asegura un tamaño mínimo para los botones */
-    max-width: 100px; /* Evita que los botones crezcan demasiado */
-    padding: 8px 12px; /* Relleno interior de los botones */
-    font-size: 14px; /* Tamaño de la fuente del botón */
+    flex: 1;
+    min-width: 80px;
+    padding: 10px;
 }
 
-/* Estilos adicionales para pantallas pequeñas */
+/* Estilos para dispositivos móviles */
 @media (max-width: 767px) {
     .container {
-        width: 90%; /* Ajuste del ancho del contenedor para móviles */
+        width: 95%;
         padding: 20px;
     }
 
     .search-buttons {
-        flex-direction: column; /* Disponer los botones en columna */
-        gap: 10px; /* Espacio entre los botones en móviles */
+        flex-direction: column;
+        gap: 10px;
     }
 
     button {
-        width: 100%; /* Ancho completo del botón */
-        margin-bottom: 10px; /* Espacio inferior entre botones */
+        width: 100%;
+        margin-bottom: 10px;
     }
 
     table {
-        width: 100%; /* Ancho completo de la tabla */
+        width: 100%;
         border-collapse: collapse;
     }
 
@@ -237,25 +238,25 @@ tbody td {
     }
 
     tbody tr {
-        display: block; /* Hacer que las filas se comporten como bloques */
+        display: block;
         border-bottom: 1px solid #333;
         margin-bottom: 10px;
     }
 
     tbody td {
-        display: block; /* Hacer que las celdas se comporten como bloques */
-        text-align: right; /* Alinear texto a la derecha */
+        display: block;
+        text-align: right;
         padding: 10px;
         border-bottom: 1px solid #444;
         position: relative;
-        padding-left: 50%; /* Ajuste del padding para mostrar etiquetas */
+        padding-left: 50%;
     }
 
     tbody td::before {
-        content: attr(data-label); /* Mostrar la etiqueta antes del contenido */
+        content: attr(data-label);
         position: absolute;
         left: 10px;
-        width: 45%; /* Ancho de la etiqueta */
+        width: 45%;
         padding-right: 10px;
         white-space: nowrap;
         text-align: left;
@@ -263,7 +264,7 @@ tbody td {
     }
 
     tbody td .action-buttons {
-        justify-content: space-around; /* Distribuir botones equitativamente */
+        justify-content: flex-end; /* Mover botones a la derecha */
     }
 
     tbody td button {
@@ -274,122 +275,134 @@ tbody td {
     tbody td button:hover {
         background-color: #7C3E8A;
     }
+
+    /* Ajustar tamaño del botón "Ver registros de usuarios" y centrar */
+    #viewLogsButton {
+        width: 80%;
+        margin: 10px auto;
+    }
+}
+
+/* Centrar la palabra "Acciones" */
+@media (max-width: 1024px) {
+    th:nth-child(6) {
+        text-align: center;
+    }
 }
 
 /* Estilos para el modal de notas */
 .modal {
-    display: none; /* El modal está oculto por defecto */
-    position: fixed; /* Posición fija en la pantalla */
-    z-index: 1; /* Asegura que esté sobre otros elementos */
+    display: none;
+    position: fixed;
+    z-index: 1;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto; /* Permite hacer scroll si es necesario */
-    background-color: rgb(0,0,0);
-    background-color: rgba(0,0,0,0.4); /* Fondo semi-transparente */
-    padding-top: 60px; /* Espacio superior */
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+    padding-top: 60px;
 }
 
 .modal-content {
-    background-color: #fefefe; /* Color de fondo del contenido del modal */
-    margin: 5% auto; /* Centrar el contenido del modal */
-    padding: 20px; /* Relleno interior */
-    border: 1px solid #888; /* Borde del modal */
-    width: 80%; /* Ancho del contenido del modal */
-    max-width: 500px; /* Ancho máximo del modal */
-    border-radius: 8px; /* Bordes redondeados */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .close {
-    color: #aaa; /* Color del botón de cerrar */
-    float: right; /* Alinear a la derecha */
-    font-size: 28px; /* Tamaño de la fuente del botón de cerrar */
+    color: #aaa;
+    float: right;
+    font-size: 28px;
     font-weight: bold;
 }
 
 .close:hover,
 .close:focus {
-    color: black; /* Cambia el color al pasar el cursor */
-    text-decoration: none; /* Sin subrayado */
-    cursor: pointer; /* Cambia el cursor al pasar el ratón */
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 #noteText {
-    width: 100%; /* Ancho completo del área de texto */
-    height: 150px; /* Altura del área de texto */
-    margin-bottom: 10px; /* Espacio inferior */
+    width: 100%;
+    height: 150px;
+    margin-bottom: 10px;
 }
 
 #saveNoteButton {
-    background-color: #e573fe; /* Color de fondo del botón */
-    color: white; /* Color del texto del botón */
-    border: none; /* Sin borde */
-    padding: 10px 20px; /* Relleno interior del botón */
-    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
-    border-radius: 4px; /* Bordes redondeados */
+    background-color: #e573fe;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 4px;
 }
 
 #saveNoteButton:hover {
-    background-color: #7C3E8A; /* Color de fondo al pasar el cursor */
+    background-color: #7C3E8A;
 }
 
 .note {
-    background-color: #444; /* Color de fondo de las notas */
-    padding: 10px; /* Relleno interior de las notas */
-    margin-bottom: 10px; /* Espacio inferior entre notas */
-    border-radius: 4px; /* Bordes redondeados */
+    background-color: #444;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
 }
 
 .note span {
-    display: block; /* Mostrar como bloque */
-    color: #ccc; /* Color del texto de las notas */
-    font-size: 0.9em; /* Tamaño de la fuente de las notas */
-    margin-top: 5px; /* Espacio superior */
-    text-align: right; /* Alinear el texto a la derecha */
+    display: block;
+    color: #ccc;
+    font-size: 0.9em;
+    margin-top: 5px;
+    text-align: right;
 }
 
 /* Enlaces */
 .link-blanco {
-    color: white; /* Color del enlace */
-    text-decoration: underline; /* Subrayado para asegurar visibilidad */
-    font-weight: bold; /* Texto en negrita */
+    color: white;
+    text-decoration: underline;
+    font-weight: bold;
 }
 
 /* Estilos para el pie de página */
 footer {
-    background-color: #222; /* Color de fondo del pie de página */
-    color: #bbb; /* Color del texto del pie de página */
-    padding: 20px 0; /* Relleno superior e inferior */
-    text-align: center; /* Centrar el texto */
-    margin-top: 20px; /* Espacio superior */
-    font-size: 14px; /* Tamaño de la fuente */
-    display: flex; /* Usar flexbox en el pie de página */
-    flex-direction: column; /* Disponer los elementos en columna */
-    align-items: center; /* Centrar los elementos */
-    gap: 10px; /* Espacio entre las opciones del pie de página */
+    background-color: #222;
+    color: #bbb;
+    padding: 20px 0;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
 
 footer a {
-    color: #e573fe; /* Color de los enlaces en el pie de página */
-    text-decoration: none; /* Sin subrayado por defecto */
-    margin: 0 10px; /* Espacio entre los enlaces */
+    color: #e573fe;
+    text-decoration: none;
+    margin: 0 10px;
 }
 
 footer a:hover {
-    text-decoration: underline; /* Subrayado al pasar el cursor */
-    color: #7C3E8A; /* Color más claro al pasar el ratón */
+    text-decoration: underline;
+    color: #7C3E8A;
 }
 
 /* Animación de aparición suave en la carga de la página */
 .fade-in {
-    opacity: 0; /* Comienza invisible */
-    animation: fadeInAnimation 1.5s forwards ease-in-out; /* Aparece con una animación */
+    opacity: 0;
+    animation: fadeInAnimation 1.5s forwards ease-in-out;
 }
 
 @keyframes fadeInAnimation {
     to {
-        opacity: 1; /* Termina siendo completamente visible */
+        opacity: 1;
     }
 }

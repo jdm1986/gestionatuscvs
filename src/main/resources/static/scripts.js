@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const errorMessage = document.getElementById('errorMessage');
     const logo = document.getElementById('logo');
 
+    // Manejador de clics en el logo para cerrar sesión
     if (logo) {
         logo.addEventListener('click', function() {
             if (token) {
@@ -27,6 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Eventos de botones de inicio de sesión y registro
     const loginButton = document.getElementById('loginButton');
     const registerButton = document.getElementById('registerButton');
 
@@ -42,6 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Manejo del botón de generar enlace
     const generateLinkButton = document.getElementById('generateLinkButton');
     const generatedLink = document.getElementById('generatedLink');
     const copyButton = document.getElementById('copyButton');
@@ -117,8 +120,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert("No se pudo copiar el enlace");
             });
         });
-
-        checkExistingLink();
     }
 
     async function fetchCurriculums() {
@@ -214,7 +215,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const saveNoteButton = document.getElementById('saveNoteButton');
         const notesList = document.getElementById('notesList');
 
-        notesList.innerHTML = ''; // Clear previous notes
+        notesList.innerHTML = ''; // Limpiar notas anteriores
 
         const response = await fetch(`${baseUrl}/curriculums/${curriculumId}/notas`, {
             method: 'GET',

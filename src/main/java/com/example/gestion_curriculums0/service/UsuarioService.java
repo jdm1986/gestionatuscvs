@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
@@ -81,8 +82,12 @@ public class UsuarioService {
     @Transactional
     public void deleteUser(Usuario usuario) {
         try {
-            // Registrar acción de eliminación de usuario
-            logUserAction(usuario.getNombreUsuario(), "Eliminación de usuario");
+            // Convertir la fecha de registro a LocalDateTime
+            LocalDateTime fechaRegistro = usuario.getFechaRegistro().toInstant()
+                    .atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+            // Registrar acción de eliminación de usuario con la fecha de registro original
+            logUserAction(usuario.getNombreUsuario(), "Eliminación de usuario registrado el " + fechaRegistro);
 
             // Eliminar todos los UploadLinks asociados al usuario
             uploadLinkRepository.deleteByUsuarioId(usuario.getId());

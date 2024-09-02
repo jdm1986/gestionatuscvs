@@ -305,15 +305,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
 
                 if (response.ok) {
-                    const logs = await response.json();
-                    let formattedLogs = logs.map(log =>
-                        `Usuario: ${log.username} | Fecha: ${new Date(log.timestamp).toLocaleString()}`
-                    ).join('\n');
+                        const logs = await response.json();
+                        let formattedLogs = logs.map(log => {
+                            // Resta 30 minutos para obtener la fecha de registro original
+                            let logTime = new Date(log.timestamp);
+                            logTime.setMinutes(logTime.getMinutes() - 30);
 
-                    alert(formattedLogs);
-                } else {
-                    alert('Error al cargar los registros');
-                }
+                            return `Usuario: ${log.username} | Fecha de Registro: ${logTime.toLocaleString()}`;
+                        }).join('\n');
+
+                        alert(formattedLogs);
+                    } else {
+                        alert('Error al cargar los registros');
+                    }
             });
 
             const container = document.querySelector('.container');

@@ -1,9 +1,12 @@
 package com.example.gestion_curriculums0.service;
 
 import com.example.gestion_curriculums0.model.Usuario;
+import com.example.gestion_curriculums0.model.UserLog;
 import com.example.gestion_curriculums0.repository.CurriculumRepository;
 import com.example.gestion_curriculums0.repository.NotaRepository;
+import com.example.gestion_curriculums0.repository.UploadLinkRepository;
 import com.example.gestion_curriculums0.repository.UsuarioRepository;
+import com.example.gestion_curriculums0.repository.UserLogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +34,13 @@ public class UsuarioService {
     private CurriculumRepository curriculumRepository;
 
     @Autowired
-    private NotaRepository notaRepository;  // Agregar el repositorio de notas
+    private NotaRepository notaRepository;
+
+    @Autowired
+    private UploadLinkRepository uploadLinkRepository;
+
+    @Autowired
+    private UserLogRepository userLogRepository;
 
     @Autowired
     private JavaMailSender mailSender;
@@ -38,7 +48,7 @@ public class UsuarioService {
     public Usuario saveUsuario(Usuario usuario) {
         usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
         Usuario savedUsuario = usuarioRepository.save(usuario);
-        System.out.println("Usuario guardado: " + savedUsuario.getNombreUsuario());
+        logUserAction(savedUsuario.getNombreUsuario(), "Registro de usuario");
         sendWelcomeEmail(savedUsuario.getEmail(), savedUsuario.getNombreUsuario());
         return savedUsuario;
     }
@@ -71,6 +81,12 @@ public class UsuarioService {
     @Transactional
     public void deleteUser(Usuario usuario) {
         try {
+            // Registrar acción de eliminación de usuario
+            logUserAction(usuario.getNombreUsuario(), "Eliminación de usuario");
+
+            // Eliminar todos los UploadLinks asociados al usuario
+            uploadLinkRepository.deleteByUsuarioId(usuario.getId());
+
             // Eliminar todas las notas relacionadas con cada currículum del usuario
             usuario.getCurriculums().forEach(curriculum -> {
                 notaRepository.deleteByCurriculumId(curriculum.getId());
@@ -84,9 +100,18 @@ public class UsuarioService {
 
             System.out.println("Usuario eliminado: " + usuario.getNombreUsuario());
         } catch (Exception e) {
+            logUserAction(usuario.getNombreUsuario(), "Error al eliminar usuario");
             System.out.println("Error al eliminar usuario: " + usuario.getNombreUsuario());
             e.printStackTrace();
         }
+    }
+
+    private void logUserAction(String username, String action) {
+        UserLog log = new UserLog();
+        log.setUsername(username);
+        log.setAction(action);
+        log.setTimestamp(LocalDateTime.now());
+        userLogRepository.save(log);
     }
 
     public void sendWelcomeEmail(String to, String username) {

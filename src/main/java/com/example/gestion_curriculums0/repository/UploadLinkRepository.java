@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface UploadLinkRepository extends JpaRepository<UploadLink, Long> {
     Optional<UploadLink> findByToken(String token);
+    // Método para eliminar todos los UploadLink de un usuario específico
+    void deleteByUsuarioId(Long usuarioId);
 }

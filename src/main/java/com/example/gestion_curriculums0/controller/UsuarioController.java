@@ -37,21 +37,31 @@ public class UsuarioController {
 
     @PostMapping("/registrar")
     @Transactional
-    public UsuarioDTO createUsuario(@RequestBody Usuario usuario) {
-        if (usuario.getNombreUsuario() == null || usuario.getNombreUsuario().isEmpty()) {
-            throw new IllegalArgumentException("El nombre de usuario no puede estar vacío");
-        }
-        if (usuario.getContrasena() == null || usuario.getContrasena().isEmpty()) {
-            throw new IllegalArgumentException("La contraseña no puede estar vacía");
-        }
-        if (usuario.getEmail() == null || usuario.getEmail().isEmpty()) {
-            throw new IllegalArgumentException("El email no puede estar vacío");
-        }
-        Usuario savedUsuario = usuarioService.saveUsuario(usuario);
-        System.out.println("Usuario registrado: " + savedUsuario.getNombreUsuario());
+    public ResponseEntity<?> createUsuario(@RequestBody Usuario usuario) {
+        try {
+            if (usuario.getNombreUsuario() == null || usuario.getNombreUsuario().isEmpty()) {
+                return ResponseEntity.badRequest().body("El nombre de usuario no puede estar vacío");
+            }
+            if (usuario.getContrasena() == null || usuario.getContrasena().isEmpty()) {
+                return ResponseEntity.badRequest().body("La contraseña no puede estar vacía");
+            }
+            if (usuario.getEmail() == null || usuario.getEmail().isEmpty()) {
+                return ResponseEntity.badRequest().body("El email no puede estar vacío");
+            }
 
-        return convertToDTO(savedUsuario);
+            // Validación de contraseña con las reglas en UsuarioService
+            usuarioService.validatePassword(usuario.getContrasena());
+
+            Usuario savedUsuario = usuarioService.saveUsuario(usuario);
+            System.out.println("Usuario registrado: " + savedUsuario.getNombreUsuario());
+
+            return ResponseEntity.ok(convertToDTO(savedUsuario));
+        } catch (IllegalArgumentException e) {
+            // Si ocurre una excepción durante la validación, se devuelve un mensaje de error apropiado
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
+
 
     private UsuarioDTO convertToDTO(Usuario usuario) {
         return new UsuarioDTO(usuario.getId(), usuario.getNombreUsuario(), usuario.getEmail(), Collections.singletonList(usuario.getRoles()),

@@ -1,10 +1,6 @@
 package com.example.gestion_curriculums0.controller;
 
-import com.example.gestion_curriculums0.service.AuthRequest;
-import com.example.gestion_curriculums0.service.PasswordResetService;
-import com.example.gestion_curriculums0.service.CustomUserDetailsService;
-import com.example.gestion_curriculums0.service.EmailService;
-import com.example.gestion_curriculums0.service.UserLogService;
+import com.example.gestion_curriculums0.service.*;
 import com.example.gestion_curriculums0.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -60,6 +56,9 @@ public class AuthController {
     @Autowired
     private UserLogService userLogService; // Inyectar UserLogService
 
+    @Autowired
+    private UsuarioService usuarioService;  // Inyectar UsuarioService
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) throws AuthenticationException {
         String username = authRequest.getUsername();
@@ -99,6 +98,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody AuthRequest authRequest) {
         String email = authRequest.getEmail();
+        String password = authRequest.getPassword();
 
         if (isRegistrationLocked(email)) {
             return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
@@ -118,6 +118,9 @@ public class AuthController {
                 }
             }
 
+            // Validar la contraseña utilizando el método validatePassword del UsuarioService
+            usuarioService.validatePassword(password);
+
             userDetailsService.saveUser(authRequest);
             emailService.sendWelcomeEmail(authRequest.getEmail(), authRequest.getUsername());
             emailService.sendNotificationToAdmin(authRequest.getUsername(), authRequest.getEmail());
@@ -130,6 +133,8 @@ public class AuthController {
             response.put("message", "Registro exitoso");
 
             return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error en el registro: " + e.getMessage());
         } catch (Exception e) {
             incrementRegistrationAttempts(email);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

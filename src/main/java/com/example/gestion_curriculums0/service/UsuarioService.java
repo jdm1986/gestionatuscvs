@@ -46,7 +46,11 @@ public class UsuarioService {
     @Autowired
     private JavaMailSender mailSender;
 
+    private static final int MIN_PASSWORD_LENGTH = 8;
+    private static final String SPECIAL_CHARACTERS = "!@#$%^&*()-_+=<>?";
+
     public Usuario saveUsuario(Usuario usuario) {
+        validatePassword(usuario.getContrasena());
         usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
         Usuario savedUsuario = usuarioRepository.save(usuario);
         logUserAction(savedUsuario.getNombreUsuario(), "Registro de usuario");
@@ -148,4 +152,26 @@ public class UsuarioService {
             System.out.println("Error al enviar el correo de despedida a: " + to);
         }
     }
+
+    public void validatePassword(String password) {
+        if (password == null || password.isEmpty()) {
+            throw new IllegalArgumentException("La contraseña no puede estar vacía.");
+        }
+        if (password.length() < MIN_PASSWORD_LENGTH) {
+            throw new IllegalArgumentException("La contraseña debe tener al menos " + MIN_PASSWORD_LENGTH + " caracteres.");
+        }
+        if (!containsSpecialCharacter(password)) {
+            throw new IllegalArgumentException("La contraseña debe contener al menos un carácter especial: " + SPECIAL_CHARACTERS);
+        }
+    }
+
+    private boolean containsSpecialCharacter(String password) {
+        for (char c : password.toCharArray()) {
+            if (SPECIAL_CHARACTERS.indexOf(c) >= 0) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
+

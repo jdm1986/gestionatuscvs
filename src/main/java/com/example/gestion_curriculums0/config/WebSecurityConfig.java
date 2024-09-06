@@ -14,8 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpMethod; // Asegúrate de tener este import
 
 @Configuration
 @EnableWebSecurity
@@ -30,14 +29,8 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        // Configuración de CSRF según el entorno (desarrollo o producción)
-        if (isDevelopmentProfileActive()) {
-            http.csrf(csrf -> csrf.disable());  // Deshabilitar CSRF en desarrollo
-        } else {
-            http.csrf(csrf -> csrf
-                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())  // Habilitar CSRF en producción con token CSRF en cookies
-            );
-        }
+        // Deshabilitar CSRF temporalmente
+        http.csrf(csrf -> csrf.disable());
 
         http
                 .authorizeHttpRequests(auth -> auth
@@ -54,10 +47,6 @@ public class WebSecurityConfig {
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-    }
-
-    private boolean isDevelopmentProfileActive() {
-        return environment.acceptsProfiles("dev");
     }
 
     @Bean

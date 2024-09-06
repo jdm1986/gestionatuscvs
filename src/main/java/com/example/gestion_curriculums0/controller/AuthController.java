@@ -14,7 +14,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +28,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 @CrossOrigin(origins = "http://localhost:8000")
 public class AuthController {
 
+    // Constantes de tiempo
+    private static final int ACCESS_TOKEN_EXPIRATION = 15 * 60; // 15 minutos
+    private static final int REFRESH_TOKEN_EXPIRATION = 7 * 24 * 60 * 60; // 7 días
     private static final int MAX_FAILED_ATTEMPTS = 3;
     private static final long LOCK_TIME_DURATION = 24 * 60 * 60 * 1000; // 24 hours
     private static final int MAX_RECOVERY_ATTEMPTS = 5;
@@ -54,13 +59,13 @@ public class AuthController {
     private EmailService emailService;
 
     @Autowired
-    private UserLogService userLogService; // Inyectar UserLogService
+    private UserLogService userLogService;
 
     @Autowired
-    private UsuarioService usuarioService;  // Inyectar UsuarioService
+    private UsuarioService usuarioService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) throws AuthenticationException {
+    public ResponseEntity<?> login(HttpServletResponse response, @RequestBody AuthRequest authRequest) throws AuthenticationException {
         String username = authRequest.getUsername();
 
         if (isAccountLocked(username)) {
@@ -72,19 +77,27 @@ public class AuthController {
                     new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            String jwt = jwtUtil.generateToken(userDetails);
+
+            // Generar tokens
+            String jwt = jwtUtil.generateToken(userDetails, ACCESS_TOKEN_EXPIRATION);
+            String refreshToken = jwtUtil.generateToken(userDetails, REFRESH_TOKEN_EXPIRATION);
             Long userId = userDetailsService.getUserIdByUsername(userDetails.getUsername());
 
-            // Restablecer el contador de intentos fallidos si el inicio de sesión es exitoso
+            // Crear cookies para el token de acceso y de refresco
+            Cookie accessTokenCookie = createCookie("accessToken", jwt, ACCESS_TOKEN_EXPIRATION);
+            Cookie refreshTokenCookie = createCookie("refreshToken", refreshToken, REFRESH_TOKEN_EXPIRATION);
+
+            response.addCookie(accessTokenCookie);
+            response.addCookie(refreshTokenCookie);
+
             loginAttempts.remove(username);
             lockTime.remove(username);
 
-            Map<String, Object> response = new HashMap<>();
-            response.put("token", jwt);
-            response.put("username", userDetails.getUsername());
-            response.put("userId", userId);
+            Map<String, Object> responseBody = new HashMap<>();
+            responseBody.put("username", userDetails.getUsername());
+            responseBody.put("userId", userId);
 
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(responseBody);
         } catch (BadCredentialsException e) {
             incrementFailedAttempts(username);
             if (userDetailsService.userExists(username)) {
@@ -94,6 +107,31 @@ public class AuthController {
             }
         }
     }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = jwtUtil.extractTokenFromRequest(request, "refreshToken");
+
+        if (refreshToken != null) {
+            String username = jwtUtil.extractUsername(refreshToken);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+            // Validar el token de refresco
+            if (jwtUtil.validateToken(refreshToken, userDetails)) {
+                // Generar un nuevo token de acceso
+                String newAccessToken = jwtUtil.generateToken(userDetails, ACCESS_TOKEN_EXPIRATION);
+                Cookie newAccessTokenCookie = createCookie("accessToken", newAccessToken, ACCESS_TOKEN_EXPIRATION);
+                response.addCookie(newAccessTokenCookie);
+
+                return ResponseEntity.ok(Collections.singletonMap("message", "Token renovado con éxito"));
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token inválido o expirado.");
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token no encontrado.");
+        }
+    }
+
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody AuthRequest authRequest) {
@@ -118,14 +156,12 @@ public class AuthController {
                 }
             }
 
-            // Validar la contraseña utilizando el método validatePassword del UsuarioService
             usuarioService.validatePassword(password);
 
             userDetailsService.saveUser(authRequest);
             emailService.sendWelcomeEmail(authRequest.getEmail(), authRequest.getUsername());
             emailService.sendNotificationToAdmin(authRequest.getUsername(), authRequest.getEmail());
 
-            // Restablecer el contador de intentos fallidos si el registro es exitoso
             registrationAttempts.remove(email);
             registrationLockTime.remove(email);
 
@@ -141,7 +177,6 @@ public class AuthController {
                     .body("El registro ha fallado. " + e.getMessage());
         }
     }
-
 
     @PostMapping("/forgot-password")
     public ResponseEntity<Map<String, String>> forgotPassword(@RequestBody Map<String, String> request, HttpServletRequest httpRequest) {
@@ -164,11 +199,7 @@ public class AuthController {
                         .body(Collections.singletonMap("message", responseMessage));
             }
 
-            // Logging antes de enviar el correo
-            System.out.println("Enviando token de restablecimiento de contraseña para el email: " + email);
             passwordResetService.sendPasswordResetToken(email);
-            // Logging después de enviar el correo
-            System.out.println("Token enviado para el email: " + email);
 
             resetRecoveryAttempts(clientIp);
 
@@ -185,7 +216,6 @@ public class AuthController {
         }
     }
 
-
     @PostMapping("/reset-password")
     public ResponseEntity<Map<String, String>> resetPassword(@RequestParam String token, @RequestParam String newPassword) {
         boolean result = passwordResetService.resetPassword(token, newPassword);
@@ -197,6 +227,15 @@ public class AuthController {
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("error", "Token inválido o expirado."));
         }
+    }
+
+    private Cookie createCookie(String name, String value, int maxAge) {
+        Cookie cookie = new Cookie(name, value);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(maxAge);
+        return cookie;
     }
 
     private void incrementFailedAttempts(String identifier) {
@@ -268,10 +307,5 @@ public class AuthController {
     private void resetRecoveryAttempts(String ip) {
         recoveryAttemptsByIp.remove(ip);
         ipLockTime.remove(ip);
-    }
-
-    private void logUserRegistration(String username) {
-        // Guardar el registro en la base de datos en lugar de un archivo de texto
-        userLogService.saveUserLog(username, "Registro de usuario");
     }
 }

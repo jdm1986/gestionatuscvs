@@ -4,12 +4,26 @@ document.addEventListener('DOMContentLoaded', function() {
         : 'https://gestionatuscv.es';
 
     const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('userId'); // Obtener el ID del usuario actual
-    const linkKey = `generatedLink_${userId}`; // Clave específica para almacenar el enlace de este usuario
-    const expirationKey = `linkExpiration_${userId}`; // Clave para almacenar la fecha de caducidad
-    const expirationTimeInSeconds = 5 * 24 * 60 * 60; // 5 días en segundos
+    const csrfToken = getCsrfToken(); // Obtener el token CSRF de la cookie
+
+    const userId = localStorage.getItem('userId');
+    const linkKey = `generatedLink_${userId}`;
+    const expirationKey = `linkExpiration_${userId}`;
+    const expirationTimeInSeconds = 5 * 24 * 60 * 60;
     const errorMessage = document.getElementById('errorMessage');
     const logo = document.getElementById('logo');
+
+    // Función para obtener el token CSRF de la cookie
+    function getCsrfToken() {
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            const [name, value] = cookie.trim().split('=');
+            if (name === 'XSRF-TOKEN') {
+                return value;
+            }
+        }
+        return null;
+    }
 
     // Manejador de clics en el logo para cerrar sesión
     if (logo) {
@@ -92,7 +106,8 @@ document.addEventListener('DOMContentLoaded', function() {
             fetch(`${baseUrl}/curriculums/generate-upload-link`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${token}`,
+                    'X-XSRF-TOKEN': csrfToken // Agregar el token CSRF a la cabecera
                 }
             })
             .then(response => response.text())
@@ -126,7 +141,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const response = await fetch(`${baseUrl}/curriculums/usuario`, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                'X-XSRF-TOKEN': csrfToken // Agregar el token CSRF a la cabecera
             }
         });
 
@@ -179,7 +195,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const response = await fetch(`${baseUrl}/curriculums/pdf/${id}`, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'X-XSRF-TOKEN': csrfToken // Agregar el token CSRF a la cabecera
             }
         });
 
@@ -197,7 +214,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const response = await fetch(`${baseUrl}/curriculums/${id}`, {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'X-XSRF-TOKEN': csrfToken // Agregar el token CSRF a la cabecera
                 }
             });
 
@@ -215,12 +233,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const saveNoteButton = document.getElementById('saveNoteButton');
         const notesList = document.getElementById('notesList');
 
-        notesList.innerHTML = ''; // Limpiar notas anteriores
+        notesList.innerHTML = '';
 
         const response = await fetch(`${baseUrl}/curriculums/${curriculumId}/notas`, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                'X-XSRF-TOKEN': csrfToken // Agregar el token CSRF a la cabecera
             }
         });
 
@@ -249,7 +268,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'X-XSRF-TOKEN': csrfToken // Agregar el token CSRF a la cabecera
                     },
                     body: JSON.stringify({ contenido: content })
                 });
@@ -300,31 +320,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 const response = await fetch(`${baseUrl}/admin/registro-usuarios`, {
                     method: 'GET',
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'X-XSRF-TOKEN': csrfToken // Agregar el token CSRF a la cabecera
                     }
                 });
 
                 if (response.ok) {
-                        const logs = await response.json();
-                        let formattedLogs = logs.map(log => {
-                            // Resta 30 minutos para obtener la fecha de registro original
-                            let logTime = new Date(log.timestamp);
-                            logTime.setMinutes(logTime.getMinutes() - 30);
+                    const logs = await response.json();
+                    let formattedLogs = logs.map(log => {
+                        let logTime = new Date(log.timestamp);
+                        logTime.setMinutes(logTime.getMinutes() - 30);
 
-                            return `Usuario: ${log.username} | Fecha de Registro: ${logTime.toLocaleString()}`;
-                        }).join('\n');
+                        return `Usuario: ${log.username} | Fecha de Registro: ${logTime.toLocaleString()}`;
+                    }).join('\n');
 
-                        alert(formattedLogs);
-                    } else {
-                        alert('Error al cargar los registros');
-                    }
+                    alert(formattedLogs);
+                } else {
+                    alert('Error al cargar los registros');
+                }
             });
 
             const container = document.querySelector('.container');
             container.insertBefore(adminPanel, container.firstChild);
             adminPanel.appendChild(viewLogsButton);
         }
-
     }
 
     document.getElementById('registerForm')?.addEventListener('submit', async function(event) {
@@ -337,7 +356,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const response = await fetch(`${baseUrl}/auth/register`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-XSRF-TOKEN': csrfToken // Agregar el token CSRF a la cabecera
             },
             body: JSON.stringify({ username, email, password, roles })
         });
@@ -369,11 +389,13 @@ document.addEventListener('DOMContentLoaded', function() {
         event.preventDefault();
         const username = document.getElementById('login').value;
         const password = document.getElementById('password').value;
+        const csrfToken = getCsrfToken();
 
         const response = await fetch(`${baseUrl}/auth/login`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-XSRF-TOKEN': csrfToken // Agregar el token CSRF a la cabecera
             },
             body: JSON.stringify({ username, password })
         });
@@ -444,7 +466,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const response = await fetch(`${baseUrl}/auth/forgot-password`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-XSRF-TOKEN': csrfToken // Agregar el token CSRF a la cabecera
             },
             body: JSON.stringify({ email })
         });
@@ -503,7 +526,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('uploadMessage').classList.remove('hidden');
                 setTimeout(() => {
                     document.getElementById('uploadMessage').classList.add('hidden');
-                    location.href = 'success_page.html'; // Redirige a una página de éxito
+                    location.href = 'success_page.html';
                 }, 3000);
             } else {
                 alert(text);
@@ -520,7 +543,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const response = await fetch(`${baseUrl}/curriculums/buscar/clave?clave=${searchInput}`, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                'X-XSRF-TOKEN': csrfToken // Agregar el token CSRF a la cabecera
             }
         });
 

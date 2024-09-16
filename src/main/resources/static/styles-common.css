@@ -447,3 +447,12 @@ footer a:hover {
         opacity: 1;
     }
 }
+
+/* Estilo para el logo en el footer */
+.footer-logo {
+    height: 60px; /* Ajusta el tamaño según sea necesario */
+    width: auto;
+    display: block;
+    margin: 0 auto; /* Centrar el logo */
+    padding-bottom: 10px; /* Añadir un poco de espacio debajo */
+}

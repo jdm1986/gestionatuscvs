@@ -901,3 +901,11 @@ header h1 {
 .container {
     padding-top: 110px;
 }
+
+.footer-logo {
+    height: 60px; /* Ajusta el tamaño según sea necesario */
+    width: auto;
+    display: block;
+    margin: 0 auto; /* Centrar el logo */
+    padding-bottom: 10px; /* Añadir un poco de espacio debajo */
+}

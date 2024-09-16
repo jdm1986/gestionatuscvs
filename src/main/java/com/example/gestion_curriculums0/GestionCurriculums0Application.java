@@ -40,36 +40,13 @@ public class GestionCurriculums0Application {
         }
     }
 }
-//reseteo upload link.1
-
-/* Iniciar el servidor web:
-
-git lone --mirror https://github.com/jdm1986/gestionatuscv.git
-
-En terminal dentro de raiz frontend creada src, pegar este comand python -m http.server 8000
-
-python https_server.py
-
-Pega desde la raiz c: cd cursos\java\IdeaProyect\gestion_curriculums0\gestion_curriculums0\frontend y luego el comando de arriba.
-
-http://localhost:8000/
-
-Abre una terminal o línea de comandos.
-Navega al directorio que contiene tu archivo index.html. Puedes usar el comando cd para cambiar de directorio. Por ejemplo:
 
 
-cd C:\cursos\java\IdeaProyect\gestion_curriculums0\frontend
-
-Inicia el servidor web usando el siguiente comando:
-
-python -m http.server 5500
-
-Acceder a tu archivo:
-
-Abrir navegador web y copiar http://localhost:5500. Deberías ver tu aplicación y poder realizar las solicitudes.*/
+// mvn clean install -Pdev (cargar variables en local)
+//mvn spring-boot:run -Pdev >>>>>> ABRIR XAMP y cargar apache y mysql
+// http://localhost:8080.
 
 /*
-
 Mejoras y Características Adicionales
 Autenticación y Autorización:
 
@@ -130,4 +107,5 @@ Documentación:
 
 Mantén una buena documentación del código, especialmente para cualquier configuración especial o instrucciones para desplegar y mantener la aplicación.
 
- */
+*/
+

@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function() {
         : 'https://gestionatuscv.es';
 
     const token = localStorage.getItem('token');
-    const csrfToken = getCsrfToken(); // Obtener el token CSRF de la cookie
 
     const userId = localStorage.getItem('userId');
     const linkKey = `generatedLink_${userId}`;
@@ -12,18 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const expirationTimeInSeconds = 5 * 24 * 60 * 60;
     const errorMessage = document.getElementById('errorMessage');
     const logo = document.getElementById('logo');
-
-    // Función para obtener el token CSRF de la cookie
-    function getCsrfToken() {
-        const cookies = document.cookie.split(';');
-        for (let cookie of cookies) {
-            const [name, value] = cookie.trim().split('=');
-            if (name === 'XSRF-TOKEN') {
-                return value;
-            }
-        }
-        return null;
-    }
 
     // Manejador de clics en el logo para cerrar sesión
     if (logo) {
@@ -106,8 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
             fetch(`${baseUrl}/curriculums/generate-upload-link`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'X-XSRF-TOKEN': csrfToken // Agregar el token CSRF a la cabecera
+                    'Authorization': `Bearer ${token}`
                 }
             })
             .then(response => response.text())
@@ -141,8 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const response = await fetch(`${baseUrl}/curriculums/usuario`, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${token}`,
-                'X-XSRF-TOKEN': csrfToken // Agregar el token CSRF a la cabecera
+                'Authorization': `Bearer ${token}`
             }
         });
 
@@ -195,8 +180,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const response = await fetch(`${baseUrl}/curriculums/pdf/${id}`, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                'X-XSRF-TOKEN': csrfToken // Agregar el token CSRF a la cabecera
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
         });
 
@@ -214,8 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const response = await fetch(`${baseUrl}/curriculums/${id}`, {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'X-XSRF-TOKEN': csrfToken // Agregar el token CSRF a la cabecera
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             });
 
@@ -238,8 +221,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const response = await fetch(`${baseUrl}/curriculums/${curriculumId}/notas`, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${token}`,
-                'X-XSRF-TOKEN': csrfToken // Agregar el token CSRF a la cabecera
+                'Authorization': `Bearer ${token}`
             }
         });
 
@@ -268,8 +250,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                        'X-XSRF-TOKEN': csrfToken // Agregar el token CSRF a la cabecera
+                        'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify({ contenido: content })
                 });
@@ -320,8 +301,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const response = await fetch(`${baseUrl}/admin/registro-usuarios`, {
                     method: 'GET',
                     headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'X-XSRF-TOKEN': csrfToken // Agregar el token CSRF a la cabecera
+                        'Authorization': `Bearer ${token}`
                     }
                 });
 
@@ -356,8 +336,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const response = await fetch(`${baseUrl}/auth/register`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'X-XSRF-TOKEN': csrfToken // Agregar el token CSRF a la cabecera
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({ username, email, password, roles })
         });
@@ -389,13 +368,11 @@ document.addEventListener('DOMContentLoaded', function() {
         event.preventDefault();
         const username = document.getElementById('login').value;
         const password = document.getElementById('password').value;
-        const csrfToken = getCsrfToken();
 
         const response = await fetch(`${baseUrl}/auth/login`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'X-XSRF-TOKEN': csrfToken // Agregar el token CSRF a la cabecera
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({ username, password })
         });
@@ -466,8 +443,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const response = await fetch(`${baseUrl}/auth/forgot-password`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'X-XSRF-TOKEN': csrfToken // Agregar el token CSRF a la cabecera
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({ email })
         });
@@ -543,8 +519,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const response = await fetch(`${baseUrl}/curriculums/buscar/clave?clave=${searchInput}`, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${token}`,
-                'X-XSRF-TOKEN': csrfToken // Agregar el token CSRF a la cabecera
+                'Authorization': `Bearer ${token}`
             }
         });
 

@@ -1,277 +1,275 @@
 /* Estilo general del cuerpo */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #1c1c1c;
-    color: #ffffff;
-    font-size: 15px;
-    transition: background-color 0.5s ease;
-    margin: 0;
-    padding: 0;
+    font-family: Arial, sans-serif; /* Fuente principal de la página */
+    background-color: #1c1c1c; /* Color de fondo oscuro */
+    color: #ffffff; /* Color del texto en blanco */
+    font-size: 15px; /* Tamaño de fuente base */
+    transition: background-color 0.5s ease; /* Transición suave al cambiar el color de fondo */
+    margin: 0; /* Eliminar márgenes por defecto */
+    padding: 0; /* Eliminar relleno por defecto */
 }
 
 /* Contenedor principal */
 .container {
-    width: 80%;
-    margin: 0 auto;
-    padding-top: 20px;
-    background-color: #333333;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 80%; /* Ocupa el 80% del ancho disponible */
+    margin: 0 auto; /* Centra el contenedor horizontalmente */
+    padding-top: 20px; /* Espacio superior de 20px */
+    background-color: #333333; /* Fondo oscuro del contenedor */
+    padding: 20px; /* Relleno interior */
+    border-radius: 8px; /* Bordes redondeados de 8px */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra alrededor del contenedor */
 }
 
 /* Estilos generales para los botones */
 button {
-    background-color: #E573FE;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    cursor: pointer;
-    margin-right: 10px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    font-size: 16px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    background-color: #E573FE; /* Color de fondo púrpura */
+    color: white; /* Color del texto blanco */
+    border: none; /* Eliminar bordes */
+    padding: 12px 24px; /* Espaciado interior del botón */
+    cursor: pointer; /* Mostrar el puntero de clic */
+    margin-right: 10px; /* Espaciado a la derecha */
+    margin-bottom: 10px; /* Espaciado inferior */
+    border-radius: 8px; /* Bordes redondeados de 8px */
+    font-size: 16px; /* Tamaño de la fuente del botón */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave en el botón */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Transiciones suaves */
 }
 
 /* Efectos de botón al pasar el cursor */
 button:hover {
-    background-color: #7C3E8A;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    background-color: #7C3E8A; /* Cambia el color de fondo al pasar el ratón */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra más intensa al pasar el ratón */
 }
 
 /* Efectos de botón al hacer clic */
 button:active {
-    transform: scale(0.95);
-    transition: transform 0.1s ease;
+    transform: scale(0.95); /* Reduce el tamaño del botón al hacer clic */
 }
 
 /* Estilos para inputs y selects */
 input, select {
-    padding: 12px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #444444;
-    color: white;
-    font-size: 16px;
-    box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.1);
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    padding: 12px; /* Espaciado interior */
+    margin-bottom: 10px; /* Espaciado inferior */
+    border: 1px solid #ccc; /* Borde gris claro */
+    border-radius: 8px; /* Bordes redondeados de 8px */
+    background-color: #444444; /* Fondo gris oscuro */
+    color: white; /* Texto en blanco */
+    font-size: 16px; /* Tamaño de la fuente */
+    box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.1); /* Sombra interna sutil */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Transición suave en borde y sombra */
 }
 
 /* Estilo de los campos de entrada al enfocarse */
 input:focus, select:focus {
-    outline: none;
-    border-color: #e573fe;
-    box-shadow: 0px 0px 8px rgba(108, 99, 255, 0.5);
+    outline: none; /* Eliminar el borde por defecto de enfoque */
+    border-color: #e573fe; /* Color púrpura para el borde al enfocarse */
+    box-shadow: 0px 0px 8px rgba(108, 99, 255, 0.5); /* Sombra luminosa al enfocar */
 }
 
 /* Ocultar elementos */
 .hidden {
-    display: none;
+    display: none; /* Ocultar elementos */
 }
 
 /* Estilo para encabezados */
 h1, h2 {
-    text-align: center;
-    color: #ffffff;
-    margin: 15px 0;
+    text-align: center; /* Centrar texto */
+    color: #ffffff; /* Color del texto blanco */
+    margin: 15px 0; /* Márgenes superior e inferior de 15px */
 }
 
 /* Estilos del header */
 header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    background-color: #1c1c1c;
-    padding: 10px 0;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-    z-index: 1000;
+    display: flex; /* Usar flexbox para centrar elementos */
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Centrar verticalmente */
+    width: 100%; /* Ocupa todo el ancho disponible */
+    background-color: #1c1c1c; /* Fondo oscuro */
+    padding: 10px 0; /* Relleno superior e inferior */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* Sombra en el header */
+    z-index: 1000; /* Colocación superior */
 }
 
 /* Estilo para el logo */
 header .logo {
-    height: 100px;
-    width: auto;
-    max-width: 100%;
-    object-fit: contain;
-    margin: 0 auto;
-    display: block;
+    height: 100px; /* Altura del logo */
+    width: auto; /* Ajustar el ancho automáticamente */
+    max-width: 100%; /* No exceder el 100% del contenedor */
+    object-fit: contain; /* Mantener las proporciones del logo */
+    margin: 0 auto; /* Centrar el logo */
+    display: block; /* Mostrar como bloque */
 }
 
 /* Estilos de botones y acciones */
 .buttons, .actions, .search {
-    text-align: center;
+    text-align: center; /* Centrar botones y elementos */
 }
 
 /* Estilo para formularios */
 form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: flex; /* Usar flexbox para organizar los campos */
+    flex-direction: column; /* Colocar los elementos en columna */
+    align-items: center; /* Centrar horizontalmente */
 }
 
 form input, form select, form button {
-    width: 100%;
-    max-width: 400px;
-    margin-bottom: 10px;
+    width: 100%; /* Ancho completo */
+    max-width: 400px; /* Limitar el ancho a 400px */
+    margin-bottom: 10px; /* Espaciado inferior */
 }
 
 /* Estilo para el contenedor de acciones */
 .actions {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-    flex-wrap: wrap; /* Permite que los botones se apilen si no hay espacio */
+    display: flex; /* Flexbox para organizar los botones */
+    justify-content: center; /* Centrar horizontalmente */
+    gap: 10px; /* Espaciado entre botones */
+    margin-bottom: 20px; /* Espaciado inferior */
+    flex-wrap: wrap; /* Permitir que los botones se apilen si no hay espacio */
 }
 
 /* Estilo para la sección de búsqueda */
 .search {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 20px;
+    display: flex; /* Usar flexbox para organizar la búsqueda */
+    flex-direction: column; /* Organizar elementos en columna */
+    align-items: center; /* Centrar horizontalmente */
+    margin-bottom: 20px; /* Espaciado inferior */
 }
 
 .search input {
-    flex: 1;
-    margin-right: 10px;
-    background-color: #444444;
-    color: white;
+    flex: 1; /* Permitir que el input crezca */
+    margin-right: 10px; /* Espaciado a la derecha */
+    background-color: #444444; /* Fondo gris oscuro */
+    color: white; /* Texto en blanco */
 }
 
 .search-buttons {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    max-width: 400px;
-    margin-top: 10px;
-    flex-wrap: wrap; /* Permite que los botones se apilen si no hay espacio */
-    gap: 10px;
+    display: flex; /* Flexbox para los botones de búsqueda */
+    justify-content: center; /* Centrar horizontalmente */
+    width: 100%; /* Ancho completo */
+    max-width: 400px; /* Limitar a 400px */
+    margin-top: 10px; /* Espaciado superior */
+    flex-wrap: wrap; /* Apilar botones si es necesario */
+    gap: 10px; /* Espaciado entre botones */
 }
 
 /* Estilo para la tabla de resultados */
 .results {
-    max-height: 70vh;
-    overflow-y: auto;
-    background-color: #333333;
-    padding: 20px;
-    border-radius: 8px;
-    margin-top: 20px;
-    color: white;
+    max-height: 70vh; /* Limitar la altura a 70% de la ventana */
+    overflow-y: auto; /* Scroll vertical si es necesario */
+    background-color: #333333; /* Fondo oscuro */
+    padding: 20px; /* Relleno interior */
+    border-radius: 8px; /* Bordes redondeados */
+    margin-top: 20px; /* Espaciado superior */
+    color: white; /* Texto en blanco */
 }
 
 /* Apariencia de las tablas */
 table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #2c2c2c;
-    border-radius: 8px;
-    overflow: hidden;
-    table-layout: fixed;
+    width: 100%; /* Ocupa el 100% del contenedor */
+    border-collapse: collapse; /* Eliminar espacios entre celdas */
+    background-color: #2c2c2c; /* Fondo oscuro de la tabla */
+    border-radius: 8px; /* Bordes redondeados */
+    overflow: hidden; /* Ocultar contenido que se salga del borde */
+    table-layout: fixed; /* Distribuir las celdas equitativamente */
 }
 
 thead th {
-    background-color: #e573fe;
-    color: white;
-    padding: 12px;
-    font-size: 16px;
-    text-align: left;
+    background-color: #e573fe; /* Fondo púrpura para encabezados */
+    color: white; /* Texto en blanco */
+    padding: 12px; /* Espaciado interior */
+    font-size: 16px; /* Tamaño del texto */
+    text-align: left; /* Alinear a la izquierda */
 }
 
 tbody tr {
-    border-bottom: 1px solid #444;
+    border-bottom: 1px solid #444; /* Línea de separación entre filas */
 }
 
 tbody tr:hover {
-    background-color: #3a3a3a;
-    transition: background-color 0.3s ease;
+    background-color: #3a3a3a; /* Fondo gris al pasar el ratón */
+    transition: background-color 0.3s ease; /* Transición suave */
 }
 
 tbody td {
-    padding: 12px;
-    color: #ccc;
-    font-size: 14px;
-    text-align: left;
+    padding: 12px; /* Espaciado interior de las celdas */
+    color: #ccc; /* Color del texto gris claro */
+    font-size: 14px; /* Tamaño de la fuente en las celdas */
+    text-align: left; /* Alinear el texto a la izquierda */
 }
 
 /* Estilos para los botones de acción en la tabla */
 .action-buttons {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    flex-wrap: wrap; /* Permite que los botones se apilen si no hay espacio */
+    display: flex; /* Flexbox para organizar los botones */
+    justify-content: space-between; /* Distribuir los botones equitativamente */
+    gap: 10px; /* Espaciado entre botones */
+    flex-wrap: wrap; /* Permitir que los botones se apilen si no hay espacio */
 }
 
 .action-buttons button {
-    flex: 1;
-    min-width: 80px;
-    padding: 10px;
+    flex: 1; /* Hacer que los botones se adapten al espacio disponible */
+    min-width: 80px; /* Mínimo ancho de los botones */
+    padding: 10px; /* Espaciado interior */
 }
 
 /* Estilos para dispositivos móviles */
 @media (max-width: 767px) {
- /* Estilo para el contenedor del enlace generado */
     .link-container {
-        display: none;
-        flex-direction: column;
-        align-items: center;
-        margin-top: 10px;
-        width: 100%;
+        display: none; /* Ocultar el contenedor del enlace generado */
+        flex-direction: column; /* Disposición en columna */
+        align-items: center; /* Centrar horizontalmente */
+        margin-top: 10px; /* Espaciado superior */
+        width: 100%; /* Ancho completo */
     }
 
     .link-container.show {
-        display: flex;
+        display: flex; /* Mostrar el contenedor cuando sea necesario */
     }
 
     .generated-link {
-        background-color: #444444;
-        color: white;
-        padding: 10px;
-        border-radius: 8px;
-        margin-bottom: 10px;
-        word-wrap: break-word;
-        text-align: center;
-        max-width: 100%;
+        background-color: #444444; /* Fondo gris oscuro */
+        color: white; /* Texto en blanco */
+        padding: 10px; /* Espaciado interior */
+        border-radius: 8px; /* Bordes redondeados */
+        margin-bottom: 10px; /* Espaciado inferior */
+        word-wrap: break-word; /* Ajuste de palabras largas */
+        text-align: center; /* Centrar texto */
+        max-width: 100%; /* No exceder el ancho del contenedor */
     }
 
     .copy-button {
-        background-color: #7C3E8A;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        cursor: pointer;
-        border-radius: 4px;
-        font-size: 14px;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        transition: background-color 0.3s ease;
+        background-color: #7C3E8A; /* Fondo púrpura */
+        color: white; /* Texto en blanco */
+        border: none; /* Eliminar bordes */
+        padding: 10px 20px; /* Espaciado interior */
+        cursor: pointer; /* Mostrar puntero de clic */
+        border-radius: 4px; /* Bordes redondeados */
+        font-size: 14px; /* Tamaño de la fuente */
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+        transition: background-color 0.3s ease; /* Transición suave */
     }
 
     .copy-button:hover {
-        background-color: #E573FE;
+        background-color: #E573FE; /* Cambiar el color de fondo al pasar el ratón */
     }
+
     .container {
-        width: auto;
-        padding: 20px;
+        width: auto; /* Ajustar el ancho automáticamente */
+        padding: 20px; /* Relleno interior */
     }
 
     .search-buttons {
-        flex-direction: column;
-        gap: 10px;
+        flex-direction: column; /* Organizar los botones en columna */
+        gap: 10px; /* Espaciado entre botones */
     }
 
     button {
-        width: 100%;
-        margin-bottom: 10px;
+        width: 100%; /* Hacer que los botones ocupen todo el ancho */
+        margin-bottom: 10px; /* Espaciado inferior */
     }
 
     table {
-        width: 100%;
-        border-collapse: collapse;
+        width: 100%; /* Ocupa todo el ancho del contenedor */
+        border-collapse: collapse; /* Eliminar espacios entre celdas */
     }
 
     thead {
@@ -279,180 +277,179 @@ tbody td {
     }
 
     tbody tr {
-        display: block;
-        border-bottom: 1px solid #333;
-        margin-bottom: 10px;
+        display: block; /* Mostrar cada fila como un bloque independiente */
+        border-bottom: 1px solid #333; /* Línea de separación entre filas */
+        margin-bottom: 10px; /* Espaciado inferior */
     }
 
     tbody td {
-        display: block;
-        text-align: right;
-        padding: 10px;
-        border-bottom: 1px solid #444;
-        position: relative;
-        padding-left: 50%;
+        display: block; /* Mostrar cada celda como un bloque */
+        text-align: right; /* Alinear texto a la derecha */
+        padding: 10px; /* Espaciado interior */
+        border-bottom: 1px solid #444; /* Línea de separación en las celdas */
+        position: relative; /* Posicionar de forma relativa para el contenido antes */
+        padding-left: 50%; /* Dejar espacio a la izquierda para el contenido antes */
     }
 
     tbody td::before {
-        content: attr(data-label);
-        position: absolute;
-        left: 10px;
-        width: 45%;
-        padding-right: 10px;
-        white-space: nowrap;
-        text-align: left;
-        font-weight: bold;
+        content: attr(data-label); /* Mostrar el atributo data-label antes del contenido */
+        position: absolute; /* Posicionar de forma absoluta */
+        left: 10px; /* Colocar a 10px de la izquierda */
+        width: 45%; /* Ancho del 45% */
+        padding-right: 10px; /* Espaciado a la derecha */
+        white-space: nowrap; /* Evitar que las palabras se corten */
+        text-align: left; /* Alinear el texto a la izquierda */
+        font-weight: bold; /* Texto en negrita */
     }
 
     tbody td .action-buttons {
-        justify-content: flex-end; /* Mover botones a la derecha */
+        justify-content: flex-end; /* Mover los botones a la derecha */
     }
 
     tbody td button {
-        padding: 5px 10px;
-        cursor: pointer;
+        padding: 5px 10px; /* Espaciado interior reducido */
+        cursor: pointer; /* Mostrar puntero de clic */
     }
 
     tbody td button:hover {
-        background-color: #7C3E8A;
+        background-color: #7C3E8A; /* Cambiar el color de fondo al pasar el ratón */
     }
 
-    /* Ajustar tamaño del botón "Ver registros de usuarios" y centrar */
     #viewLogsButton {
-        width: 80%;
-        margin: 10px auto;
+        width: 80%; /* Ancho del 80% */
+        margin: 10px auto; /* Centrar el botón y añadir margen superior */
     }
 }
 
 /* Centrar la palabra "Acciones" */
 @media (max-width: 1024px) {
     th:nth-child(6) {
-        text-align: center;
+        text-align: center; /* Centrar el texto en la columna de acciones */
     }
 }
 
 /* Estilos para el modal de notas */
 .modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
-    padding-top: 60px;
+    display: none; /* Ocultar el modal por defecto */
+    position: fixed; /* Posicionamiento fijo para superponerlo */
+    z-index: 1; /* Colocar el modal en la parte superior */
+    left: 0; /* Posicionar en el lado izquierdo */
+    top: 0; /* Posicionar en la parte superior */
+    width: 100%; /* Ocupa todo el ancho */
+    height: 100%; /* Ocupa todo el alto */
+    overflow: auto; /* Habilitar scroll si es necesario */
+    background-color: rgba(0,0,0,0.4); /* Fondo semi-transparente */
+    padding-top: 60px; /* Añadir espacio en la parte superior */
 }
 
 .modal-content {
-    background-color: #fefefe;
-    margin: 5% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 500px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fefefe; /* Fondo blanco para el contenido del modal */
+    margin: 5% auto; /* Centrar el modal */
+    padding: 20px; /* Relleno interior */
+    border: 1px solid #888; /* Borde gris claro */
+    width: 80%; /* Ocupa el 80% del ancho disponible */
+    max-width: 500px; /* Ancho máximo de 500px */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra ligera */
 }
 
 .close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
+    color: #aaa; /* Color gris claro para el botón de cerrar */
+    float: right; /* Posicionar a la derecha */
+    font-size: 28px; /* Tamaño de la fuente */
+    font-weight: bold; /* Texto en negrita */
 }
 
 .close:hover,
 .close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+    color: black; /* Cambiar el color al pasar el ratón o al enfocarse */
+    text-decoration: none; /* Eliminar subrayado */
+    cursor: pointer; /* Mostrar puntero de clic */
 }
 
 #noteText {
-    width: 100%;
-    height: 150px;
-    margin-bottom: 10px;
+    width: 100%; /* Ocupa todo el ancho */
+    height: 150px; /* Altura de 150px */
+    margin-bottom: 10px; /* Espaciado inferior */
 }
 
 #saveNoteButton {
-    background-color: #e573fe;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 4px;
+    background-color: #e573fe; /* Fondo púrpura */
+    color: white; /* Texto en blanco */
+    border: none; /* Eliminar bordes */
+    padding: 10px 20px; /* Espaciado interior */
+    cursor: pointer; /* Mostrar puntero de clic */
+    border-radius: 4px; /* Bordes redondeados */
 }
 
 #saveNoteButton:hover {
-    background-color: #7C3E8A;
+    background-color: #7C3E8A; /* Cambiar el color de fondo al pasar el ratón */
 }
 
 .note {
-    background-color: #444;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 4px;
+    background-color: #444; /* Fondo gris oscuro para las notas */
+    padding: 10px; /* Espaciado interior */
+    margin-bottom: 10px; /* Espaciado inferior */
+    border-radius: 4px; /* Bordes redondeados */
 }
 
 .note span {
-    display: block;
-    color: #ccc;
-    font-size: 0.9em;
-    margin-top: 5px;
-    text-align: right;
+    display: block; /* Mostrar como bloque */
+    color: #ccc; /* Texto gris claro */
+    font-size: 0.9em; /* Tamaño reducido */
+    margin-top: 5px; /* Espaciado superior */
+    text-align: right; /* Alinear texto a la derecha */
 }
 
 /* Enlaces */
 .link-blanco {
-    color: white;
-    text-decoration: underline;
-    font-weight: bold;
+    color: white; /* Texto en blanco */
+    text-decoration: underline; /* Subrayar texto */
+    font-weight: bold; /* Negrita */
 }
 
 /* Estilos para el pie de página */
 footer {
-    background-color: #222;
-    color: #bbb;
-    padding: 20px 0;
-    text-align: center;
-    margin-top: 20px;
-    font-size: 14px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
+    background-color: #222; /* Fondo gris oscuro */
+    color: #bbb; /* Texto gris claro */
+    padding: 20px 0; /* Espaciado superior e inferior */
+    text-align: center; /* Centrar texto */
+    margin-top: 20px; /* Espaciado superior */
+    font-size: 14px; /* Tamaño de la fuente */
+    display: flex; /* Flexbox para organizar el contenido */
+    flex-direction: column; /* Disposición en columna */
+    align-items: center; /* Centrar horizontalmente */
+    gap: 10px; /* Espaciado entre elementos */
 }
 
 footer a {
-    color: #e573fe;
-    text-decoration: none;
-    margin: 0 10px;
+    color: #e573fe; /* Texto púrpura */
+    text-decoration: none; /* Eliminar subrayado */
+    margin: 0 10px; /* Espaciado horizontal */
 }
 
 footer a:hover {
-    text-decoration: underline;
-    color: #7C3E8A;
+    text-decoration: underline; /* Subrayar al pasar el ratón */
+    color: #7C3E8A; /* Cambiar el color del texto */
 }
 
 /* Animación de aparición suave en la carga de la página */
 .fade-in {
-    opacity: 0;
-    animation: fadeInAnimation 1.5s forwards ease-in-out;
+    opacity: 0; /* Comenzar con opacidad 0 */
+    animation: fadeInAnimation 1.5s forwards ease-in-out; /* Animación de entrada */
 }
 
 @keyframes fadeInAnimation {
     to {
-        opacity: 1;
+        opacity: 1; /* Llegar a opacidad 1 */
     }
 }
 
 /* Estilo para el logo en el footer */
 .footer-logo {
-    height: 60px; /* Ajusta el tamaño según sea necesario */
-    width: auto;
-    display: block;
+    height: 60px; /* Altura del logo */
+    width: auto; /* Ajustar el ancho automáticamente */
+    display: block; /* Mostrar como bloque */
     margin: 0 auto; /* Centrar el logo */
-    padding-bottom: 10px; /* Añadir un poco de espacio debajo */
+    padding-bottom: 10px; /* Espaciado inferior */
 }

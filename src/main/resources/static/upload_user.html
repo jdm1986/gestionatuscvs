@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subir Currículum (Usuario)</title>
     <link rel="stylesheet" href="styles-common.css">
+
+    <!-- Página que permite a los usuarios autenticados subir su currículum directamente. Se captura el userId
+    para asociar el currículum al usuario. -->
 </head>
 <body>
 <header>
@@ -33,7 +36,7 @@
     </form>
     <div id="uploadMessage" class="hidden">Currículum subido exitosamente.</div>
     <div id="errorMessage" class="hidden">Error al subir el currículum.</div>
-    </div>
+</div>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         // Simulando que el userId se obtiene al cargar la página (por ejemplo, desde localStorage)

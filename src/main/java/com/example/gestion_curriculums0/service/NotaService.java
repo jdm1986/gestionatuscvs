@@ -1,4 +1,7 @@
-// NotaService.java
+/* Esta clase gestiona la lógica de negocio relacionada con las notas. Proporciona métodos
+ para obtener notas asociadas a un currículum específico, guardar una nueva nota y eliminar
+ notas de la base de datos.*/
+
 package com.example.gestion_curriculums0.service;
 
 import com.example.gestion_curriculums0.model.Nota;
@@ -14,14 +17,17 @@ public class NotaService {
     @Autowired
     private NotaRepository notaRepository;
 
+    // En este método obtengo todas las notas asociadas a un currículum específico
     public List<Nota> getNotasByCurriculumId(Long curriculumId) {
         return notaRepository.findByCurriculumId(curriculumId);
     }
 
+    // Aquí guardo una nueva nota en la base de datos
     public Nota saveNota(Nota nota) {
         return notaRepository.save(nota);
     }
 
+    // Este método elimina una nota específica de la base de datos
     public void deleteNota(Long id) {
         notaRepository.deleteById(id);
     }

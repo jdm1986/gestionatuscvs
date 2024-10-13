@@ -1,3 +1,7 @@
+/* Esta es la clase principal que arranca la aplicación Spring Boot.
+   Aquí se configuran los paquetes a escanear, los repositorios JPA, y se habilitan funcionalidades como
+   la programación de tareas asíncronas y la carga de variables de entorno desde un archivo .env.*/
+
 package com.example.gestion_curriculums0;
 
 import io.github.cdimascio.dotenv.Dotenv;
@@ -13,25 +17,26 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ComponentScan(basePackages = "com.example.gestion_curriculums0")
 @EnableJpaRepositories(basePackages = "com.example.gestion_curriculums0")
 @EntityScan(basePackages = "com.example.gestion_curriculums0")
-@EnableAsync
-@EnableScheduling
+@EnableAsync // Habilito las operaciones asíncronas en la aplicación
+@EnableScheduling // Habilito la programación de tareas automáticas
 public class GestionCurriculums0Application {
 
     public static void main(String[] args) {
-        // Cargar variables desde .env
+        // Cargar las variables de entorno desde el archivo .env
         Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
 
-        // Establecer las variables de entorno en el sistema, solo si no son null
+        // Configuro las variables de entorno del sistema solo si están definidas en el .env
         setSystemProperty("DB_URL", dotenv.get("DB_URL"));
         setSystemProperty("DB_USERNAME", dotenv.get("DB_USERNAME"));
         setSystemProperty("DB_PASSWORD", dotenv.get("DB_PASSWORD"));
         setSystemProperty("SPRING_MAIL_PASSWORD", dotenv.get("SPRING_MAIL_PASSWORD"));
         setSystemProperty("JWT_SECRET", dotenv.get("JWT_SECRET"));
 
-        // Iniciar la aplicación
+        // Iniciar la aplicación Spring Boot
         SpringApplication.run(GestionCurriculums0Application.class, args);
     }
 
+    // Establezco la propiedad del sistema solo si el valor no es nulo
     private static void setSystemProperty(String key, String value) {
         if (value != null) {
             System.setProperty(key, value);
@@ -41,71 +46,8 @@ public class GestionCurriculums0Application {
     }
 }
 
-
+// Comandos de Maven para el entorno de desarrollo:
 // mvn clean install -Pdev (cargar variables en local)
-//mvn spring-boot:run -Pdev >>>>>> ABRIR XAMP y cargar apache y mysql
-// http://localhost:8080.
+// mvn spring-boot:run -Pdev >>>>> ABRIR XAMP y cargar apache y mysql
 
-/*
-Mejoras y Características Adicionales
-Autenticación y Autorización:
-
-Implementar autenticación de usuarios para que solo usuarios registrados puedan subir y buscar currículums.
-Usar JWT (JSON Web Tokens) para gestionar la autenticación.
-Interfaz de Usuario Mejorada:
-
-Mejorar la interfaz de usuario con un diseño más atractivo y funcional.
-Usar frameworks de frontend como React, Angular, o Vue.js para crear una interfaz más interactiva.
-Paginación y Filtros:
-
-Implementar paginación para las búsquedas de currículums para manejar grandes cantidades de datos.
-Agregar filtros adicionales, como búsqueda por fecha de creación o por ubicación.
-Notificaciones por Correo Electrónico:
-
-Enviar notificaciones por correo electrónico a los usuarios cuando se suba un nuevo currículum o cuando se realicen búsquedas específicas.
-Subida de Archivos Mejorada:
-
-Permitir la subida de múltiples archivos a la vez.
-Agregar validación del tipo de archivo y tamaño antes de subir.
-Seguridad Adicional:
-
-Implementar HTTPS para asegurar la comunicación entre el cliente y el servidor.
-Realizar validaciones adicionales en el backend para evitar ataques como la inyección de SQL o XSS (Cross-Site Scripting).
-Documentación y Pruebas:
-
-Documentar la API usando Swagger para que sea más fácil de entender y usar.
-Escribir pruebas unitarias y de integración para asegurar la calidad del código.
-Despliegue en Producción:
-
-Preparar la aplicación para su despliegue en un entorno de producción, como AWS, Heroku, o DigitalOcean.
-Configurar un pipeline de CI/CD (Integración Continua/Despliegue Continuo) para automatizar el proceso de despliegue.
-
--------------------
-
-Configuración de Seguridad:
-
-La advertencia sobre la configuración de seguridad sugiere que debes cambiar las configuraciones de seguridad para la producción.
-Configura un método de autenticación seguro (por ejemplo, autenticación basada en base de datos, OAuth2, etc.) en lugar de inMemoryUserDetailsManager.
-Propiedades del Archivo application.properties:
-
-Asegúrate de que todas las propiedades sensibles, como openai.api.key, no estén en el control de versiones.
-Usa variables de entorno o un servicio de gestión de secretos para almacenar y gestionar estas propiedades sensibles.
-Manejo de Errores y Excepciones:
-
-Implementa un manejo de errores y excepciones adecuado para proporcionar retroalimentación clara al usuario y para registrar cualquier problema que pueda ocurrir en producción.
-Pruebas:
-
-Vuelve a habilitar las pruebas unitarias y de integración, y asegúrate de que todas pasen.
-Agrega más pruebas si es necesario para cubrir casos bord y asegurar la robustez de tu aplicación.
-Registro y Monitoreo:
-
-Configura un sistema de registro y monitoreo (por ejemplo, ELK stack, Prometheus, Grafana) para mantener un ojo en el rendimiento y la salud de tu aplicación en producción.
-Despliegue:
-
-Prepara tu aplicación para el despliegue en un entorno de producción, considerando opciones como contenedores Docker, Kubernetes, o servicios de nube como AWS, Azure, o Google Cloud.
-Documentación:
-
-Mantén una buena documentación del código, especialmente para cualquier configuración especial o instrucciones para desplegar y mantener la aplicación.
-
-*/
-
+// URL de acceso a la aplicación: http://localhost:8080

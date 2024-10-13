@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+// Defino este controlador para gestionar las operaciones relacionadas con los usuarios
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
@@ -35,39 +36,45 @@ public class UsuarioController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    // Método para registrar un nuevo usuario
     @PostMapping("/registrar")
     @Transactional
     public ResponseEntity<?> createUsuario(@RequestBody Usuario usuario) {
         try {
+            // Verifico que el nombre de usuario no esté vacío
             if (usuario.getNombreUsuario() == null || usuario.getNombreUsuario().isEmpty()) {
                 return ResponseEntity.badRequest().body("El nombre de usuario no puede estar vacío");
             }
+            // Verifico que la contraseña no esté vacía
             if (usuario.getContrasena() == null || usuario.getContrasena().isEmpty()) {
                 return ResponseEntity.badRequest().body("La contraseña no puede estar vacía");
             }
+            // Verifico que el email no esté vacío
             if (usuario.getEmail() == null || usuario.getEmail().isEmpty()) {
                 return ResponseEntity.badRequest().body("El email no puede estar vacío");
             }
 
-            // Validación de contraseña con las reglas en UsuarioService
+            // Valido la contraseña utilizando las reglas que definí en UsuarioService
             usuarioService.validatePassword(usuario.getContrasena());
 
+            // Guardo el usuario y devuelvo el DTO correspondiente
             Usuario savedUsuario = usuarioService.saveUsuario(usuario);
             System.out.println("Usuario registrado: " + savedUsuario.getNombreUsuario());
 
             return ResponseEntity.ok(convertToDTO(savedUsuario));
         } catch (IllegalArgumentException e) {
-            // Si ocurre una excepción durante la validación, se devuelve un mensaje de error apropiado
+            // Si hay algún error en la validación, devuelvo un mensaje de error apropiado
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-
+    // Método auxiliar para convertir un usuario en DTO
     private UsuarioDTO convertToDTO(Usuario usuario) {
         return new UsuarioDTO(usuario.getId(), usuario.getNombreUsuario(), usuario.getEmail(), Collections.singletonList(usuario.getRoles()),
                 usuario.getCurriculums().stream().map(this::convertCurriculumToDTO).collect(Collectors.toList()));
     }
 
+    // Método auxiliar para convertir un curriculum en DTO
     private CurriculumDTO convertCurriculumToDTO(Curriculum curriculum) {
         return new CurriculumDTO(
                 curriculum.getId(),
@@ -82,17 +89,20 @@ public class UsuarioController {
         );
     }
 
+    // Listado de todos los usuarios registrados
     @GetMapping("/listar")
     public List<Usuario> listarUsuarios() {
         return usuarioRepository.findAll();
     }
 
+    // Obtengo un usuario por su nombre de usuario
     @GetMapping("/listar/{username}")
     public UsuarioDTO getUsuario(@PathVariable String username) {
         Usuario usuario = usuarioRepository.findByNombreUsuario(username).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         return convertToDTO(usuario);
     }
 
+    // Elimino un usuario por su nombre de usuario
     @DeleteMapping("/delete-user/{username}")
     public ResponseEntity<String> deleteUser(@PathVariable String username) {
         Optional<Usuario> usuarioOpt = usuarioService.findByNombreUsuario(username);

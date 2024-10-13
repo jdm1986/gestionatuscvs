@@ -1,12 +1,18 @@
 package com.example.gestion_curriculums0.service;
 
+/*
+  Clase AuthRequest: Me encargo de representar los datos de autenticación que
+  recibo en las solicitudes relacionadas con el inicio de sesión y el registro de usuarios.
+  Contiene el nombre de usuario, la contraseña, el email y los roles asociados al usuario.
+ */
 public class AuthRequest {
-    private String username;
-    private String password;
-    private String email;
-    private String roles;
+    private String username;  // Nombre de usuario para la autenticación
+    private String password;  // Contraseña del usuario
+    private String email;     // Correo electrónico del usuario (opcional dependiendo del contexto)
+    private String roles;     // Roles del usuario, por ejemplo, USER o ADMIN
 
-    // Getters y setters
+    // Getters y setters para acceder y modificar los valores
+
     public String getUsername() {
         return username;
     }

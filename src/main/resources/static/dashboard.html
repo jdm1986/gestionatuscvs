@@ -9,27 +9,37 @@
 </head>
 <body>
 <header>
+    <!-- Página principal del panel de gestión de currículums, donde los usuarios pueden subir CVs,
+         realizar búsquedas y generar enlaces de subida. Los administradores también pueden ver los registros. -->
     <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
 </header>
 <div class="container">
+    <!-- Mensaje de bienvenida personalizado con el nombre del usuario -->
     <h1>BIENVENIDO/A, <span id="username"></span></h1>
+
+    <!-- Botones de acción: subir currículum, cerrar sesión, ver registros (solo admin) -->
     <div class="actions">
         <button onclick="location.href='upload_user.html'">Subir Currículum</button>
         <button id="logoutButton">Cerrar Sesión</button>
         <button id="viewLogsButton" class="admin-only" style="display:none;">Ver Registros de Usuarios</button> <!-- Botón para ver registros -->
     </div>
+
+    <!-- Sección de búsqueda y filtros -->
     <div class="search">
         <input type="text" id="searchInput" placeholder="Buscar por palabras clave">
         <div class="search-buttons">
             <button id="searchButton">Buscar</button>
             <button id="clearButton">Limpiar Filtros</button>
-            <button id="generateLinkButton">Upload Link</button>
+            <button id="generateLinkButton">Upload Link</button> <!-- Botón para generar un enlace de subida -->
         </div>
         <div class="link-container">
+            <!-- Espacio donde se mostrará el enlace generado -->
             <p id="generatedLink" class="generated-link hidden"></p>
             <button id="copyButton" class="copy-button hidden">Copiar enlace</button>
         </div>
     </div>
+
+    <!-- Tabla donde se mostrarán los resultados de búsqueda de CVs -->
     <div class="results">
         <table>
             <thead>
@@ -49,7 +59,7 @@
     </div>
 </div>
 
-<!-- Modal para añadir notas -->
+<!-- Modal para añadir y visualizar notas en los currículums -->
 <div id="noteModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
@@ -60,8 +70,11 @@
     </div>
 </div>
 
+<!-- Archivo JavaScript donde están las funcionalidades -->
 <script src="scripts.js"></script>
 </body>
+
+<!-- Pie de página -->
 <footer>
     <div class="footer-content">
         <a href="https://www.jesusdiazmartincv.es" target="_blank"> <!-- Enlace alrededor del logo -->

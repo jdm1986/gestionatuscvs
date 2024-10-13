@@ -8,27 +8,42 @@
 </head>
 <body>
 <header>
+    <!-- Página de contacto que permite a los usuarios enviar un mensaje a través de un formulario.
+         Utiliza un script para hacer una petición POST al backend con los datos del formulario. -->
     <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
 </header>
 <div class="container">
+    <!-- Título de la página -->
     <h1>CONTACTO</h1>
+
+    <!-- Formulario para que los usuarios introduzcan su nombre, correo y mensaje -->
     <form id="contactForm">
         <input type="text" id="name" placeholder="Tu nombre" required>
         <input type="email" id="email" placeholder="Tu correo electrónico" required>
         <textarea id="message" placeholder="Tu mensaje" required style="margin-bottom: 10px;"></textarea>
+
+        <!-- Botón de enviar -->
         <button type="submit">Enviar</button>
+
+        <!-- Botón para volver a la página de inicio -->
         <button type="button" onclick="location.href='index.html'">Volver</button>
     </form>
+
+    <!-- Mensaje de confirmación de envío oculto inicialmente -->
     <div id="confirmationMessage" class="hidden">Tu mensaje ha sido enviado. Nos pondremos en contacto contigo pronto.</div>
 </div>
+
+<!-- Script para manejar el evento de envío del formulario -->
 <script>
     document.getElementById('contactForm').addEventListener('submit', async function(event) {
         event.preventDefault();
 
+        // Capturo los valores de los campos del formulario
         const name = document.getElementById('name').value;
         const email = document.getElementById('email').value;
         const message = document.getElementById('message').value;
 
+        // Realizo una solicitud POST al backend con los datos del formulario en formato JSON
         const response = await fetch('${app.baseUrl}/contact', {
             method: 'POST',
             headers: {
@@ -42,6 +57,7 @@
         });
 
         if (response.ok) {
+            // Si el mensaje se envía correctamente, muestro el mensaje de confirmación y limpio el formulario
             document.getElementById('confirmationMessage').classList.remove('hidden');
             document.getElementById('contactForm').reset();
         } else {
@@ -49,8 +65,12 @@
         }
     });
 </script>
+
+<!-- Script para otras funcionalidades generales -->
 <script src="scripts.js"></script>
 </body>
+
+<!-- Pie de página con enlaces a las políticas, términos y una referencia al desarrollador -->
 <footer>
     <div class="footer-content">
         <a href="https://www.jesusdiazmartincv.es" target="_blank"> <!-- Enlace alrededor del logo -->

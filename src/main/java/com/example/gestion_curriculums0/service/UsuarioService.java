@@ -1,12 +1,12 @@
+/* Esta clase se encarga de la gestión de los usuarios, incluyendo su creación, validación de contraseñas,
+   eliminación automática de usuarios inactivos y envío de correos electrónicos de bienvenida y despedida.
+   Además, gestiona el registro de logs de actividad de usuarios.*/
+
 package com.example.gestion_curriculums0.service;
 
 import com.example.gestion_curriculums0.model.Usuario;
 import com.example.gestion_curriculums0.model.UserLog;
-import com.example.gestion_curriculums0.repository.CurriculumRepository;
-import com.example.gestion_curriculums0.repository.NotaRepository;
-import com.example.gestion_curriculums0.repository.UploadLinkRepository;
-import com.example.gestion_curriculums0.repository.UsuarioRepository;
-import com.example.gestion_curriculums0.repository.UserLogRepository;
+import com.example.gestion_curriculums0.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -49,40 +49,44 @@ public class UsuarioService {
     private static final int MIN_PASSWORD_LENGTH = 8;
     private static final String SPECIAL_CHARACTERS = "!@#$%^&*()-_+=<>?";
 
+    // Guardo el usuario tras validar su contraseña y codificarla, además de registrar su log de actividad
     public Usuario saveUsuario(Usuario usuario) {
-        validatePassword(usuario.getContrasena());
-        usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
-        Usuario savedUsuario = usuarioRepository.save(usuario);
-        logUserAction(savedUsuario.getNombreUsuario(), "Registro de usuario");
-        sendWelcomeEmail(savedUsuario.getEmail(), savedUsuario.getNombreUsuario());
+        validatePassword(usuario.getContrasena()); // Valido la contraseña
+        usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena())); // Codifico la contraseña
+        Usuario savedUsuario = usuarioRepository.save(usuario); // Guardo el usuario en la base de datos
+        logUserAction(savedUsuario.getNombreUsuario(), "Registro de usuario"); // Registro en logs el registro de usuario
+        sendWelcomeEmail(savedUsuario.getEmail(), savedUsuario.getNombreUsuario()); // Envío un correo de bienvenida
         return savedUsuario;
     }
 
+    // Busco un usuario por su nombre de usuario
     public Optional<Usuario> findByNombreUsuario(String nombreUsuario) {
         return usuarioRepository.findByNombreUsuario(nombreUsuario);
     }
 
-    @Scheduled(fixedRate = 600000) // Ejecuta cada 10 minutos (600000 ms)
+    // Este método programado se ejecuta cada 10 minutos para eliminar usuarios inactivos.
+    @Scheduled(fixedRate = 600000) // 600000 ms = 10 minutos
     @Transactional
     public void checkAndDeleteUsers() {
         System.out.println("Iniciando verificación de usuarios para eliminar...");
         Instant now = Instant.now();
-        List<Usuario> usuarios = usuarioRepository.findAll();
+        List<Usuario> usuarios = usuarioRepository.findAll(); // Obtengo todos los usuarios
         for (Usuario usuario : usuarios) {
-            // Evitar eliminar usuarios con roles distintos de "ROLE_USER"
+            // Solo elimino usuarios con el rol "USER" y que se hayan registrado hace más de 30 minutos
             if (usuario.getRoles().contains("USER") &&
                     usuario.getFechaRegistro() != null &&
                     usuario.getFechaRegistro().toInstant().isBefore(now.minus(30, ChronoUnit.MINUTES))) {
 
                 System.out.println("Enviando correo de despedida a usuario: " + usuario.getNombreUsuario());
-                sendGoodbyeEmail(usuario.getEmail(), usuario.getNombreUsuario());
+                sendGoodbyeEmail(usuario.getEmail(), usuario.getNombreUsuario()); // Envío correo de despedida
                 System.out.println("Eliminando usuario: " + usuario.getNombreUsuario());
-                deleteUser(usuario);
+                deleteUser(usuario); // Elimino el usuario
             }
         }
         System.out.println("Verificación de usuarios completada.");
     }
 
+    // Elimino el usuario y todas sus entidades relacionadas
     @Transactional
     public void deleteUser(Usuario usuario) {
         try {
@@ -90,31 +94,32 @@ public class UsuarioService {
             LocalDateTime fechaRegistro = usuario.getFechaRegistro().toInstant()
                     .atZone(ZoneId.systemDefault()).toLocalDateTime();
 
-            // Registrar acción de eliminación de usuario con la fecha de registro original
+            // Registro en logs la eliminación del usuario con la fecha de registro original
             logUserAction(usuario.getNombreUsuario(), "Eliminación de usuario registrado el " + fechaRegistro);
 
-            // Eliminar todos los UploadLinks asociados al usuario
+            // Elimino todos los UploadLinks asociados al usuario
             uploadLinkRepository.deleteByUsuarioId(usuario.getId());
 
-            // Eliminar todas las notas relacionadas con cada currículum del usuario
+            // Elimino todas las notas relacionadas con cada currículum del usuario
             usuario.getCurriculums().forEach(curriculum -> {
                 notaRepository.deleteByCurriculumId(curriculum.getId());
             });
 
-            // Luego eliminar los currículums asociados
+            // Luego elimino los currículums asociados
             curriculumRepository.deleteByUsuarioId(usuario.getId());
 
-            // Finalmente, eliminar el usuario
+            // Finalmente, elimino el usuario
             usuarioRepository.deleteById(usuario.getId());
 
             System.out.println("Usuario eliminado: " + usuario.getNombreUsuario());
         } catch (Exception e) {
-            logUserAction(usuario.getNombreUsuario(), "Error al eliminar usuario");
+            logUserAction(usuario.getNombreUsuario(), "Error al eliminar usuario"); // Registro el error en logs
             System.out.println("Error al eliminar usuario: " + usuario.getNombreUsuario());
             e.printStackTrace();
         }
     }
 
+    // Registro una acción de usuario en el log
     private void logUserAction(String username, String action) {
         UserLog log = new UserLog();
         log.setUsername(username);
@@ -123,6 +128,7 @@ public class UsuarioService {
         userLogRepository.save(log);
     }
 
+    // Envío un correo de bienvenida al usuario registrado
     public void sendWelcomeEmail(String to, String username) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
@@ -138,6 +144,7 @@ public class UsuarioService {
         }
     }
 
+    // Envío un correo de despedida cuando el usuario es eliminado
     public void sendGoodbyeEmail(String to, String username) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
@@ -153,6 +160,7 @@ public class UsuarioService {
         }
     }
 
+    // Valido que la contraseña cumpla con los requisitos mínimos
     public void validatePassword(String password) {
         if (password == null || password.isEmpty()) {
             throw new IllegalArgumentException("La contraseña no puede estar vacía.");
@@ -165,6 +173,7 @@ public class UsuarioService {
         }
     }
 
+    // Verifico si la contraseña contiene al menos un carácter especial
     private boolean containsSpecialCharacter(String password) {
         for (char c : password.toCharArray()) {
             if (SPECIAL_CHARACTERS.indexOf(c) >= 0) {
@@ -174,4 +183,3 @@ public class UsuarioService {
         return false;
     }
 }
-

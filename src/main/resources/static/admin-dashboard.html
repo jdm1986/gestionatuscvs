@@ -8,40 +8,52 @@
 </head>
 <body>
 <header>
+    <!-- Este archivo HTML sirve como la interfaz del panel de administración de la aplicación.
+         Permite a los administradores ver registros de usuarios a través de una interfaz gráfica. -->
     <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
 </header>
 <div class="container">
+    <!-- Título principal del panel de administración -->
     <h1>Panel de Administración</h1>
+
+    <!-- Botón para visualizar los registros de usuarios -->
     <div class="actions">
         <button id="viewRegistrationsButton">Ver Registros de Usuarios</button>
     </div>
+
+    <!-- Contenedor donde se mostrarán los registros obtenidos -->
     <div id="registrationsLog" class="results hidden">
         <h2>Registros de Usuarios</h2>
         <pre id="logContent"></pre>
     </div>
 </div>
+
+<!-- Script para manejar el evento de hacer clic en el botón y mostrar los registros -->
 <script>
+    // Al hacer clic en el botón "Ver Registros de Usuarios", hago una solicitud al backend
     document.getElementById('viewRegistrationsButton').addEventListener('click', function() {
         fetch('${app.baseUrl}/admin/registro-usuarios', {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('token')
+                // Uso el token almacenado en localStorage para autenticar la solicitud
             }
         })
         .then(response => {
             if (response.ok) {
-                return response.text();
+                return response.text(); // Si la solicitud tiene éxito, obtengo el texto de los registros
             } else {
-                throw new Error('Error al obtener los registros');
+                throw new Error('Error al obtener los registros'); // Si algo sale mal, muestro un error
             }
         })
         .then(data => {
+            // Muestro los datos obtenidos en el contenedor correspondiente
             const logContainer = document.getElementById('registrationsLog');
             logContainer.classList.remove('hidden');
             document.getElementById('logContent').textContent = data;
         })
         .catch(error => {
-            alert(error.message);
+            alert(error.message); // En caso de error, muestro una alerta con el mensaje del error
         });
     });
 </script>

@@ -348,7 +348,15 @@ public class CurriculumController {
         // Guardo el curriculum en la base de datos
         curriculumService.saveCurriculum(curriculum);
 
-        // Envío un correo de confirmación al usuario
+        // Envío un correo de notificación al usuario (quien generó el enlace)
+        String subjectUsuario = "Nuevo C.V. subido a su cuenta";
+        String messageUsuario = "Hola " + uploadLink.getUsuario().getNombreUsuario() + ",\n\n" +
+                "Un nuevo C.V. ha sido subido por " + nombre + " " + apellido + ".\n\n" +
+                "Gracias por utilizar nuestra plataforma.\n\n" +
+                "Saludos cordiales,\nEl equipo de GestionaTusCVs";
+        emailService.sendSimpleEmail(uploadLink.getUsuario().getEmail(), subjectUsuario, messageUsuario);
+
+        // Envío un correo de confirmación al aspirante
         String subject = "Confirmación de Envío de C.V.";
         String message = "Estimado/a " + nombre + ",\n\n" +
                 "Su C.V. ha sido enviado correctamente a " + uploadLink.getUsuario().getNombreUsuario() + ".\n\n" +

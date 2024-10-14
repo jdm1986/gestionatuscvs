@@ -22,6 +22,7 @@
         <button onclick="location.href='upload_user.html'">Subir Currículum</button>
         <button id="logoutButton">Cerrar Sesión</button>
         <button id="viewLogsButton" class="admin-only" style="display:none;">Ver Registros de Usuarios</button> <!-- Botón para ver registros -->
+        <button id="departamentosButton">Departamentos</button> <!-- Botón para la gestión de departamentos -->
     </div>
 
     <!-- Sección de búsqueda y filtros -->
@@ -50,6 +51,7 @@
                 <th>Sexo</th>
                 <th>Teléfono</th>
                 <th>Acciones</th>
+                <th>Departamento</th> <!-- Nueva columna de departamento -->
             </tr>
             </thead>
             <tbody id="resultsBody">
@@ -72,6 +74,13 @@
 
 <!-- Archivo JavaScript donde están las funcionalidades -->
 <script src="scripts.js"></script>
+<script>
+    // Redirige a la página de departamentos cuando se hace clic en el botón
+    document.getElementById('departamentosButton').addEventListener('click', function() {
+        window.location.href = 'departamentos.html';
+    });
+</script>
+
 </body>
 
 <!-- Pie de página -->

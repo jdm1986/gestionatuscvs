@@ -122,7 +122,7 @@ public class CurriculumController {
         return curriculumService.buscarPorClaveYUsuario(clave, usuario.getId()).stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    // Subo un curriculum en formato PDF
+    // Subo un curriculum en formato PDF y guardo el departamento
     @PostMapping("/upload")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public ResponseEntity<?> uploadCurriculum(@RequestParam("file") MultipartFile file,
@@ -130,6 +130,7 @@ public class CurriculumController {
                                               @RequestParam String nombre,
                                               @RequestParam String apellido,
                                               @RequestParam String sexo,
+                                              @RequestParam String departamento, // Nuevo campo departamento
                                               @RequestParam String telefono,
                                               @RequestParam String email) {
         // Verifico que el archivo sea un PDF
@@ -166,6 +167,7 @@ public class CurriculumController {
         curriculum.setSexo(sexo);
         curriculum.setTelefono(telefono);
         curriculum.setEmail(email);
+        curriculum.setDepartamento(departamento); // Guardo el departamento
         curriculum.setUsuario(usuario);
 
         // Devuelvo una respuesta exitosa con el curriculum guardado
@@ -180,6 +182,7 @@ public class CurriculumController {
                                           @RequestParam @Valid String nombre,
                                           @RequestParam @Valid String apellido,
                                           @RequestParam @Valid String sexo,
+                                          @RequestParam @Valid String departamento, // Nuevo campo departamento
                                           @RequestParam @Valid String telefono,
                                           @RequestParam @Valid String email) {
         // Busco el curriculum por su ID
@@ -211,12 +214,13 @@ public class CurriculumController {
             curriculum.setCvBruto(extractedText);
         }
 
-        // Actualizo los datos del curriculum
+        // Actualizo los datos del curriculum, incluyendo el departamento
         curriculum.setNombre(nombre);
         curriculum.setApellido(apellido);
         curriculum.setSexo(sexo);
         curriculum.setTelefono(telefono);
         curriculum.setEmail(email);
+        curriculum.setDepartamento(departamento); // Actualizo el departamento
 
         // Devuelvo el DTO actualizado
         return convertToDTO(curriculumService.saveCurriculum(curriculum));
@@ -265,7 +269,7 @@ public class CurriculumController {
     // Método auxiliar para convertir un Curriculum en DTO
     private CurriculumDTO convertToDTO(Curriculum curriculum) {
         return new CurriculumDTO(curriculum.getId(), curriculum.getNombre(), curriculum.getApellido(), curriculum.getPdfPath(),
-                curriculum.getResumenCv(), curriculum.getSexo(), curriculum.getTelefono(), curriculum.getEmail(), curriculum.getFechaInsercion());
+                curriculum.getCvBruto(), curriculum.getSexo(), curriculum.getTelefono(), curriculum.getEmail(), curriculum.getDepartamento(), curriculum.getFechaInsercion());
     }
 
     // Genero un enlace único para que un usuario pueda subir su curriculum
@@ -301,6 +305,7 @@ public class CurriculumController {
             @RequestParam String nombre,
             @RequestParam String apellido,
             @RequestParam String sexo,
+            @RequestParam String departamento, // Nuevo campo departamento
             @RequestParam String telefono,
             @RequestParam String email) {
 
@@ -343,6 +348,7 @@ public class CurriculumController {
         curriculum.setSexo(sexo);
         curriculum.setTelefono(telefono);
         curriculum.setEmail(email);
+        curriculum.setDepartamento(departamento); // Guardo el departamento
         curriculum.setUsuario(uploadLink.getUsuario());
 
         // Guardo el curriculum en la base de datos

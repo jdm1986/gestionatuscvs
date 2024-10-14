@@ -12,10 +12,12 @@ public class CurriculumDTO {
     private String sexo;
     private String telefono;
     private String email;
+    private String departamento;
     private LocalDateTime fechaInsercion;
 
     // Constructor para inicializar los atributos del DTO
-    public CurriculumDTO(Long id, String nombre, String apellido, String pdfPath, String resumenCv, String sexo, String telefono, String email, LocalDateTime fechaInsercion) {
+    public CurriculumDTO(Long id, String nombre, String apellido, String pdfPath, String cvBruto,
+                         String sexo, String telefono, String email, String departamento, LocalDateTime fechaInsercion) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -24,6 +26,7 @@ public class CurriculumDTO {
         this.sexo = sexo;
         this.telefono = telefono;
         this.email = email;
+        this.departamento = departamento;
         this.fechaInsercion = fechaInsercion;
     }
 
@@ -107,6 +110,14 @@ public class CurriculumDTO {
     public void setEmail(String email) {
         // Establezco el email del usuario
         this.email = email;
+    }
+
+    public String getDepartamento() {
+        return departamento;
+    }
+
+    public void setDepartamento(String departamento) {
+        this.departamento = departamento;
     }
 
     public LocalDateTime getFechaInsercion() {

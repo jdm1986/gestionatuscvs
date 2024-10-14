@@ -49,6 +49,10 @@ public class Curriculum {
     @Column(nullable = false, updatable = false)
     private LocalDateTime fechaInsercion;
 
+    // Nuevo campo para almacenar el departamento
+    @Column(nullable = false)
+    private String departamento;
+
     // Establezco la fecha de inserción justo antes de que el objeto sea persistido en la base de datos
     @PrePersist
     protected void onCreate() {
@@ -162,6 +166,16 @@ public class Curriculum {
     public void setFechaInsercion(LocalDateTime fechaInsercion) {
         // Establezco manualmente la fecha de inserción, si es necesario
         this.fechaInsercion = fechaInsercion;
+    }
+
+    public String getDepartamento() {
+        // Obtengo departamento
+        return departamento;
+    }
+
+    public void setDepartamento(String departamento) {
+        // Establezco departamento manualmente si es necesario
+        this.departamento = departamento;
     }
 
     public Usuario getUsuario() {

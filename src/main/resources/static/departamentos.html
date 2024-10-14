@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Departamentos</title>
+    <link rel="stylesheet" href="styles-departamentos.css">
+</head>
+<body>
+<header>
+    <!-- Página de gestión de Departamentos -->
+    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo">
+</header>
+
+<h1>Gestión de Departamentos</h1>
+
+<form id="departamentoForm">
+    <input type="text" id="nombreDepartamento" placeholder="Nombre del departamento" required>
+    <button type="submit">Agregar Departamento</button>
+</form>
+
+<!-- Mensaje de error si el departamento ya existe -->
+<p id="errorMensaje" style="color:red; display:none;"></p>
+
+<!-- Botón para volver atrás -->
+<button id="volverBtn" class="volver-btn">Volver</button>
+
+<table id="tablaDepartamentos">
+    <thead>
+    <tr>
+        <th>Nombre</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<footer>
+    <div class="footer-content">
+        <a href="https://www.jesusdiazmartincv.es" target="_blank"> <!-- Enlace alrededor del logo -->
+            <img src="images/logodeveloper.png" alt="Logo JDM" class="footer-logo">
+        </a>
+        <div class="footer-links">
+            <a href="privacidad.html">Política de Privacidad</a> |
+            <a href="terminos.html">Términos y Condiciones</a> |
+            <a href="contacto.html">Contacto</a>
+        </div>
+        <p>&copy; 2024 GESTIONATUSCV. Todos los derechos reservados.</p>
+        <p> || Aplicación Web creada por Jesús Díaz Martín || </p>
+    </div>
+</footer>
+
+<script>
+    const baseUrl = 'http://localhost:8080';
+
+    // Función para cargar los departamentos en la tabla
+    function loadDepartamentos() {
+        fetch(`${baseUrl}/departamentos`)
+            .then(response => response.json())
+            .then(departamentos => {
+                const tbody = document.getElementById('tablaDepartamentos').querySelector('tbody');
+                tbody.innerHTML = ''; // Limpio el contenido previo
+
+                departamentos.forEach(depto => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${depto.nombre}</td>
+                        <td>
+                            <button class="eliminar-btn" onclick="confirmDelete(${depto.id})">Eliminar</button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            });
+    }
+
+    // Función para agregar un nuevo departamento
+    document.getElementById('departamentoForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const nombre = document.getElementById('nombreDepartamento').value;
+        const errorMensaje = document.getElementById('errorMensaje');
+
+        fetch(`${baseUrl}/departamentos`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ nombre })
+        })
+        .then(response => {
+            if (response.status === 400) {
+                return response.text().then(text => {
+                    errorMensaje.textContent = text; // Mostrar el mensaje de error
+                    errorMensaje.style.display = 'block';
+                });
+            } else {
+                errorMensaje.style.display = 'none'; // Oculto el mensaje de error
+                return response.json();
+            }
+        })
+        .then(data => {
+            if (data) {
+                loadDepartamentos();
+                document.getElementById('nombreDepartamento').value = ''; // Limpio el campo
+            }
+        });
+    });
+
+    // Confirmación antes de eliminar
+    function confirmDelete(id) {
+        if (confirm("¿Estás seguro de que quieres eliminar este departamento?")) {
+            deleteDepartamento(id);
+        }
+    }
+
+    // Función para eliminar un departamento
+    function deleteDepartamento(id) {
+        fetch(`${baseUrl}/departamentos/${id}`, { method: 'DELETE' })
+            .then(() => loadDepartamentos());
+    }
+
+    // Botón para volver a la página anterior
+    document.getElementById('volverBtn').addEventListener('click', function() {
+        window.history.back();
+    });
+
+    // Cargar departamentos al inicio
+    loadDepartamentos();
+</script>
+</body>
+</html>

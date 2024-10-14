@@ -13,7 +13,7 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="Subir Currículum">
     <meta property="og:description" content="Sube tu currículum de manera fácil y rápida.">
-    <meta property="og:image" content="https://opengraph.b-cdn.net/production/images/015ed697-6e19-4204-b258-aef38bb49009.png?token=EZkEiXiwUoIgSeffPcVmgxTGCm_zmJ5QURWqrccvebk&height=344&width=486&expires=33260663957">
+    <meta property="og:image" content="https://opengraph.b-cdn.net/production/images/015ed697-6e19-4204-b258-aef38bb49009.png">
 
     <!-- Twitter Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
@@ -21,7 +21,7 @@
     <meta property="twitter:url" content="https://gestionatuscv.es">
     <meta name="twitter:title" content="Subir Currículum">
     <meta name="twitter:description" content="Sube tu currículum de manera fácil y rápida.">
-    <meta name="twitter:image" content="https://opengraph.b-cdn.net/production/images/015ed697-6e19-4204-b258-aef38bb49009.png?token=EZkEiXiwUoIgSeffPcVmgxTGCm_zmJ5QURWqrccvebk&height=344&width=486&expires=33260663957">
+    <meta name="twitter:image" content="https://opengraph.b-cdn.net/production/images/015ed697-6e19-4204-b258-aef38bb49009.png">
 </head>
 <body>
 <header>
@@ -40,6 +40,10 @@
             <option value="Mujer">Mujer</option>
             <option value="Otro">Otro</option>
         </select>
+        <!-- Selector de Departamento -->
+        <select id="departamentoSelect" required>
+            <option value="">Seleccionar Departamento</option>
+        </select>
         <!-- Validación: solo números y el signo + al inicio en el teléfono -->
         <input type="text" id="telefono" placeholder="Teléfono" required pattern="^\+?[0-9]{9,15}$" title="El teléfono solo puede contener números y opcionalmente el signo + al inicio.">
         <input type="email" id="email" placeholder="Email" required>
@@ -48,11 +52,17 @@
     <div id="uploadMessage" class="hidden">Currículum subido exitosamente.</div>
     <div id="errorMessage" class="hidden">Error: Enlace de subida no válido o ha expirado.</div>
 </div>
+
 <script>
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
 
     document.addEventListener("DOMContentLoaded", function() {
+        // Definir la URL base dependiendo del entorno (desarrollo o producción)
+        const baseUrl = window.location.hostname.includes('localhost')
+            ? 'http://localhost:8080'
+            : 'https://gestionatuscv.es';
+
         // Añadir confirmación al hacer clic en el logo
         document.getElementById('logo').addEventListener('click', function(event) {
             event.preventDefault();
@@ -61,6 +71,19 @@
             }
         });
 
+        // Cargar los departamentos desde el servidor para el selector
+        fetch(`${baseUrl}/departamentos`)
+            .then(response => response.json())
+            .then(departamentos => {
+                const departamentoSelect = document.getElementById('departamentoSelect');
+                departamentos.forEach(depto => {
+                    const option = document.createElement('option');
+                    option.value = depto.nombre;
+                    option.textContent = depto.nombre;
+                    departamentoSelect.appendChild(option);
+                });
+            });
+
         document.getElementById('uploadForm').addEventListener('submit', function(event) {
             event.preventDefault();
 
@@ -68,6 +91,7 @@
             const nombre = document.getElementById('nombre').value;
             const apellido = document.getElementById('apellido').value;
             const sexo = document.getElementById('sexo').value;
+            const departamento = document.getElementById('departamentoSelect').value;
             const telefono = document.getElementById('telefono').value;
             const email = document.getElementById('email').value;
 
@@ -83,10 +107,11 @@
             formData.append('nombre', nombre);
             formData.append('apellido', apellido);
             formData.append('sexo', sexo);
+            formData.append('departamento', departamento);
             formData.append('telefono', telefono);
             formData.append('email', email);
 
-            fetch(`/curriculums/upload_with_token`, {  // Cambiamos la URL al endpoint correcto
+            fetch(`${baseUrl}/curriculums/upload_with_token`, {  // Cambiamos la URL al endpoint correcto
                 method: 'POST',
                 body: formData
             })

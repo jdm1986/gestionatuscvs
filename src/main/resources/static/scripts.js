@@ -160,6 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <td data-label="Fecha">${new Date(result.fechaInsercion).toLocaleDateString()}</td>
                         <td data-label="Sexo">${result.sexo}</td>
                         <td data-label="Teléfono">${result.telefono}</td>
+                        <td data-label="Departamento">${result.departamento}</td>
                     `;
 
                     const actionsTd = document.createElement('td'); // Columna para las acciones

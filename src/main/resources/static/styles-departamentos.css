@@ -87,18 +87,19 @@ table {
     width: 80%;
     margin: 0 auto;
     border-collapse: collapse;
+    border-radius: 3px;
 }
 
 /* Espacio entre las celdas de la tabla */
 th, td {
     padding: 10px;
-    border: 1px solid #6445d1;
+    border: 1px solid #E573FE;
     color: white;
 }
 
 /* Estilo de las cabeceras de la tabla */
 th {
-    background-color: #6445d1;
+    background-color: #E573FE;
     text-transform: uppercase;
 }
 

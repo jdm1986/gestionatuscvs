@@ -31,6 +31,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.Map;
+
 
 // Defino este controlador para manejar las operaciones relacionadas con los curriculums
 @RestController
@@ -225,6 +227,35 @@ public class CurriculumController {
         // Devuelvo el DTO actualizado
         return convertToDTO(curriculumService.saveCurriculum(curriculum));
     }
+
+    // Actualización de departamento
+
+    @PutMapping("/{idCurriculum}/departamento")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<?> actualizarDepartamento(
+            @PathVariable Long idCurriculum,
+            @RequestBody Map<String, String> request) {
+
+        // Verifico si el curriculum existe
+        Curriculum curriculum = curriculumService.getCurriculumById(idCurriculum)
+                .orElseThrow(() -> new RuntimeException("Curriculum no encontrado"));
+
+        // Obtengo el nuevo departamento desde el request
+        String nuevoDepartamento = request.get("departamento");
+
+        if (nuevoDepartamento == null || nuevoDepartamento.isEmpty()) {
+            return ResponseEntity.badRequest().body("El departamento no puede estar vacío");
+        }
+
+        // Actualizo el departamento
+        curriculum.setDepartamento(nuevoDepartamento);
+
+        // Guardo el curriculum actualizado
+        curriculumService.saveCurriculum(curriculum);
+
+        return ResponseEntity.ok("Departamento actualizado exitosamente");
+    }
+
 
     // Elimino un curriculum por su ID
     @DeleteMapping("/{id}")

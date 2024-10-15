@@ -180,51 +180,20 @@ public class CurriculumController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public CurriculumDTO updateCurriculum(@PathVariable Long id,
-                                          @RequestParam("file") MultipartFile file,
-                                          @RequestParam @Valid String nombre,
-                                          @RequestParam @Valid String apellido,
-                                          @RequestParam @Valid String sexo,
-                                          @RequestParam @Valid String departamento, // Nuevo campo departamento
-                                          @RequestParam @Valid String telefono,
-                                          @RequestParam @Valid String email) {
+                                          @RequestBody CurriculumDTO curriculumDTO) {
         // Busco el curriculum por su ID
         Curriculum curriculum = curriculumService.getCurriculumById(id)
                 .orElseThrow(() -> new RuntimeException("Curriculum no encontrado"));
 
-        // Si el archivo no está vacío, lo proceso nuevamente
-        if (file != null && !file.isEmpty()) {
-            File convFile = new File(System.getProperty("java.io.tmpdir") + "/" + file.getOriginalFilename());
-            try (FileOutputStream fos = new FileOutputStream(convFile)) {
-                fos.write(file.getBytes());
-            } catch (IOException e) {
-                throw new RuntimeException("Error convirtiendo el archivo", e);
-            }
+        // Actualizo los datos del curriculum
+        curriculum.setNombre(curriculumDTO.getNombre());
+        curriculum.setApellido(curriculumDTO.getApellido());
+        curriculum.setSexo(curriculumDTO.getSexo());
+        curriculum.setTelefono(curriculumDTO.getTelefono());
+        curriculum.setEmail(curriculumDTO.getEmail());
+        curriculum.setDepartamento(curriculumDTO.getDepartamento());
 
-            String extractedText;
-            try {
-                // Extraigo el texto del archivo según su tipo
-                if (file.getContentType().equals("application/pdf")) {
-                    extractedText = pdfService.extractTextFromPdf(convFile);
-                } else {
-                    extractedText = ocrService.extractTextFromImage(convFile);
-                }
-            } catch (IOException e) {
-                throw new RuntimeException("Error extrayendo texto del archivo", e);
-            }
-
-            curriculum.setPdfPath(convFile.getPath());
-            curriculum.setCvBruto(extractedText);
-        }
-
-        // Actualizo los datos del curriculum, incluyendo el departamento
-        curriculum.setNombre(nombre);
-        curriculum.setApellido(apellido);
-        curriculum.setSexo(sexo);
-        curriculum.setTelefono(telefono);
-        curriculum.setEmail(email);
-        curriculum.setDepartamento(departamento); // Actualizo el departamento
-
-        // Devuelvo el DTO actualizado
+        // Guardo el curriculum actualizado y retorno el DTO
         return convertToDTO(curriculumService.saveCurriculum(curriculum));
     }
 

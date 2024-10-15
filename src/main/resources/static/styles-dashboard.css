@@ -632,7 +632,7 @@ thead th {
     text-align: left; /* Texto alineado a la izquierda */
 }
 
-/* Icon Buttons Styles */
+/* Estilos de botones */
 .icon-button {
     background-color: #E573FE; /* Fondo rosado */
     color: white; /* Texto blanco */
@@ -670,7 +670,7 @@ thead th {
     gap: 5px; /* Espaciado entre botones */
 }
 
-/* Ajustments for Mobile View */
+/* Ajustes para visión en móviles */
 @media (max-width: 767px) {
     .action-buttons {
         justify-content: flex-end; /* Alinea los botones a la derecha */

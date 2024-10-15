@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambiar Datos del Currículum</title>
+    <link rel="stylesheet" href="styles-common.css">
+    <link rel="stylesheet" href="styles-dashboard.css">
+</head>
+<body>
+<header>
+    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
+</header>
+
+<div class="container">
+    <h1>Cambiar Datos del Currículum</h1>
+    <form id="editForm">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required>
+
+        <label for="apellido">Apellidos:</label>
+        <input type="text" id="apellido" name="apellido" required>
+
+        <label for="telefono">Teléfono:</label>
+        <input type="text" id="telefono" name="telefono" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required="">
+
+
+        <label for="sexo">Sexo:</label>
+        <select id="sexo" name="sexo">
+            <option value="Hombre">Hombre</option>
+            <option value="Mujer">Mujer</option>
+            <option value="Otro">Otro</option>
+        </select>
+
+        <label for="departamento">Departamento:</label>
+        <select id="departamento" name="departamento" required>
+            <option value="">Seleccione un departamento</option>
+        </select>
+
+        <button type="submit">Guardar</button>
+    </form>
+
+    <p id="successMessage" style="display: none; color: green;">Los datos se han guardado con éxito.</p>
+</div>
+
+<script>
+    // Establecer la URL base (ajustar según entorno de desarrollo o producción)
+    const baseUrl = window.location.hostname.includes('localhost')
+        ? 'http://localhost:8080'  // URL de desarrollo
+        : 'https://gestionatuscv.es';  // URL de producción
+
+    // Obtener ID del currículum desde la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const curriculumId = urlParams.get('id');
+
+    // Obtener el token de autenticación desde localStorage
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+        // Si no hay token, redirigir al usuario al login
+        alert('Por favor, inicia sesión para continuar.');
+        window.location.href = 'login.html';
+    }
+
+    // Función para cargar los datos del currículum
+    async function loadCurriculumData() {
+        try {
+            const response = await fetch(`${baseUrl}/curriculums/${curriculumId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const curriculum = await response.json();
+                document.getElementById('nombre').value = curriculum.nombre;
+                document.getElementById('apellido').value = curriculum.apellido;
+                document.getElementById('telefono').value = curriculum.telefono;
+                document.getElementById('email').value = curriculum.email;
+                document.getElementById('sexo').value = curriculum.sexo;
+                // Asignar el valor al campo de departamento
+                const departamentoSelect = document.getElementById('departamento');
+                departamentoSelect.value = curriculum.departamento;  // Asegúrate de que el campo coincide con el valor.
+            } else {
+                alert('Error al cargar los datos del currículum.');
+                console.log('Error al cargar el currículum:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error al obtener los datos del currículum:', error);
+            alert('Error al conectar con el servidor.');
+        }
+    }
+
+    // Función para cargar los departamentos en el desplegable
+    async function loadDepartamentos() {
+    try {
+        const response = await fetch(`${baseUrl}/departamentos`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
+            const departamentos = await response.json();
+            const departamentoSelect = document.getElementById('departamento');
+
+            departamentos.forEach(departamento => {
+                const option = document.createElement('option');
+                option.value = departamento.nombre; // Suponiendo que el nombre es la propiedad del departamento
+                option.text = departamento.nombre;
+                departamentoSelect.add(option);
+            });
+
+        } else {
+            alert('Error al cargar los departamentos.');
+        }
+    } catch (error) {
+        console.error('Error al obtener los departamentos:', error);
+        alert('Error al conectar con el servidor.');
+        }
+    }
+
+    // Llamar a la función para cargar los datos de departamentos y curriculum cuando se cargue el DOM
+    document.addEventListener('DOMContentLoaded', async () => {
+    await loadDepartamentos(); //Me aseguro de que se cargan primero los departamentos
+    await loadCurriculumData(); //Luego asigna el departamento correcto al select
+    });
+
+    // Manejo del formulario para guardar los cambios
+    document.getElementById('editForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const nombre = document.getElementById('nombre').value;
+    const apellido = document.getElementById('apellido').value;
+    const telefono = document.getElementById('telefono').value;
+    const email = document.getElementById('email').value;
+    const sexo = document.getElementById('sexo').value;
+    const departamento = document.getElementById('departamento').value;
+
+    const response = await fetch(`${baseUrl}/curriculums/${curriculumId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ nombre, apellido, telefono, email, sexo, departamento })
+    });
+
+    if (response.ok) {
+        const successMessage = document.getElementById('successMessage');
+        successMessage.style.display = 'block'; // Mostrar el mensaje de éxito
+        setTimeout(() => {
+            window.location.href = 'dashboard.html'; // Redirigir al dashboard después de 2 segundos
+        }, 2000);
+    } else {
+        alert('Error al guardar los datos');
+    }
+});
+
+</script>
+</body>
+</html>

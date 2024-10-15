@@ -1,10 +1,10 @@
-// Evento que se activa cuando el DOM ha sido cargado completamente
-document.addEventListener('DOMContentLoaded', function() {
-
     // Establece la URL base dependiendo de si se está en local o en producción
     const baseUrl = window.location.hostname.includes('localhost')
         ? 'http://localhost:8080' // Si es localhost, usar esta URL
         : 'https://gestionatuscv.es'; // Si no, usar la URL de producción
+
+// Evento que se activa cuando el DOM ha sido cargado completamente
+document.addEventListener('DOMContentLoaded', function() {
 
     // Obtiene el token de autenticación almacenado en localStorage
     const token = localStorage.getItem('token');
@@ -160,6 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <td data-label="Fecha">${new Date(result.fechaInsercion).toLocaleDateString()}</td>
                             <td data-label="Sexo">${result.sexo}</td>
                             <td data-label="Teléfono">${result.telefono}</td>
+                            <td data-label="Email">${result.email}</td>
                             <td data-label="Departamento">
                                  <select class="departamento-dropdown">
                                         <option value="${result.departamento}" selected>${result.departamento}</option>
@@ -170,6 +171,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         const actionsTd = document.createElement('td'); // Columna para las acciones
                         actionsTd.setAttribute('data-label', 'Acciones'); // Etiqueta para móviles
                         actionsTd.classList.add('action-buttons'); // Añade clase de botones de acción
+
+                        // **Nuevo** Botón para editar el currículum
+                        const editButton = document.createElement('button');
+                        editButton.textContent = 'Editar'; // Texto del botón
+                        editButton.addEventListener('click', () => {
+                        // Redirige a cambiar-datos.html pasando el ID del currículum como parámetro en la URL
+                        window.location.href = `cambiar-datos.html?id=${result.id}`;
+                        });
+                        actionsTd.appendChild(editButton); // Añade el botón a la columna
 
                         // Botón para ver el currículum
                         const viewButton = document.createElement('button');
@@ -219,7 +229,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Asumiendo que los resultados del currículum están en una tabla en #resultsBody
             const rows = document.querySelectorAll('#resultsBody tr');
 
-            if (!rows.length) {
+            if (!departamentos || !rows.length) {
                     console.error('No se encontraron filas en la tabla de currículums.');
                     return;
                 }
@@ -637,6 +647,72 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
+        // Manejo de la edición de currículum en cambiar-datos.html
+        document.addEventListener('DOMContentLoaded', async function () {
+
+        const token = localStorage.getItem('token'); // Asegúrate de que el token esté disponible
+            if (!token) {
+                alert('No se ha encontrado el token de autenticación. Por favor, inicia sesión nuevamente.');
+                window.location.href = 'login.html'; // Redirige al login si no hay token
+                return;
+            }
+
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+
+            if (id) {
+                // Obtener los datos del currículum por su ID
+                const response = await fetch(`${baseUrl}/curriculums/${id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const curriculum = await response.json();
+
+                    // Rellenar los campos del formulario
+                    document.getElementById('nombre').value = curriculum.nombre;
+                    document.getElementById('apellido').value = curriculum.apellido;
+                    document.getElementById('telefono').value = curriculum.telefono;
+                    document.getElementById('sexo').value = curriculum.sexo;
+                } else {
+                    alert('Error al cargar los datos del currículum.');
+                }
+            }
+
+            // Manejo del formulario para guardar los cambios
+            document.getElementById('editForm').addEventListener('submit', async function(event) {
+                event.preventDefault();
+
+                const nombre = document.getElementById('nombre').value;
+                const apellido = document.getElementById('apellido').value;
+                const telefono = document.getElementById('telefono').value;
+                const sexo = document.getElementById('sexo').value;
+                const departamento = document.getElementById('departamento').value;
+
+                const response = await fetch(`${baseUrl}/curriculums/update/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ nombre, apellido, telefono, sexo })
+                });
+
+                if (response.ok) {
+                    const successMessage = document.getElementById('successMessage');
+                    successMessage.style.display = 'block'; // Mostrar el mensaje de éxito
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html'; // Redirigir al dashboard después de 2 segundos
+                    }, 2000);
+                } else {
+                    alert('Error al guardar los datos');
+                }
+            });
+        });
+
+
         // Función para realizar la búsqueda de currículums
         async function performSearch() {
             const searchInput = document.getElementById('searchInput').value; // Obtiene el valor de búsqueda
@@ -662,6 +738,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <td data-label="Fecha">${new Date(result.fechaInsercion).toLocaleDateString()}</td>
                             <td data-label="Sexo">${result.sexo}</td>
                             <td data-label="Teléfono">${result.telefono}</td>
+                            <td data-label="Email">${result.email}</td>
                             <td data-label="Departamento">
                                 <select class="departamento-dropdown">
                                     <option value="${result.departamento}" selected>${result.departamento}</option>

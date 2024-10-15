@@ -662,6 +662,11 @@ document.addEventListener('DOMContentLoaded', function() {
                             <td data-label="Fecha">${new Date(result.fechaInsercion).toLocaleDateString()}</td>
                             <td data-label="Sexo">${result.sexo}</td>
                             <td data-label="Teléfono">${result.telefono}</td>
+                            <td data-label="Departamento">
+                                <select class="departamento-dropdown">
+                                    <option value="${result.departamento}" selected>${result.departamento}</option>
+                                </select>
+                            </td>
                         `;
 
                         const actionsTd = document.createElement('td'); // Columna para las acciones
@@ -689,6 +694,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         tr.appendChild(actionsTd); // Añade la columna a la fila
                         resultsBody.appendChild(tr); // Añade la fila al cuerpo de la tabla
                     });
+
+                    // Llama a la función para llenar los dropdowns de departamentos después de cargar los currículums
+                    llenarDropdowns();
                 }
             } else {
                 alert('Error en la búsqueda'); // Muestra un mensaje de error si algo falla

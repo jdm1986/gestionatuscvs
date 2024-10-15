@@ -65,7 +65,9 @@ public class CurriculumService {
                 if (!(curriculum.getNombre().toLowerCase().contains(keyword.toLowerCase()) ||
                         curriculum.getApellido().toLowerCase().contains(keyword.toLowerCase()) ||
                         curriculum.getCvBruto().toLowerCase().contains(keyword.toLowerCase()) ||
-                        curriculum.getSexo().toLowerCase().contains(keyword.toLowerCase()))) {
+                        curriculum.getSexo().toLowerCase().contains(keyword.toLowerCase()) ||
+                        (curriculum.getTelefono() != null && curriculum.getTelefono().toLowerCase().contains(keyword.toLowerCase())) || // Añadimos teléfono
+                        (curriculum.getDepartamento() != null && curriculum.getDepartamento().toLowerCase().contains(keyword.toLowerCase())))) { // Añadimos departamento
                     matches = false;
                     break;
                 }
@@ -76,6 +78,7 @@ public class CurriculumService {
         }
         return matchingCurriculums;
     }
+
 
     //Guardo un nuevo curriculum o actualizo uno existente en la base de datos.
 

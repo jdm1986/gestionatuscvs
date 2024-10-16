@@ -5,23 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subir Currículum</title>
     <link rel="stylesheet" href="styles-common.css">
-
-    <!-- Página para permitir a los usuarios subir su currículum en formato PDF con un token de seguridad. -->
-
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:url" content="https://gestionatuscv.es">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Subir Currículum">
-    <meta property="og:description" content="Sube tu currículum de manera fácil y rápida.">
-    <meta property="og:image" content="https://opengraph.b-cdn.net/production/images/015ed697-6e19-4204-b258-aef38bb49009.png">
-
-    <!-- Twitter Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta property="twitter:domain" content="gestionatuscv.es">
-    <meta property="twitter:url" content="https://gestionatuscv.es">
-    <meta name="twitter:title" content="Subir Currículum">
-    <meta name="twitter:description" content="Sube tu currículum de manera fácil y rápida.">
-    <meta name="twitter:image" content="https://opengraph.b-cdn.net/production/images/015ed697-6e19-4204-b258-aef38bb49009.png">
 </head>
 <body>
 <header>
@@ -31,7 +14,6 @@
     <h1>Subir Currículum</h1>
     <form id="uploadForm">
         <input type="file" id="pdfFile" accept="application/pdf" required>
-        <!-- Validación: solo letras y espacios en nombre y apellido -->
         <input type="text" id="nombre" placeholder="Nombre" required pattern="[A-Za-zÀ-ÿ\s]+" title="El nombre solo puede contener letras y espacios.">
         <input type="text" id="apellido" placeholder="Apellido" required pattern="[A-Za-zÀ-ÿ\s]+" title="El apellido solo puede contener letras y espacios.">
         <select id="sexo" required>
@@ -40,11 +22,9 @@
             <option value="Mujer">Mujer</option>
             <option value="Otro">Otro</option>
         </select>
-        <!-- Selector de Departamento -->
         <select id="departamentoSelect" required>
             <option value="">Seleccionar Departamento</option>
         </select>
-        <!-- Validación: solo números y el signo + al inicio en el teléfono -->
         <input type="text" id="telefono" placeholder="Teléfono" required pattern="^\+?[0-9]{9,15}$" title="El teléfono solo puede contener números y opcionalmente el signo + al inicio.">
         <input type="email" id="email" placeholder="Email" required>
         <button type="submit">Subir</button>
@@ -54,7 +34,7 @@
 </div>
 
 <script>
-
+document.addEventListener('DOMContentLoaded', function() {
     // URL base que se ajusta dependiendo de si estamos en entorno local o producción
     const baseUrl = window.location.hostname.includes('localhost')
         ? 'http://localhost:8080' // Si es localhost, usar esta URL
@@ -62,83 +42,83 @@
             ? 'https://www.gestionatuscv.es' // Si está en www
             : 'https://gestionatuscv.es'; // Si no está en www
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('token');  // Capturo el token desde la URL
-        const userId = urlParams.get('userId'); // Capturo el userId desde la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');  // Capturo el token desde la URL
+    const userId = urlParams.get('userId'); // Capturo el userId desde la URL
 
-        // Verifica si el userId está presente en la URL
-        if (!userId) {
-            console.error("userId no está definido en la URL.");
-            alert("No se ha encontrado un userId válido. Por favor, contacta con el administrador.");
+    // Verifica si el userId está presente en la URL
+    if (!userId) {
+        console.error("userId no está definido en la URL.");
+        alert("No se ha encontrado un userId válido. Por favor, contacta con el administrador.");
+        return;
+    }
+
+    // Cargar los departamentos desde el servidor para el selector
+    fetch(`${baseUrl}/departamentos?userId=${userId}`)
+        .then(response => response.json())
+        .then(departamentos => {
+            const departamentoSelect = document.getElementById('departamentoSelect');
+            departamentos.forEach(depto => {
+                const option = document.createElement('option');
+                option.value = depto.nombre;
+                option.textContent = depto.nombre;
+                departamentoSelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error("Error al cargar departamentos:", error);
+        });
+
+    // Manejador del formulario de subida
+    document.getElementById('uploadForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const pdfFile = document.getElementById('pdfFile').files[0];
+        const nombre = document.getElementById('nombre').value;
+        const apellido = document.getElementById('apellido').value;
+        const sexo = document.getElementById('sexo').value;
+        const departamento = document.getElementById('departamentoSelect').value;
+        const telefono = document.getElementById('telefono').value;
+        const email = document.getElementById('email').value;
+
+        // Validación adicional para asegurarse de que el archivo es un PDF
+        if (!pdfFile || pdfFile.type !== "application/pdf") {
+            alert('Por favor, sube un archivo PDF válido.');
             return;
         }
 
-        // Cargar los departamentos desde el servidor para el selector
-        fetch(`${baseUrl}/departamentos?userId=${userId}`)
-            .then(response => response.json())
-            .then(departamentos => {
-                const departamentoSelect = document.getElementById('departamentoSelect');
-                departamentos.forEach(depto => {
-                    const option = document.createElement('option');
-                    option.value = depto.nombre;
-                    option.textContent = depto.nombre;
-                    departamentoSelect.appendChild(option);
-                });
-            })
-            .catch(error => {
-                console.error("Error al cargar departamentos:", error);
-            });
+        const formData = new FormData();
+        formData.append('token', token);  // Añadimos el token al formData
+        formData.append('file', pdfFile);
+        formData.append('nombre', nombre);
+        formData.append('apellido', apellido);
+        formData.append('sexo', sexo);
+        formData.append('departamento', departamento);
+        formData.append('telefono', telefono);
+        formData.append('email', email);
 
-        // Manejador del formulario de subida
-        document.getElementById('uploadForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            const pdfFile = document.getElementById('pdfFile').files[0];
-            const nombre = document.getElementById('nombre').value;
-            const apellido = document.getElementById('apellido').value;
-            const sexo = document.getElementById('sexo').value;
-            const departamento = document.getElementById('departamentoSelect').value;
-            const telefono = document.getElementById('telefono').value;
-            const email = document.getElementById('email').value;
-
-            // Validación adicional para asegurarse de que el archivo es un PDF
-            if (!pdfFile || pdfFile.type !== "application/pdf") {
-                alert('Por favor, sube un archivo PDF válido.');
-                return;
+        fetch(`${baseUrl}/curriculums/upload_with_token`, {  // Cambiamos la URL al endpoint correcto
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(message => {
+            if (message.includes("Enlace de subida no válido o ha expirado")) {
+                document.getElementById('errorMessage').classList.remove('hidden');
+            } else {
+                document.getElementById('uploadMessage').textContent = message;
+                document.getElementById('uploadMessage').classList.remove('hidden');
+                // Redireccionar al index después de 2 segundos
+                setTimeout(function() {
+                    window.location.href = '/index.html';
+                }, 2000);
             }
-
-            const formData = new FormData();
-            formData.append('token', token);  // Añadimos el token al formData
-            formData.append('file', pdfFile);
-            formData.append('nombre', nombre);
-            formData.append('apellido', apellido);
-            formData.append('sexo', sexo);
-            formData.append('departamento', departamento);
-            formData.append('telefono', telefono);
-            formData.append('email', email);
-
-            fetch(`${baseUrl}/curriculums/upload_with_token`, {  // Cambiamos la URL al endpoint correcto
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.text())
-            .then(message => {
-                if (message.includes("Enlace de subida no válido o ha expirado")) {
-                    document.getElementById('errorMessage').classList.remove('hidden');
-                } else {
-                    document.getElementById('uploadMessage').textContent = message;
-                    document.getElementById('uploadMessage').classList.remove('hidden');
-                    // Redireccionar al index después de 2 segundos
-                    setTimeout(function() {
-                        window.location.href = '/index.html';
-                    }, 2000);
-                }
-            })
-            .catch(error => {
-                alert('Error al subir el currículum.');
-            });
+        })
+        .catch(error => {
+            alert('Error al subir el currículum.');
         });
     });
+});
 </script>
 </body>
 </html>

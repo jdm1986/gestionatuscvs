@@ -47,10 +47,13 @@
 </div>
 
 <script>
-    // Establecer la URL base (ajustar según entorno de desarrollo o producción)
-const baseUrl = window.location.hostname.includes('localhost')
-    ? 'http://localhost:8080'  // URL de desarrollo
-    : 'https://gestionatuscv.es';  // URL de producción
+    // URL base que se ajusta dependiendo de si estamos en entorno local o producción
+    const baseUrl = window.location.hostname.includes('localhost')
+        ? 'http://localhost:8080' // Si es localhost, usar esta URL
+        : window.location.hostname.includes('www')
+            ? 'https://www.gestionatuscv.es' // Si está en www
+            : 'https://gestionatuscv.es'; // Si no está en www
+
 
 // Obtener ID del currículum desde la URL
 const urlParams = new URLSearchParams(window.location.search);

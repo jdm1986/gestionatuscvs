@@ -1,10 +1,12 @@
 // Evento que se activa cuando el DOM ha sido cargado completamente
 document.addEventListener('DOMContentLoaded', function() {
 
-    // Establece la URL base dependiendo de si se está en local o en producción
+    // URL base que se ajusta dependiendo de si estamos en entorno local o producción
     const baseUrl = window.location.hostname.includes('localhost')
         ? 'http://localhost:8080' // Si es localhost, usar esta URL
-        : 'https://gestionatuscv.es'; // Si no, usar la URL de producción
+        : window.location.hostname.includes('www')
+            ? 'https://www.gestionatuscv.es' // Si está en www
+            : 'https://gestionatuscv.es'; // Si no está en www
 
     // Obtiene el token de autenticación almacenado en localStorage
     const token = localStorage.getItem('token');

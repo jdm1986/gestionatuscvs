@@ -63,8 +63,11 @@
 <script>
     // URL base que se ajusta dependiendo de si estamos en entorno local o producción
     const baseUrl = window.location.hostname.includes('localhost')
-        ? 'http://localhost:8080'  // URL para desarrollo local
-        : 'https://gestionatuscv.es';  // URL para producción
+        ? 'http://localhost:8080' // Si es localhost, usar esta URL
+        : window.location.hostname.includes('www')
+            ? 'https://www.gestionatuscv.es' // Si está en www
+            : 'https://gestionatuscv.es'; // Si no está en www
+
 
     // Obtiene el userId almacenado en localStorage
     const userId = localStorage.getItem('userId');

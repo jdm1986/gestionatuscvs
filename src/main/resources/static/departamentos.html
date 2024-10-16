@@ -55,13 +55,21 @@
 </footer>
 
 <script>
-    const baseUrl = 'http://localhost:8080';
+    const baseUrl = window.location.hostname.includes('localhost')
+    ? 'http://localhost:8080'
+    : 'https://gestionatuscv.es'; // Cambia esta URL según la producción
 
     // Función para cargar los departamentos en la tabla
     function loadDepartamentos() {
         fetch(`${baseUrl}/departamentos`)
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la petición'); // Captura errores HTTP
+                }
+                return response.json();
+            })
             .then(departamentos => {
+                console.log("Departamentos recibidos:", departamentos); // Log para debugging
                 const tbody = document.getElementById('tablaDepartamentos').querySelector('tbody');
                 tbody.innerHTML = ''; // Limpio el contenido previo
 
@@ -75,6 +83,9 @@
                     `;
                     tbody.appendChild(row);
                 });
+            })
+            .catch(error => {
+                console.error('Error al cargar los departamentos:', error); // Captura errores de red
             });
     }
 
@@ -86,9 +97,9 @@
         const errorMensaje = document.getElementById('errorMensaje');
 
         if (!nombre) {
-        errorMensaje.textContent = "Por favor, ingresa un nombre de departamento."; // Mensaje de error
-        errorMensaje.style.display = 'block';
-        return; // Evitar el envío si no hay nombre
+            errorMensaje.textContent = "Por favor, ingresa un nombre de departamento."; // Mensaje de error
+            errorMensaje.style.display = 'block';
+            return; // Evitar el envío si no hay nombre
         }
 
         fetch(`${baseUrl}/departamentos`, {
@@ -111,9 +122,13 @@
         })
         .then(data => {
             if (data) {
+                console.log("Departamento agregado:", data); // Log para debugging
                 loadDepartamentos();
                 document.getElementById('nombreDepartamento').value = ''; // Limpio el campo
             }
+        })
+        .catch(error => {
+            console.error('Error al agregar el departamento:', error); // Captura errores de red
         });
     });
 
@@ -127,7 +142,10 @@
     // Función para eliminar un departamento
     function deleteDepartamento(id) {
         fetch(`${baseUrl}/departamentos/${id}`, { method: 'DELETE' })
-            .then(() => loadDepartamentos());
+            .then(() => loadDepartamentos())
+            .catch(error => {
+                console.error('Error al eliminar el departamento:', error); // Captura errores de red
+            });
     }
 
     // Botón para volver a la página anterior

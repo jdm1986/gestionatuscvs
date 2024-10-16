@@ -57,6 +57,14 @@ form {
     margin-bottom: 20px;
 }
 
+/* Estilo para el contenedor del input y el botón */
+.input-container {
+    display: flex; /* Mantener el input y el botón en una línea horizontal */
+    flex-direction: column; /* Para móviles, pon los elementos uno debajo del otro */
+    gap: 15px; /* Espaciado entre el campo de texto y el botón */
+    align-items: center; /* Centrar ambos elementos */
+}
+
 /* Estilo del campo de texto */
 input[type="text"] {
     padding: 10px;
@@ -64,6 +72,7 @@ input[type="text"] {
     border: 1px solid #6445d1;
     background-color: #2e2e2e;
     color: white;
+    margin-bottom: 15px; /* Ajusto margen inferior para separar del botón */
 }
 
 /* Estilo del botón de enviar y de los botones de eliminar */
@@ -166,5 +175,24 @@ footer a:hover {
     display: block; /* Mostrar como bloque */
     margin: 0 auto; /* Centrar el logo */
     padding-bottom: 10px; /* Espaciado inferior */
+}
+
+/* Ajustes específicos para dispositivos móviles */
+@media (max-width: 767px) {
+
+    input[type="text"] {
+        margin-bottom: 15px; /* Ajusta la separación según prefieras */
+        width: 100%; /* Asegura que el campo de texto ocupe todo el ancho */
+        box-sizing: border-box; /* Evita que el padding o border afecte el ancho total */
+    }
+
+    button {
+        width: 100%; /* Botones más grandes en móviles */
+        margin-bottom: 20px; /* Mantén el espacio inferior en móviles */
+    }
+
+    form {
+        padding: 0 10px; /* Añade un poco de relleno lateral para evitar que los elementos se peguen a los bordes */
+    }
 }
 

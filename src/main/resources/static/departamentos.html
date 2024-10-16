@@ -15,9 +15,12 @@
 <h1>Gestión de Departamentos</h1>
 
 <form id="departamentoForm">
-    <input type="text" id="nombreDepartamento" placeholder="Nombre del departamento" required>
-    <button type="submit">Agregar Departamento</button>
+    <div class="input-container">
+        <input type="text" id="nombreDepartamento" placeholder="Nombre del departamento" required>
+        <button type="submit">Agregar Departamento</button>
+    </div>
 </form>
+
 
 <!-- Mensaje de error si el departamento ya existe -->
 <p id="errorMensaje" style="color:red; display:none;"></p>
@@ -78,8 +81,15 @@
     // Función para agregar un nuevo departamento
     document.getElementById('departamentoForm').addEventListener('submit', function(event) {
         event.preventDefault();
+
         const nombre = document.getElementById('nombreDepartamento').value;
         const errorMensaje = document.getElementById('errorMensaje');
+
+        if (!nombre) {
+        errorMensaje.textContent = "Por favor, ingresa un nombre de departamento."; // Mensaje de error
+        errorMensaje.style.display = 'block';
+        return; // Evitar el envío si no hay nombre
+        }
 
         fetch(`${baseUrl}/departamentos`, {
             method: 'POST',

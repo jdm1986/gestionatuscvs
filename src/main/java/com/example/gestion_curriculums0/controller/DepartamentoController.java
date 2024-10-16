@@ -27,13 +27,11 @@ public class DepartamentoController {
     // Endpoint para agregar un nuevo departamento
     @PostMapping
     public ResponseEntity<?> createDepartamento(@RequestBody Departamento departamento) {
-        // Verifico si el nombre del departamento es válido
-        if (departamento.getNombre() == null || departamento.getNombre().isEmpty()) {
-            return ResponseEntity.badRequest().body("El nombre del departamento es obligatorio.");
-        }
+        // Aquí accedo al departamento.getUserId() directamente desde el cuerpo de la petición
+        Long userId = departamento.getUserId();
 
-        // Verifico si el departamento ya existe para ese usuario
-        Optional<Departamento> departamentoExistente = departamentoService.findByNombreAndUserId(departamento.getNombre(), departamento.getUserId());
+        // Verifico si el departamento ya existe para el usuario
+        Optional<Departamento> departamentoExistente = departamentoService.findByNombreAndUserId(departamento.getNombre(), userId);
         if (departamentoExistente.isPresent()) {
             return ResponseEntity.badRequest().body("El departamento ya existe para este usuario.");
         }
@@ -41,6 +39,7 @@ public class DepartamentoController {
         // Si no existe, lo guardo
         return ResponseEntity.ok(departamentoService.saveDepartamento(departamento));
     }
+
 
     // Endpoint para eliminar un departamento por su ID
     @DeleteMapping("/{id}")

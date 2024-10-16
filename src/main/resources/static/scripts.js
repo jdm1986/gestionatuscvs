@@ -212,14 +212,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Función para obtener departamentos dinámicamente desde el backend
         async function cargarDepartamentos() {
-            const response = await fetch(`${baseUrl}/departamentos`, { // Ruta a tu API de departamentos
+            if (!userId) {
+                    console.error('userId no está definido.');
+                    return [];
+                }
+            const response = await fetch(`${baseUrl}/departamentos?userId=${userId}`, { // Ruta a tu API de departamentos
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}` // Envía el token en la cabecera si es necesario
                 }
             });
-            const departamentos = await response.json(); // Asumiendo que la respuesta es un array de departamentos
-            return departamentos;
+
+            if (!response.ok) {
+                    console.error(`Error al cargar departamentos: ${response.statusText}`);
+                    return [];
+                }
+
+            const departamentos = await response.json();
+                if (!Array.isArray(departamentos)) {
+                    console.error('La respuesta no es un array de departamentos.');
+                    return [];
+                }
+
+                return departamentos;
         }
 
         // Función para llenar el dropdown con departamentos
@@ -235,55 +250,41 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
             rows.forEach(row => {
-                const dropdown = row.querySelector('.departamento-dropdown'); // Busca el dropdown en cada fila
-                // Verifica que el dropdown existe antes de continuar
-                        if (!dropdown) {
-                            console.error('Dropdown no encontrado en esta fila.');
-                            return;
+                    const dropdown = row.querySelector('.departamento-dropdown');
+                    const selectedValue = dropdown.value; // Guardo el valor seleccionado previamente
+
+                    dropdown.innerHTML = ''; // Limpia opciones anteriores
+
+                    // Añadir opción de cada departamento
+                    departamentos.forEach(depto => {
+                        const option = document.createElement('option');
+                        option.value = depto.nombre; // Aquí uso el nombre del departamento, ajústalo si usas ID en vez de nombre
+                        option.textContent = depto.nombre;
+                        if (depto.nombre === selectedValue) {
+                            option.selected = true; // Mantengo el departamento seleccionado
                         }
-                const selectedValue = dropdown.value; // Guardo el valor seleccionado previamente
+                        dropdown.appendChild(option);
+                    });
 
-                dropdown.innerHTML = ''; // Limpia opciones anteriores
+                    // Evento para actualizar el departamento en la base de datos
+                    dropdown.addEventListener('change', async function() {
+                        const nuevoDepartamento = this.value;
+                        const idCurriculum = row.querySelector('td[data-id-curriculum]').getAttribute('data-id-curriculum');
 
-                // Añadir opción de cada departamento
-                departamentos.forEach(depto => {
-                    const option = document.createElement('option');
-                    option.value = depto.nombre; // Aquí uso el nombre del departamento, ajústalo si usas ID en vez de nombre
-                    option.textContent = depto.nombre; // Aquí uso el nombre del departamento
-                    if (depto.nombre === selectedValue) { // Ajusto para comparar con el valor seleccionado
-                        option.selected = true; // Mantengo el departamento seleccionado
-                    }
-                    dropdown.appendChild(option);
-                });
+                        const response = await fetch(`${baseUrl}/curriculums/${idCurriculum}/departamento`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({ departamento: nuevoDepartamento })
+                        });
 
-                // Evento para actualizar el departamento en la base de datos al cambiar la selección
-                        dropdown.addEventListener('change', async function() {
-                            const nuevoDepartamento = this.value;
-
-                            // Verifica que el currículum tiene un ID antes de hacer la actualización
-                            const idCurriculumElement = row.querySelector('td[data-id-curriculum]');
-                            if (!idCurriculumElement) {
-                                console.error('No se encontró el ID del currículum.');
-                                return;
-                            }
-
-                            const idCurriculum = idCurriculumElement.getAttribute('data-id-curriculum');
-
-                            // Llamada al backend para actualizar el departamento
-                            const response = await fetch(`${baseUrl}/curriculums/${idCurriculum}/departamento`, {
-                                method: 'PUT',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': `Bearer ${token}`
-                                },
-                                body: JSON.stringify({ departamento: nuevoDepartamento })
-                            });
-
-                            if (response.ok) {
-                                alert('Departamento actualizado');
-                            } else {
-                                alert('Error al actualizar el departamento');
-                    }
+                        if (response.ok) {
+                            alert('Departamento actualizado');
+                        } else {
+                            alert('Error al actualizar el departamento');
+                        }
                 });
             });
         }

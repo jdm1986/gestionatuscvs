@@ -292,10 +292,11 @@ public class CurriculumController {
         // Guardo el enlace en la base de datos
         uploadLinkRepository.save(uploadLink);
 
-        // Devuelvo el enlace generado
-        String link = "https://gestionatuscv.es/upload.html?token=" + token;
+        // Devuelvo el enlace generado con el token y el userId
+        String link = "https://gestionatuscv.es/upload.html?token=" + token + "&userId=" + usuario.getId();
         return ResponseEntity.ok(link);
     }
+
 
     // Subo un curriculum usando un token de acceso
     @PostMapping("/upload_with_token")

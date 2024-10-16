@@ -48,56 +48,73 @@
 
 <script>
     // Establecer la URL base (ajustar según entorno de desarrollo o producción)
-    const baseUrl = window.location.hostname.includes('localhost')
-        ? 'http://localhost:8080'  // URL de desarrollo
-        : 'https://gestionatuscv.es';  // URL de producción
+const baseUrl = window.location.hostname.includes('localhost')
+    ? 'http://localhost:8080'  // URL de desarrollo
+    : 'https://gestionatuscv.es';  // URL de producción
 
-    // Obtener ID del currículum desde la URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const curriculumId = urlParams.get('id');
+// Obtener ID del currículum desde la URL
+const urlParams = new URLSearchParams(window.location.search);
+const curriculumId = urlParams.get('id');
 
-    // Obtener el token de autenticación desde localStorage
-    const token = localStorage.getItem('token');
+// Obtener el token de autenticación desde localStorage
+const token = localStorage.getItem('token');
 
-    if (!token) {
-        // Si no hay token, redirigir al usuario al login
-        alert('Por favor, inicia sesión para continuar.');
-        window.location.href = 'login.html';
-    }
+if (!token) {
+    // Si no hay token, redirigir al usuario al login
+    alert('Por favor, inicia sesión para continuar.');
+    window.location.href = 'login.html';
+}
 
-    // Función para cargar los datos del currículum
-    async function loadCurriculumData() {
-        try {
-            const response = await fetch(`${baseUrl}/curriculums/${curriculumId}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            if (response.ok) {
-                const curriculum = await response.json();
-                document.getElementById('nombre').value = curriculum.nombre;
-                document.getElementById('apellido').value = curriculum.apellido;
-                document.getElementById('telefono').value = curriculum.telefono;
-                document.getElementById('email').value = curriculum.email;
-                document.getElementById('sexo').value = curriculum.sexo;
-                // Asignar el valor al campo de departamento
-                const departamentoSelect = document.getElementById('departamento');
-                departamentoSelect.value = curriculum.departamento;  // Asegúrate de que el campo coincide con el valor.
-            } else {
-                alert('Error al cargar los datos del currículum.');
-                console.log('Error al cargar el currículum:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error al obtener los datos del currículum:', error);
-            alert('Error al conectar con el servidor.');
-        }
-    }
-
-    // Función para cargar los departamentos en el desplegable
-    async function loadDepartamentos() {
+// Función para cargar los datos del currículum
+async function loadCurriculumData() {
     try {
-        const response = await fetch(`${baseUrl}/departamentos`, {
+        const response = await fetch(`${baseUrl}/curriculums/${curriculumId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
+            const curriculum = await response.json();
+            console.log('Curriculum data:', curriculum);  // Agrega un log para ver si los datos llegan correctamente
+            document.getElementById('nombre').value = curriculum.nombre;
+            document.getElementById('apellido').value = curriculum.apellido;
+            document.getElementById('telefono').value = curriculum.telefono;
+            document.getElementById('email').value = curriculum.email;
+            document.getElementById('sexo').value = curriculum.sexo;
+
+            // Asignar el valor al campo de departamento (luego de cargar opciones)
+            const departamentoSelect = document.getElementById('departamento');
+            console.log('Curriculum departamento:', curriculum.departamento); // Mover aquí el log
+
+            // Verificamos que se seleccione el departamento correcto
+            if (curriculum.departamento) {
+                for (let i = 0; i < departamentoSelect.options.length; i++) {
+                    if (departamentoSelect.options[i].value === curriculum.departamento) {
+                        departamentoSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+            } else {
+                console.warn('El currículum no tiene un departamento asignado.');
+            }
+
+        } else {
+            console.error('Error al cargar el currículum:', response.statusText);
+            alert('Error al cargar los datos del currículum.');
+        }
+    } catch (error) {
+        console.error('Error al obtener los datos del currículum:', error);
+        alert('Error al conectar con el servidor.');
+    }
+}
+
+async function loadDepartamentos() {
+    try {
+        // Suponiendo que tienes el userId disponible en el frontend
+        const userId = localStorage.getItem('userId'); // Obtén el userId desde localStorage o donde lo tengas guardado
+
+        const response = await fetch(`${baseUrl}/departamentos?userId=${userId}`, {  // Añadimos el userId a la URL
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -106,10 +123,12 @@
         if (response.ok) {
             const departamentos = await response.json();
             const departamentoSelect = document.getElementById('departamento');
+            console.log('Departamentos cargados:', departamentos); // Verificamos si los departamentos se están cargando
 
+            // Agregamos cada departamento al select
             departamentos.forEach(departamento => {
                 const option = document.createElement('option');
-                option.value = departamento.nombre; // Suponiendo que el nombre es la propiedad del departamento
+                option.value = departamento.nombre; // Suponemos que 'nombre' es el valor que se debe usar
                 option.text = departamento.nombre;
                 departamentoSelect.add(option);
             });
@@ -120,14 +139,15 @@
     } catch (error) {
         console.error('Error al obtener los departamentos:', error);
         alert('Error al conectar con el servidor.');
-        }
     }
+}
 
-    // Llamar a la función para cargar los datos de departamentos y curriculum cuando se cargue el DOM
-    document.addEventListener('DOMContentLoaded', async () => {
-    await loadDepartamentos(); //Me aseguro de que se cargan primero los departamentos
-    await loadCurriculumData(); //Luego asigna el departamento correcto al select
-    });
+// Llamar a la función para cargar los datos de departamentos y curriculum cuando se cargue el DOM
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadDepartamentos(); // Cargamos primero los departamentos
+    await loadCurriculumData(); // Luego asignamos el departamento correcto
+});
+
 
     // Manejo del formulario para guardar los cambios
     document.getElementById('editForm').addEventListener('submit', async function(event) {

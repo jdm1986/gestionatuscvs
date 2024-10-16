@@ -182,6 +182,57 @@ table {
     table-layout: fixed; /* Celdas con ancho fijo */
 }
 
+/* Ajustes para el ancho de las columnas de la tabla */
+
+/* Ajustar el ancho de la columna 'nombre' */
+table th:nth-child(1), table td:nth-child(1) {
+    width: 12%; /* Ancho reducido para 'nombre' */
+    white-space: nowrap; /* Mantener en una sola línea */
+}
+
+/* Ajustar el ancho de la columna 'apellidos' */
+table th:nth-child(2), table td:nth-child(2) {
+    width: 12%; /* Ancho reducido */
+    white-space: nowrap; /* Mantener en una sola línea */
+}
+
+/* Ajustar el ancho de la columna 'sexo' */
+table th:nth-child(4), table td:nth-child(4) {
+    width: 8%; /* Reducimos el ancho al 8% */
+    white-space: nowrap; /* Mantener en una sola línea */
+}
+
+/* Ajustar el ancho de la columna 'teléfono' */
+table th:nth-child(5), table td:nth-child(5) {
+    width: 12%; /* Ancho para teléfono */
+    white-space: nowrap; /* Mantener en una sola línea */
+}
+
+/* Ajustar el ancho de la columna 'correo electrónico' */
+table th:nth-child(6), table td:nth-child(6) {
+    width: auto; /* Permitir que tome el espacio necesario */
+    word-break: break-word; /* Dividir en líneas si es necesario */
+    white-space: normal; /* Permitir que se rompa en varias líneas */
+}
+
+/* Ajustar el ancho de la columna 'departamento' */
+table th:nth-child(7), table td:nth-child(7) {
+    width: auto; /* Permitir que esta columna sea flexible */
+    word-break: break-word; /* Permitir dividir en varias líneas */
+}
+
+/* Corregir el comportamiento del desbordamiento en la tabla */
+table {
+    table-layout: auto; /* Permitir que las columnas ajusten su tamaño según el contenido */
+}
+
+tbody td {
+    text-overflow: ellipsis; /* Recortar texto si es necesario */
+    overflow: hidden; /* Evitar el desbordamiento de texto */
+    white-space: nowrap; /* Mantener el texto en una sola línea */
+}
+
+
 thead th {
     background-color: #e573fe; /* Fondo rosado */
     color: white; /* Texto blanco */

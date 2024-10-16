@@ -54,25 +54,25 @@
 </div>
 
 <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token');
 
     document.addEventListener("DOMContentLoaded", function() {
-        // Definir la URL base dependiendo del entorno (desarrollo o producción)
         const baseUrl = window.location.hostname.includes('localhost')
             ? 'http://localhost:8080'
             : 'https://gestionatuscv.es';
 
-        // Añadir confirmación al hacer clic en el logo
-        document.getElementById('logo').addEventListener('click', function(event) {
-            event.preventDefault();
-            if (confirm("Se va a cerrar la sesión, ¿estás seguro?")) {
-                window.location.href = '/index.html';
-            }
-        });
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');  // Capturo el token desde la URL
+        const userId = urlParams.get('userId'); // Capturo el userId desde la URL
+
+        // Verifica si el userId está presente en la URL
+        if (!userId) {
+            console.error("userId no está definido en la URL.");
+            alert("No se ha encontrado un userId válido. Por favor, contacta con el administrador.");
+            return;
+        }
 
         // Cargar los departamentos desde el servidor para el selector
-        fetch(`${baseUrl}/departamentos`)
+        fetch(`${baseUrl}/departamentos?userId=${userId}`)
             .then(response => response.json())
             .then(departamentos => {
                 const departamentoSelect = document.getElementById('departamentoSelect');
@@ -82,8 +82,12 @@
                     option.textContent = depto.nombre;
                     departamentoSelect.appendChild(option);
                 });
+            })
+            .catch(error => {
+                console.error("Error al cargar departamentos:", error);
             });
 
+        // Manejador del formulario de subida
         document.getElementById('uploadForm').addEventListener('submit', function(event) {
             event.preventDefault();
 

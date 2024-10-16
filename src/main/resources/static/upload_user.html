@@ -69,16 +69,28 @@
         });
 
         // Cargar los departamentos desde el servidor para el selector
-        fetch(`${baseUrl}/departamentos`)
-            .then(response => response.json())
+        fetch(`${baseUrl}/departamentos?userId=${userId}`)
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw new Error(err.error); });
+                }
+                return response.json();
+            })
             .then(departamentos => {
                 const departamentoSelect = document.getElementById('departamentoSelect');
-                departamentos.forEach(depto => {
-                    const option = document.createElement('option');
-                    option.value = depto.nombre;
-                    option.textContent = depto.nombre;
-                    departamentoSelect.appendChild(option);
-                });
+                if (Array.isArray(departamentos)) {  // Asegúrate de que departamentos sea un array
+                    departamentos.forEach(depto => {
+                        const option = document.createElement('option');
+                        option.value = depto.nombre;
+                        option.textContent = depto.nombre;
+                        departamentoSelect.appendChild(option);
+                    });
+                } else {
+                    console.error("Departamentos no es un array:", departamentos);
+                }
+            })
+            .catch(error => {
+                console.error('Error al cargar departamentos:', error);
             });
 
         document.getElementById('uploadForm').addEventListener('submit', function(event) {

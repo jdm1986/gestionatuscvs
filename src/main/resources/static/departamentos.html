@@ -8,25 +8,29 @@
 </head>
 <body>
 <header>
-    <!-- Página de gestión de Departamentos -->
+    <!-- Encabezado con el logo del sistema -->
     <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo">
 </header>
 
 <h1>Gestión de Departamentos</h1>
 
+<!-- Formulario para agregar nuevos departamentos -->
 <form id="departamentoForm">
     <div class="input-container">
+        <!-- Input para el nombre del nuevo departamento -->
         <input type="text" id="nombreDepartamento" placeholder="Nombre del departamento" required>
+        <!-- Botón para agregar el departamento -->
         <button type="submit">Agregar Departamento</button>
     </div>
 </form>
 
-<!-- Mensaje de error si el departamento ya existe -->
+<!-- Mensaje de error si el departamento ya existe o si ocurre algún otro problema -->
 <p id="errorMensaje" style="color:red; display:none;"></p>
 
-<!-- Botón para volver atrás -->
+<!-- Botón para volver a la página anterior -->
 <button id="volverBtn" class="volver-btn">Volver</button>
 
+<!-- Tabla donde se listarán los departamentos ya creados -->
 <table id="tablaDepartamentos">
     <thead>
     <tr>
@@ -35,12 +39,15 @@
     </tr>
     </thead>
     <tbody>
+    <!-- Aquí se agregarán dinámicamente los departamentos -->
     </tbody>
 </table>
 
+<!-- Pie de página con enlaces adicionales -->
 <footer>
     <div class="footer-content">
-        <a href="https://www.jesusdiazmartincv.es" target="_blank"> <!-- Enlace alrededor del logo -->
+        <a href="https://www.jesusdiazmartincv.es" target="_blank">
+            <!-- Logo personal del desarrollador -->
             <img src="images/logodeveloper.png" alt="Logo JDM" class="footer-logo">
         </a>
         <div class="footer-links">
@@ -54,20 +61,34 @@
 </footer>
 
 <script>
+    // URL base que se ajusta dependiendo de si estamos en entorno local o producción
     const baseUrl = window.location.hostname.includes('localhost')
-        ? 'http://localhost:8080'
-        : 'https://gestionatuscv.es';
+        ? 'http://localhost:8080'  // URL para desarrollo local
+        : 'https://gestionatuscv.es';  // URL para producción
 
-    const userId = localStorage.getItem('userId'); // Obtener el ID del usuario actual
+    // Obtiene el userId almacenado en localStorage
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+        // Si no se encuentra el userId, redirige a la página de login
+        window.location.href = '/login.html';
+    }
 
     // Función para cargar los departamentos asociados al usuario actual
     function loadDepartamentos() {
-        fetch(`${baseUrl}/departamentos?userId=${userId}`) // Filtramos por el userId
-            .then(response => response.json())
+        // Hacemos una petición GET a la API para obtener los departamentos del usuario
+        fetch(`${baseUrl}/departamentos?userId=${userId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al obtener los departamentos');
+                }
+                return response.json();
+            })
             .then(departamentos => {
+                // Limpiamos la tabla antes de cargar nuevos datos
                 const tbody = document.getElementById('tablaDepartamentos').querySelector('tbody');
-                tbody.innerHTML = ''; // Limpiamos el contenido previo
+                tbody.innerHTML = '';
 
+                // Recorremos la lista de departamentos recibidos y los añadimos a la tabla
                 departamentos.forEach(depto => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
@@ -78,67 +99,74 @@
                     `;
                     tbody.appendChild(row);
                 });
-            });
+            })
+            .catch(error => console.error("Error al cargar los departamentos:", error));
     }
 
     // Función para agregar un nuevo departamento
     document.getElementById('departamentoForm').addEventListener('submit', function(event) {
-        event.preventDefault();
+        event.preventDefault(); // Evitamos el envío tradicional del formulario
 
-        const nombre = document.getElementById('nombreDepartamento').value;
+        // Obtenemos el nombre del departamento introducido por el usuario
+        const nombre = document.getElementById('nombreDepartamento').value.trim();
         const errorMensaje = document.getElementById('errorMensaje');
 
+        // Si el nombre está vacío, mostramos un mensaje de error
         if (!nombre) {
             errorMensaje.textContent = "Por favor, ingresa un nombre de departamento.";
             errorMensaje.style.display = 'block';
             return;
         }
 
+        // Realizamos la petición POST para crear un nuevo departamento
         fetch(`${baseUrl}/departamentos`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ nombre, userId }) // Asociamos el userId al crear el departamento
+            // Enviamos el nombre del departamento y el userId para asociarlo al usuario
+            body: JSON.stringify({ nombre, userId })
         })
         .then(response => {
-            if (response.status === 400) {
+            if (!response.ok) {
                 return response.text().then(text => {
-                    errorMensaje.textContent = text;
+                    errorMensaje.textContent = text; // Mostramos el mensaje de error en caso de fallo
                     errorMensaje.style.display = 'block';
                 });
             } else {
-                errorMensaje.style.display = 'none';
+                errorMensaje.style.display = 'none'; // Ocultamos el mensaje de error si la operación fue exitosa
                 return response.json();
             }
         })
         .then(data => {
             if (data) {
-                loadDepartamentos();
-                document.getElementById('nombreDepartamento').value = ''; // Limpiamos el campo
+                loadDepartamentos(); // Recargamos la lista de departamentos
+                document.getElementById('nombreDepartamento').value = ''; // Limpiamos el campo de entrada
             }
-        });
+        })
+        .catch(error => console.error("Error al agregar el departamento:", error));
     });
 
-    // Confirmación antes de eliminar
+    // Confirmación antes de eliminar un departamento
     function confirmDelete(id) {
         if (confirm("¿Estás seguro de que quieres eliminar este departamento?")) {
-            deleteDepartamento(id);
+            deleteDepartamento(id); // Si el usuario confirma, eliminamos el departamento
         }
     }
 
-    // Función para eliminar un departamento
+    // Función para eliminar un departamento específico
     function deleteDepartamento(id) {
         fetch(`${baseUrl}/departamentos/${id}`, { method: 'DELETE' })
-            .then(() => loadDepartamentos());
+            .then(() => loadDepartamentos()) // Recargamos los departamentos tras eliminar
+            .catch(error => console.error("Error al eliminar el departamento:", error));
     }
 
     // Botón para volver a la página anterior
     document.getElementById('volverBtn').addEventListener('click', function() {
-        window.history.back();
+        window.history.back(); // Regresamos a la página anterior
     });
 
-    // Cargar departamentos al inicio
+    // Cargamos los departamentos al cargar la página
     loadDepartamentos();
 </script>
 </body>

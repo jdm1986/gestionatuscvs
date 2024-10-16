@@ -11,8 +11,12 @@ public class Departamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // Id único del departamento
 
-    @Column(unique = true, nullable = false) // Nombre debe ser único
+    @Column(unique = true, nullable = false)
     private String nombre;
+
+    // Relación con el usuario (agregar referencia a userId)
+    @Column(nullable = false)
+    private Long userId; // Usuario al que pertenece el departamento
 
     // Getters y setters
     public Long getId() {
@@ -29,5 +33,13 @@ public class Departamento {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

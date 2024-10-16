@@ -18,10 +18,10 @@ public class DepartamentoController {
     @Autowired
     private DepartamentoService departamentoService;
 
-    // Endpoint para obtener todos los departamentos
+    // Endpoint para obtener los departamentos de un usuario específico
     @GetMapping
-    public List<Departamento> getAllDepartamentos() {
-        return departamentoService.getAllDepartamentos();
+    public List<Departamento> getDepartamentosByUserId(@RequestParam Long userId) {
+        return departamentoService.getDepartamentosByUserId(userId); // Filtrar departamentos por userId
     }
 
     // Endpoint para agregar un nuevo departamento
@@ -32,10 +32,10 @@ public class DepartamentoController {
             return ResponseEntity.badRequest().body("El nombre del departamento es obligatorio.");
         }
 
-        // Verifico si el departamento ya existe por su nombre
-        Optional<Departamento> departamentoExistente = departamentoService.findByNombre(departamento.getNombre());
+        // Verifico si el departamento ya existe para ese usuario
+        Optional<Departamento> departamentoExistente = departamentoService.findByNombreAndUserId(departamento.getNombre(), departamento.getUserId());
         if (departamentoExistente.isPresent()) {
-            return ResponseEntity.badRequest().body("El departamento ya existe.");
+            return ResponseEntity.badRequest().body("El departamento ya existe para este usuario.");
         }
 
         // Si no existe, lo guardo
@@ -49,3 +49,4 @@ public class DepartamentoController {
         return ResponseEntity.ok().build();
     }
 }
+

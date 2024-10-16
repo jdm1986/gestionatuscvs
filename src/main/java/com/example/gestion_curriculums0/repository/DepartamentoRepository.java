@@ -4,11 +4,16 @@ import com.example.gestion_curriculums0.model.Departamento;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface DepartamentoRepository extends JpaRepository<Departamento, Long> {
 
-    // Método para buscar un departamento por su nombre
-    Optional<Departamento> findByNombre(String nombre);
+    // Método para buscar departamentos por userId
+    List<Departamento> findByUserId(Long userId);
+
+    // Método para buscar un departamento por su nombre y userId
+    Optional<Departamento> findByNombreAndUserId(String nombre, Long userId);
 }
+

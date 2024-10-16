@@ -15,9 +15,9 @@ public class DepartamentoService {
     @Autowired
     private DepartamentoRepository departamentoRepository;
 
-    // Método para obtener todos los departamentos
-    public List<Departamento> getAllDepartamentos() {
-        return departamentoRepository.findAll();
+    // Método para obtener los departamentos filtrados por userId
+    public List<Departamento> getDepartamentosByUserId(Long userId) {
+        return departamentoRepository.findByUserId(userId);
     }
 
     // Método para guardar un nuevo departamento
@@ -30,13 +30,8 @@ public class DepartamentoService {
         departamentoRepository.deleteById(id);
     }
 
-    // Método para buscar un departamento por su ID
-    public Optional<Departamento> getDepartamentoById(Long id) {
-        return departamentoRepository.findById(id);
-    }
-
-    // Método para buscar un departamento por su nombre
-    public Optional<Departamento> findByNombre(String nombre) {
-        return departamentoRepository.findByNombre(nombre);
+    // Método para buscar un departamento por su nombre y userId
+    public Optional<Departamento> findByNombreAndUserId(String nombre, Long userId) {
+        return departamentoRepository.findByNombreAndUserId(nombre, userId);
     }
 }

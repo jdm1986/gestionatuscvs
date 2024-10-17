@@ -226,18 +226,9 @@ table {
     table-layout: auto; /* Permitir que las columnas ajusten su tamaño según el contenido */
 }
 
-tbody td {
-    text-overflow: ellipsis; /* Recortar texto si es necesario */
-    overflow: hidden; /* Evitar el desbordamiento de texto */
-    white-space: nowrap; /* Mantener el texto en una sola línea */
-}
-
-
 thead th {
     background-color: #e573fe; /* Fondo rosado */
     color: white; /* Texto blanco */
-    padding: 12px; /* Relleno de 12px */
-    font-size: 16px; /* Tamaño de fuente */
     text-align: left; /* Alinear texto a la izquierda */
 }
 
@@ -248,13 +239,6 @@ tbody tr {
 tbody tr:hover {
     background-color: #3a3a3a; /* Cambio de fondo al pasar el cursor */
     transition: background-color 0.3s ease; /* Transición suave para el color de fondo */
-}
-
-tbody td {
-    padding: 12px; /* Espaciado interno de las celdas */
-    color: #ccc; /* Color de texto gris claro */
-    font-size: 14px; /* Tamaño de fuente más pequeño */
-    text-align: left; /* Alineación del texto a la izquierda */
 }
 
 /* Estilos para los botones de acción en la tabla */
@@ -349,6 +333,12 @@ tbody td {
         border-bottom: 1px solid #444; /* Línea inferior de las celdas */
         position: relative; /* Posiciona elementos de manera relativa */
         padding-left: 50%; /* Añade relleno a la izquierda */
+        text-overflow: clip; /* Recortar texto si es necesario */
+        overflow: visible; /* Evitar el desbordamiento de texto */
+        white-space: normal; /* Mantener el texto en una sola línea */
+        padding: 12px; /* Espaciado interno de las celdas */
+        color: #ccc; /* Color de texto gris claro */
+        font-size: 14px; /* Tamaño de fuente más pequeño */
     }
 
     tbody td::before {
@@ -769,18 +759,20 @@ thead th {
     }
 
     tbody tr {
-        display: block; /* Muestra las filas como bloques */
         border-bottom: 1px solid #333; /* Línea inferior de las filas */
         margin-bottom: 10px; /* Espaciado inferior */
     }
 
     tbody td {
         display: block; /* Muestra las celdas como bloques */
-        text-align: right; /* Texto alineado a la derecha */
+        text-align: end; /* Texto alineado a la derecha */
         padding: 10px; /* Relleno interno */
         border-bottom: 1px solid #444; /* Línea inferior */
         position: relative; /* Posiciona de manera relativa */
         padding-left: 50%; /* Relleno a la izquierda */
+        white-space: normal; /* Permite que el texto ocupe varias líneas si es necesario */
+        overflow: visible; /* Evita el desbordamiento del texto */
+        text-overflow: clip; /* Evitar truncamiento con puntos suspensivos */
     }
 
     tbody td::before {

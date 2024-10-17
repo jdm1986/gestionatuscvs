@@ -403,7 +403,7 @@ document.addEventListener('DOMContentLoaded', function() {
             fetchCurriculums();
 
             const username = localStorage.getItem('username'); // Obtiene el nombre de usuario
-            if (username === 'admin') { // Si el usuario es admin, muestra el panel de administración
+            if (username === 'JESUS DIAZ') { // Si el usuario es JESUS DIAZ, muestra el panel de administración
                 const adminPanel = document.createElement('div'); // Crea un panel de administración
                 adminPanel.style.marginTop = '20px';
                 adminPanel.style.textAlign = 'center';

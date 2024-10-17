@@ -186,26 +186,26 @@ table {
 
 /* Ajustar el ancho de la columna 'nombre' */
 table th:nth-child(1), table td:nth-child(1) {
-    width: 12%; /* Ancho reducido para 'nombre' */
-    white-space: nowrap; /* Mantener en una sola línea */
+    width: auto; /* Deja que se ajuste automáticamente */
+    white-space: normal; /* Permitir que el contenido se ajuste en varias líneas si es necesario */
 }
 
 /* Ajustar el ancho de la columna 'apellidos' */
 table th:nth-child(2), table td:nth-child(2) {
-    width: 12%; /* Ancho reducido */
-    white-space: nowrap; /* Mantener en una sola línea */
+    width: auto; /* Deja que se ajuste automáticamente */
+    white-space: normal; /* Permitir que el contenido se ajuste en varias líneas si es necesario */
 }
 
 /* Ajustar el ancho de la columna 'sexo' */
 table th:nth-child(4), table td:nth-child(4) {
-    width: 8%; /* Reducimos el ancho al 8% */
-    white-space: nowrap; /* Mantener en una sola línea */
+    width: auto; /* Deja que se ajuste automáticamente */
+    white-space: normal; /* Permitir que el contenido se ajuste en varias líneas si es necesario */
 }
 
 /* Ajustar el ancho de la columna 'teléfono' */
 table th:nth-child(5), table td:nth-child(5) {
-    width: 12%; /* Ancho para teléfono */
-    white-space: nowrap; /* Mantener en una sola línea */
+    width: auto; /* Deja que se ajuste automáticamente */
+    white-space: normal; /* Permitir que el contenido se ajuste en varias líneas si es necesario */
 }
 
 /* Ajustar el ancho de la columna 'correo electrónico' */

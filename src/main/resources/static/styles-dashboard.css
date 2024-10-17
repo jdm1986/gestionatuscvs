@@ -1,5 +1,3 @@
-/* Eliminar media queries para tablets */
-
 /* Estilo general del cuerpo */
 body {
     font-family: Arial, sans-serif; /* Tipografía del cuerpo */
@@ -179,7 +177,7 @@ table {
     background-color: #2c2c2c; /* Fondo gris oscuro */
     border-radius: 8px; /* Bordes redondeados */
     overflow: hidden; /* Ocultar desbordes */
-    table-layout: fixed; /* Celdas con ancho fijo */
+    table-layout: auto; /* Celdas con ancho fijo */
 }
 
 /* Ajustes para el ancho de las columnas de la tabla */
@@ -252,131 +250,6 @@ tbody tr:hover {
     flex: 1; /* Los botones ocupan el espacio disponible */
     min-width: 80px; /* Ancho mínimo de 80px */
     padding: 10px; /* Relleno interno de los botones */
-}
-
-/* Estilos para dispositivos móviles */
-@media (max-width: 767px) {
-    /* Estilo para el contenedor del enlace generado */
-    .link-container {
-        display: none; /* Oculta el contenedor */
-        flex-direction: column; /* Coloca elementos en columna */
-        align-items: center; /* Alinea los elementos en el centro */
-        margin-top: 10px; /* Espaciado superior */
-        width: 100%; /* Ocupa todo el ancho disponible */
-    }
-
-    .link-container.show {
-        display: flex; /* Muestra el contenedor con flexbox */
-    }
-
-    .generated-link {
-        background-color: #444444; /* Fondo gris oscuro */
-        color: white; /* Texto blanco */
-        padding: 10px; /* Relleno interno */
-        border-radius: 8px; /* Bordes redondeados */
-        margin-bottom: 10px; /* Espaciado inferior */
-        word-wrap: break-word; /* Permite ajustar el texto */
-        text-align: center; /* Alineación centrada */
-        max-width: 100%; /* Ocupa todo el ancho disponible */
-    }
-
-    .copy-button {
-        background-color: #7C3E8A; /* Fondo morado */
-        color: white; /* Texto blanco */
-        border: none; /* Sin bordes */
-        padding: 10px 20px; /* Relleno interno del botón */
-        cursor: pointer; /* Cambia el cursor a mano */
-        border-radius: 4px; /* Bordes redondeados */
-        font-size: 14px; /* Tamaño de fuente */
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra ligera */
-        transition: background-color 0.3s ease; /* Transición suave en el color */
-    }
-
-    .copy-button:hover {
-        background-color: #E573FE; /* Cambia el fondo al pasar el cursor */
-    }
-
-    .container {
-        width: auto; /* Ajusta el ancho automáticamente */
-        padding: 20px; /* Relleno interno */
-    }
-
-    .search-buttons {
-        flex-direction: column; /* Coloca los botones en columna */
-        gap: 10px; /* Espaciado entre botones */
-    }
-
-    button {
-        width: 100%; /* Ocupa todo el ancho disponible */
-        margin-bottom: 10px; /* Espaciado inferior */
-    }
-
-    table {
-        width: 100%; /* Ocupa todo el ancho disponible */
-        border-collapse: collapse; /* Colapsa los bordes */
-    }
-
-    thead {
-        display: none; /* Oculta el encabezado en móviles */
-    }
-
-    tbody tr {
-        display: block; /* Muestra las filas como bloques */
-        border-bottom: 1px solid #333; /* Línea inferior de las filas */
-        margin-bottom: 10px; /* Espaciado inferior */
-    }
-
-    tbody td {
-        display: block; /* Muestra las celdas como bloques */
-        text-align: right; /* Alinea el texto a la derecha */
-        padding: 10px; /* Relleno interno */
-        border-bottom: 1px solid #444; /* Línea inferior de las celdas */
-        position: relative; /* Posiciona elementos de manera relativa */
-        padding-left: 50%; /* Añade relleno a la izquierda */
-        text-overflow: clip; /* Recortar texto si es necesario */
-        overflow: visible; /* Evitar el desbordamiento de texto */
-        white-space: normal; /* Mantener el texto en una sola línea */
-        padding: 12px; /* Espaciado interno de las celdas */
-        color: #ccc; /* Color de texto gris claro */
-        font-size: 14px; /* Tamaño de fuente más pequeño */
-    }
-
-    tbody td::before {
-        content: attr(data-label); /* Muestra un contenido dinámico con data-label */
-        position: absolute; /* Posiciona el contenido absolutamente */
-        left: 10px; /* Margen izquierdo */
-        width: 45%; /* Ancho del 45% */
-        padding-right: 10px; /* Relleno a la derecha */
-        white-space: nowrap; /* Evita que el texto se desborde */
-        text-align: left; /* Alinea el texto a la izquierda */
-        font-weight: bold; /* Negrita */
-    }
-
-    tbody td .action-buttons {
-        justify-content: flex-end; /* Alinea los botones a la derecha */
-    }
-
-    tbody td button {
-        padding: 5px 10px; /* Relleno interno pequeño */
-        cursor: pointer; /* Cambia el cursor a mano */
-    }
-
-    tbody td button:hover {
-        background-color: #7C3E8A; /* Cambia el fondo al pasar el cursor */
-    }
-
-    /* Ajustar tamaño del botón "Ver registros de usuarios" y centrar */
-    #viewLogsButton {
-        width: 80%; /* Ocupa el 80% del ancho */
-        margin: 10px auto; /* Centra el botón con márgenes automáticos */
-    }
-}
-
-/* Centrar la palabra "Acciones" */
-@media (max-width: 1024px) {
-    th:nth-child(6) {
-        text-align: center; /* Centra el texto del sexto th */
-    }
 }
 
 /* Estilos para el modal de notas */
@@ -711,22 +584,8 @@ thead th {
     gap: 5px; /* Espaciado entre botones */
 }
 
-/* Ajustes para visión en móviles */
-@media (max-width: 767px) {
-    .action-buttons {
-        justify-content: flex-end; /* Alinea los botones a la derecha */
-        width: 100%; /* Ancho completo */
-    }
-
-    .icon-button {
-        width: 30px; /* Ancho reducido a 30px */
-        height: 30px; /* Altura reducida a 30px */
-        font-size: 12px; /* Tamaño de fuente reducido */
-    }
-}
-
 /* Ajustes responsivos para pantallas pequeñas */
-@media (max-width: 767px) {
+@media (max-width: 1280px) {
     /* Asegurarse de que los botones se apilen en dispositivos móviles */
     .action-buttons {
         justify-content: flex-end; /* Alineación a la derecha */
@@ -734,6 +593,12 @@ thead th {
         width: 48%; /* Ancho reducido al 48% */
         margin: 0; /* Sin margen */
     }
+
+    .icon-button {
+            width: 30px; /* Ancho reducido a 30px */
+            height: 30px; /* Altura reducida a 30px */
+            font-size: 12px; /* Tamaño de fuente reducido */
+        }
 
     .container {
         width: auto; /* Ancho automático */

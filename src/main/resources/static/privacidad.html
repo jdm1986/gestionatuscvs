@@ -14,21 +14,46 @@
 <div class="container">
     <h1>AVISO DE PRIVACIDAD</h1>
     <div class="content">
-        <p>[GESTIONATUSCV] se compromete a proteger su privacidad. Este Aviso de Privacidad describe cómo recopilamos, usamos y protegemos su información personal.</p>
-        <p><strong>Información que recopilamos:</strong></p>
+        <p>[GESTIONATUSCV] se compromete a proteger su privacidad. Este Aviso de Privacidad describe cómo recopilamos, usamos y protegemos su información personal cuando interactúa con la plataforma.</p>
+        <p><strong>Información que recopilamos de usuarios registrados:</strong></p>
         <ul>
             <li>Nombre de usuario/a</li>
             <li>Dirección de correo electrónico</li>
+            <li>Fecha de registro</li>
+            <li>Role</li>
+            <li>Fecha de token generado (para link de carga de curriculum)</li>
+        </ul>
+        <p><strong>Información que recopilamos de registros de candidatos:</strong></p>
+        <ul>
+            <li>Nombre y Apellidos</li>
+            <li>Archivo del CV en formato pdf y datos</li>
+            <li>Dirección de correo electrónico</li>
+            <li>Fecha de inserción en la base de datos</li>
+            <li>Sexo</li>
+            <li>Teléfono</li>
         </ul>
         <p><strong>Uso de la información:</strong></p>
         <ul>
-            <li>La información recopilada se utilizará únicamente para propósitos de prueba de la aplicación.</li>
-            <li>Sus datos serán eliminados automáticamente después de 30 minutos de su registro.</li>
+            <li>La información recopilada se utilizará únicamente para propósitos de prueba de la aplicación salvo
+                usuarios que tengan rol de administración.</li>
+            <li>Los datos proporcionados a nivel usuario serán eliminados automáticamente después de 30 minutos
+                (Datos de registro y cualquier dato asociado a este usuario). Solo los datos de registro de un usuario que
+                tenga rol de administración y sus datos asociados quedarán persistidos en la base de datos.</li>
         </ul>
-        <p><strong>Protección de la información:</strong> Implementamos medidas de seguridad para proteger sus datos durante su uso temporal en nuestra aplicación.</p>
-        <p><strong>Consentimiento:</strong> Al usar nuestra aplicación, usted acepta la recopilación y el uso de su información según lo descrito en este Aviso de Privacidad.</p>
+        <p><strong>Seguridad de la información:</strong></p>
+        <ul>
+            <li><Strong>Enlace seguro:</strong> Los enlaces generados para la subida de CV contienen un token único que garantiza que solo aquellos con acceso al enlace puedan realizar la subida del archivo.</li>
+            <li><Strong>Encriptación de la conexión:</strong> La plataforma utiliza el protocolo HTTPS para asegurar que todos los datos transmitidos estén cifrados y protegidos durante su envío.</li>
+            <li><Strong>Roles y permisos:</strong> La aplicación cuenta con un sistema de autenticación y gestión de roles para asegurar que los datos solo sean accesibles por usuarios autorizados. Los usuarios con rol de usuario tienen limitaciones de tiempo en la gestión de los datos (30 minutos), mientras que los administradores tienen acceso a la gestión extendida.</li>
+            <li><Strong>Medidas de seguridad adicionales:</strong> implementamos validaciones de archivos y restricciones para garantizar que solo se puedan subir archivos válidos y evitar la manipulación maliciosa.</li>
+        </ul>
         <p><strong>Uso de Cookies:</strong> No utilizamos cookies en esta aplicación para el seguimiento de sesiones o almacenamiento de datos personales.</p>
-        <p><strong>Derechos de los Usuarios/as:</strong> Usted tiene derecho a acceder, rectificar y suprimir sus datos personales en cualquier momento. Para ejercer estos derechos, por favor contáctenos en <a href="mailto:info@gestionatuscv.es" class="footer-email" style="color: white;">info@gestionatuscv.es</a>.</p>
+        <p><strong>Consentimiento y derechos de los usuarios/as:</strong></p>
+        <ul>
+            <li> Al subir su CV mediante el enlace proporcionado con token, usted acepta la recopilación y el uso de su información de acuerdo con este Aviso de Privacidad.</li>
+            <li> Usted (Usuario y candidato que sube su CV voluntariamente a la plataforma a través de enlace con token) tiene derecho a acceder, rectificar y suprimir sus datos personales en cualquier momento. Para ejercer estos derechos, póngase en contacto con nosotros en info@gestionatuscv.es.</li>
+        </ul>
+        <p><strong>Actualizaciones y cambios:</strong> Este aviso de privacidad puede ser actualizado para reflejar mejoras en nuestras políticas de seguridad y prácticas de gestión de datos. Cualquier cambio será comunicado en esta página.</p>
         <p>Para más información, por favor contáctenos en <a href="mailto:info@gestionatuscv.es" class="footer-email" style="color: white;">info@gestionatuscv.es</a>.</p>
     </div>
     <div class="buttons">

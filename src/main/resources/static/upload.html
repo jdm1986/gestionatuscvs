@@ -5,6 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subir Currículum</title>
     <link rel="stylesheet" href="styles-common.css">
+    <style>
+        /* Estilo adicional para el contenedor del checkbox */
+        .checkbox-container {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            text-align: left;
+            font-size: 14px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-container input {
+            margin-right: 10px;
+        }
+
+        .checkbox-container label {
+            margin: 0;
+        }
+
+        .checkbox-container a {
+            color: #fff;
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
 <header>
@@ -27,6 +52,15 @@
         </select>
         <input type="text" id="telefono" placeholder="Teléfono" required pattern="^\+?[0-9]{9,15}$" title="El teléfono solo puede contener números y opcionalmente el signo + al inicio.">
         <input type="email" id="email" placeholder="Email" required>
+
+        <!-- Nuevo checkbox para la aceptación de términos -->
+        <div class="checkbox-container">
+            <input type="checkbox" id="aceptarTerminos" required>
+            <label for="aceptarTerminos">
+                Acepto <a href="terminos.html" target="_blank">Términos de Uso</a> y el <a href="privacidad.html" target="_blank">Aviso de Privacidad</a>.
+            </label>
+        </div>
+
         <button type="submit">Subir</button>
     </form>
     <div id="uploadMessage" class="hidden">Currículum subido exitosamente.</div>
@@ -34,91 +68,98 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // URL base que se ajusta dependiendo de si estamos en entorno local o producción
-    const baseUrl = window.location.hostname.includes('localhost')
-        ? 'http://localhost:8080' // Si es localhost, usar esta URL
-        : window.location.hostname.includes('www')
-            ? 'https://www.gestionatuscv.es' // Si está en www
-            : 'https://gestionatuscv.es'; // Si no está en www
+    document.addEventListener('DOMContentLoaded', function() {
+        // URL base que se ajusta dependiendo de si estamos en entorno local o producción
+        const baseUrl = window.location.hostname.includes('localhost')
+            ? 'http://localhost:8080' // Si es localhost, usar esta URL
+            : window.location.hostname.includes('www')
+                ? 'https://www.gestionatuscv.es' // Si está en www
+                : 'https://gestionatuscv.es'; // Si no está en www
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token');  // Capturo el token desde la URL
-    const userId = urlParams.get('userId'); // Capturo el userId desde la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');  // Capturo el token desde la URL
+        const userId = urlParams.get('userId'); // Capturo el userId desde la URL
 
-    // Verifica si el userId está presente en la URL
-    if (!userId) {
-        console.error("userId no está definido en la URL.");
-        alert("No se ha encontrado un userId válido. Por favor, contacta con el administrador.");
-        return;
-    }
-
-    // Cargar los departamentos desde el servidor para el selector
-    fetch(`${baseUrl}/departamentos?userId=${userId}`)
-        .then(response => response.json())
-        .then(departamentos => {
-            const departamentoSelect = document.getElementById('departamentoSelect');
-            departamentos.forEach(depto => {
-                const option = document.createElement('option');
-                option.value = depto.nombre;
-                option.textContent = depto.nombre;
-                departamentoSelect.appendChild(option);
-            });
-        })
-        .catch(error => {
-            console.error("Error al cargar departamentos:", error);
-        });
-
-    // Manejador del formulario de subida
-    document.getElementById('uploadForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-
-        const pdfFile = document.getElementById('pdfFile').files[0];
-        const nombre = document.getElementById('nombre').value;
-        const apellido = document.getElementById('apellido').value;
-        const sexo = document.getElementById('sexo').value;
-        const departamento = document.getElementById('departamentoSelect').value;
-        const telefono = document.getElementById('telefono').value;
-        const email = document.getElementById('email').value;
-
-        // Validación adicional para asegurarse de que el archivo es un PDF
-        if (!pdfFile || pdfFile.type !== "application/pdf") {
-            alert('Por favor, sube un archivo PDF válido.');
+        // Verifica si el userId está presente en la URL
+        if (!userId) {
+            console.error("userId no está definido en la URL.");
+            alert("No se ha encontrado un userId válido. Por favor, contacta con el administrador.");
             return;
         }
 
-        const formData = new FormData();
-        formData.append('token', token);  // Añadimos el token al formData
-        formData.append('file', pdfFile);
-        formData.append('nombre', nombre);
-        formData.append('apellido', apellido);
-        formData.append('sexo', sexo);
-        formData.append('departamento', departamento);
-        formData.append('telefono', telefono);
-        formData.append('email', email);
+        // Cargar los departamentos desde el servidor para el selector
+        fetch(`${baseUrl}/departamentos?userId=${userId}`)
+            .then(response => response.json())
+            .then(departamentos => {
+                const departamentoSelect = document.getElementById('departamentoSelect');
+                departamentos.forEach(depto => {
+                    const option = document.createElement('option');
+                    option.value = depto.nombre;
+                    option.textContent = depto.nombre;
+                    departamentoSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error("Error al cargar departamentos:", error);
+            });
 
-        fetch(`${baseUrl}/curriculums/upload_with_token`, {  // Cambiamos la URL al endpoint correcto
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.text())
-        .then(message => {
-            if (message.includes("Enlace de subida no válido o ha expirado")) {
-                document.getElementById('errorMessage').classList.remove('hidden');
-            } else {
-                document.getElementById('uploadMessage').textContent = message;
-                document.getElementById('uploadMessage').classList.remove('hidden');
-                // Redireccionar al index después de 2 segundos
-                setTimeout(function() {
-                    window.location.href = '/index.html';
-                }, 2000);
+        // Manejador del formulario de subida
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const pdfFile = document.getElementById('pdfFile').files[0];
+            const nombre = document.getElementById('nombre').value;
+            const apellido = document.getElementById('apellido').value;
+            const sexo = document.getElementById('sexo').value;
+            const departamento = document.getElementById('departamentoSelect').value;
+            const telefono = document.getElementById('telefono').value;
+            const email = document.getElementById('email').value;
+            const aceptarTerminos = document.getElementById('aceptarTerminos').checked;
+
+            // Validación adicional para asegurarse de que el archivo es un PDF
+            if (!pdfFile || pdfFile.type !== "application/pdf") {
+                alert('Por favor, sube un archivo PDF válido.');
+                return;
             }
-        })
-        .catch(error => {
-            alert('Error al subir el currículum.');
+
+            // Validación del checkbox de aceptación de términos
+            if (!aceptarTerminos) {
+                alert('Debe aceptar los términos para poder subir su currículum.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('token', token);  // Añadimos el token al formData
+            formData.append('file', pdfFile);
+            formData.append('nombre', nombre);
+            formData.append('apellido', apellido);
+            formData.append('sexo', sexo);
+            formData.append('departamento', departamento);
+            formData.append('telefono', telefono);
+            formData.append('email', email);
+
+            fetch(`${baseUrl}/curriculums/upload_with_token`, {  // Cambiamos la URL al endpoint correcto
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(message => {
+                if (message.includes("Enlace de subida no válido o ha expirado")) {
+                    document.getElementById('errorMessage').classList.remove('hidden');
+                } else {
+                    document.getElementById('uploadMessage').textContent = message;
+                    document.getElementById('uploadMessage').classList.remove('hidden');
+                    // Redireccionar al index después de 2 segundos
+                    setTimeout(function() {
+                        window.location.href = '/index.html';
+                    }, 2000);
+                }
+            })
+            .catch(error => {
+                alert('Error al subir el currículum.');
+            });
         });
     });
-});
 </script>
 </body>
 </html>

@@ -39,6 +39,11 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Curriculum> curriculums;
 
+    // Relación uno-a-muchos con la entidad Departamento, un usuario puede tener varios departamentos
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Departamento> departamentos;
+
+
     // Token para restablecimiento de contraseña
     @Column(name = "reset_token")
     private String resetToken;

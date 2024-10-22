@@ -14,8 +14,14 @@ public class Departamento {
     @Column(nullable = false)
     private String nombre;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId; // Relaciona el departamento con un usuario específico
+    // Relación muchos-a-uno con la entidad Usuario
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private Usuario usuario; // Asocia el departamento con un usuario específico
+
+    // Campo userId para facilitar el acceso, pero sin interferir con la relación
+    @Column(name = "user_id", insertable = false, updatable = false)
+    private Long userId;
 
     // Getters y setters
     public Long getId() {
@@ -34,11 +40,17 @@ public class Departamento {
         this.nombre = nombre;
     }
 
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
     public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
+    // No es necesario un setter para userId ya que se asigna a través del usuario
 }

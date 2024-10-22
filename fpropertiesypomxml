@@ -1,0 +1,379 @@
+application.properties
+
+# Configuración de la base de datos
+# URL de la base de datos que se carga desde una variable de entorno
+spring.datasource.url=${DB_URL}
+
+# Nombre de usuario de la base de datos, cargado desde una variable de entorno
+spring.datasource.username=${DB_USERNAME}
+
+# Contraseña de la base de datos, también cargada desde una variable de entorno
+spring.datasource.password=${DB_PASSWORD}
+
+# Hibernate actualizará el esquema de la base de datos automáticamente en base a las entidades
+spring.jpa.hibernate.ddl-auto=update
+
+# Muestra las consultas SQL en la consola para propósitos de depuración
+spring.jpa.show-sql=true
+
+# Especifica el dialecto de Hibernate que corresponde a MySQL
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
+
+# Configuración para manejar archivos
+# Habilita el soporte de subida de archivos en la aplicación
+spring.servlet.multipart.enabled=true
+
+# Tamaño máximo permitido para un archivo subido: 50 MB
+spring.servlet.multipart.max-file-size=50MB
+
+# Tamaño máximo permitido para una solicitud que incluya varios archivos: 50 MB
+spring.servlet.multipart.max-request-size=50MB
+
+# Configuración de Hibernate
+# Deshabilita la visualización de las consultas SQL generadas por Hibernate
+spring.jpa.properties.hibernate.show_sql=false
+
+# Deshabilita el formateo de las consultas SQL en la consola
+spring.jpa.properties.hibernate.format_sql=false
+
+# Reducir la verbosidad del logging de Hibernate
+# Establece el nivel de registro de Hibernate en INFO, lo que significa que se mostrarán solo mensajes importantes
+logging.level.org.hibernate=INFO
+logging.level.org.hibernate.SQL=INFO
+logging.level.org.hibernate.type=INFO
+
+# Deshabilitar Open-in-view
+# Mejora el rendimiento al deshabilitar la técnica Open-in-view, que mantiene abierta la sesión de Hibernate durante toda la solicitud
+spring.jpa.open-in-view=false
+
+# Swagger
+# Habilita la documentación de la API con Swagger y la interfaz Swagger UI
+springdoc.api-docs.enabled=true
+springdoc.swagger-ui.enabled=true
+
+# Exponer todos los endpoints de gestión
+management.endpoints.web.exposure.include=*
+
+# Configuración de JWT (JSON Web Token)
+# La clave secreta utilizada para firmar y verificar los tokens JWT se carga desde una variable de entorno
+jwt.secret=${JWT_SECRET}
+
+# Logging
+# Configuración del nivel de registro de los componentes web de Spring para mostrar mensajes de depuración
+logging.level.org.springframework.web=DEBUG
+logging.level.org.springframework.security=DEBUG
+
+# Puerto del servidor
+# Puerto en el que se ejecuta la aplicación, cargado desde una variable de entorno o por defecto en el 8080
+server.port=${PORT:8080}
+
+# Permitir referencias circulares entre beans
+# Esto permite que los beans dependan unos de otros en una referencia circular si es necesario
+spring.main.allow-circular-references=true
+
+# Configuración del nivel de logging por defecto en la aplicación
+logging.level.root=INFO
+logging.level.com.example.gestion_curriculums0=DEBUG
+
+# Archivo de registro donde se guardarán los logs de la aplicación
+logging.file.name=gestion_curriculums0.log
+
+# Configuración de correo electrónico
+# Configura los detalles del servidor SMTP para enviar correos electrónicos
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=gestionatuscv@gmail.com
+
+# La contraseña del correo electrónico es cargada desde una variable de entorno por seguridad
+spring.mail.password=${SPRING_MAIL_PASSWORD}
+
+# Autenticación SMTP habilitada
+spring.mail.properties.mail.smtp.auth=true
+
+# Habilita el uso de STARTTLS para conexiones seguras
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.properties.mail.smtp.starttls.required=true
+
+# Configura tiempos de espera para la conexión y el envío de correos electrónicos
+spring.mail.properties.mail.smtp.connectiontimeout=5000
+spring.mail.properties.mail.smtp.timeout=5000
+spring.mail.properties.mail.smtp.writetimeout=5000
+
+# Nivel de registro para la funcionalidad de correo de Spring
+logging.level.org.springframework.mail=DEBUG
+
+# Configuración de HikariCP (pool de conexiones)
+# Número máximo de conexiones en el pool
+spring.datasource.hikari.maximum-pool-size=5
+
+# Número mínimo de conexiones inactivas en el pool
+spring.datasource.hikari.minimum-idle=2
+
+# Tiempo de inactividad máximo para las conexiones inactivas antes de que se cierren (en milisegundos)
+spring.datasource.hikari.idle-timeout=30000
+
+# Tiempo máximo de vida de una conexión en el pool antes de ser eliminada (en milisegundos)
+spring.datasource.hikari.max-lifetime=120000
+
+# Tiempo de espera máximo para obtener una conexión del pool (en milisegundos)
+spring.datasource.hikari.connection-timeout=30000
+
+# application.properties
+# Establece el perfil activo de la aplicación, cargado desde una variable de entorno
+spring.profiles.active=@spring.profiles.active@,default
+
+application-dev.properties
+
+# Configuración específica para el perfil "deb" (desarrollo)
+# URL base de la aplicación cuando se ejecuta en un entorno de desarrollo local
+app.baseUrl=http://localhost:8080
+
+# app.baseUrl: Define la URL base para la aplicación cuando se está ejecutando en un entorno de desarrollo.
+# En este caso, la URL apunta al servidor local en el puerto 8080, que es típico para entornos de desarrollo y el
+# que tengo por defecto con xampp.
+# Esto permite que solicitudes de la aplicación se hagan al servidor local mientras desarrollo y pruebo funcionalidades
+
+
+application-prod.properties
+
+# Configuración específica para el perfil "prod" (producción)
+# URL base de la aplicación cuando se ejecuta en un entorno de producción
+app.baseUrl=https://gestionatuscv.es
+
+# app.baseUrl: Define la URL base para la aplicación cuando se está ejecutando en un entorno de producción.
+# En este caso, la URL apunta al dominio público de la aplicación (https://gestionatuscv.es).
+# Esto asegura que las solicitudes se realicen a la versión en vivo de la aplicación cuando está desplegada en producción.
+
+pom.xml
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Definición del proyecto padre, en este caso el 'starter' de Spring Boot -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.1</version> <!-- Versión de Spring Boot utilizada -->
+        <relativePath/>
+    </parent>
+
+    <!-- Definición del grupo, artefacto y versión del proyecto -->
+    <groupId>com.example</groupId>
+    <artifactId>gestion_curriculums0</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>gestion_curriculums0</name>
+    <description>Proyecto de gestión de currículums</description>
+
+    <!-- Definición de la versión de Java utilizada en el proyecto -->
+    <properties>
+        <java.version>17</java.version>
+    </properties>
+
+    <!-- Dependencias del proyecto -->
+    <dependencies>
+        <!-- Dependencias principales de Spring Boot -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- Conector de MySQL -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>8.0.33</version>
+        </dependency>
+
+        <!-- HikariCP para la gestión del pool de conexiones -->
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+        </dependency>
+
+        <!-- API de Jakarta Persistence -->
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
+        <!-- Dependencias para la gestión de JWT -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+
+        <!-- PDFBox para manipulación de PDF -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.24</version>
+        </dependency>
+
+        <!-- Apache Commons para subir archivos -->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.4</version>
+        </dependency>
+
+        <!-- Documentación OpenAPI (Swagger) -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>1.6.15</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-security</artifactId>
+            <version>1.6.15</version>
+        </dependency>
+
+        <!-- Spring Boot Starter para el manejo de correo electrónico -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+        <!-- Validación de formularios con Jakarta -->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>6.0.13.Final</version>
+        </dependency>
+
+        <!-- API de Servlet (Jakarta) -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>5.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- JAXB para el manejo de XML -->
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+
+        <!-- Dependencias para pruebas de seguridad en Spring -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <version>5.7.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Springfox para documentación Swagger -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
+        <!-- Tesseract para OCR -->
+        <dependency>
+            <groupId>net.sourceforge.tess4j</groupId>
+            <artifactId>tess4j</artifactId>
+            <version>4.5.5</version>
+        </dependency>
+
+        <!-- Dotenv para el manejo de variables de entorno -->
+        <dependency>
+            <groupId>io.github.cdimascio</groupId>
+            <artifactId>dotenv-java</artifactId>
+            <version>2.2.4</version>
+        </dependency>
+
+        <!-- iText para la creación de PDF -->
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+            <version>5.5.13.2</version>
+        </dependency>
+    </dependencies>
+
+    <!-- Repositorios donde Maven busca las dependencias -->
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+    </repositories>
+
+    <!-- Plugins utilizados en el proceso de build -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <!-- Plugin para ejecutar pruebas con Maven -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M5</version>
+                <configuration>
+                    <skipTests>true</skipTests> <!-- Configurado para saltarse las pruebas por defecto -->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- Perfiles de Maven para diferentes entornos -->
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <spring.profiles.active>dev</spring.profiles.active> <!-- Activa el perfil de desarrollo -->
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault> <!-- Perfil activado por defecto -->
+            </activation>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <spring.profiles.active>prod</spring.profiles.active> <!-- Activa el perfil de producción -->
+            </properties>
+        </profile>
+    </profiles>
+
+</project>

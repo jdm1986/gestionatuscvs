@@ -1,0 +1,3620 @@
+admin-dashboard.html
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración</title>
+    <link rel="stylesheet" href="styles-common.css">
+</head>
+<body>
+<header>
+    <!-- Este archivo HTML sirve como la interfaz del panel de administración de la aplicación.
+         Permite a los administradores ver registros de usuarios a través de una interfaz gráfica. -->
+    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
+</header>
+<div class="container">
+    <!-- Título principal del panel de administración -->
+    <h1>Panel de Administración</h1>
+
+    <!-- Botón para visualizar los registros de usuarios -->
+    <div class="actions">
+        <button id="viewRegistrationsButton">Ver Registros de Usuarios</button>
+    </div>
+
+    <!-- Contenedor donde se mostrarán los registros obtenidos -->
+    <div id="registrationsLog" class="results hidden">
+        <h2>Registros de Usuarios</h2>
+        <pre id="logContent"></pre>
+    </div>
+</div>
+
+<!-- Script para manejar el evento de hacer clic en el botón y mostrar los registros -->
+<script>
+    // Al hacer clic en el botón "Ver Registros de Usuarios", hago una solicitud al backend
+    document.getElementById('viewRegistrationsButton').addEventListener('click', function() {
+        fetch('${app.baseUrl}/admin/registro-usuarios', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+                // Uso el token almacenado en localStorage para autenticar la solicitud
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.text(); // Si la solicitud tiene éxito, obtengo el texto de los registros
+            } else {
+                throw new Error('Error al obtener los registros'); // Si algo sale mal, muestro un error
+            }
+        })
+        .then(data => {
+            // Muestro los datos obtenidos en el contenedor correspondiente
+            const logContainer = document.getElementById('registrationsLog');
+            logContainer.classList.remove('hidden');
+            document.getElementById('logContent').textContent = data;
+        })
+        .catch(error => {
+            alert(error.message); // En caso de error, muestro una alerta con el mensaje del error
+        });
+    });
+</script>
+</body>
+</html>
+
+cambiar-datos.html
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambiar Datos del Currículum</title>
+    <link rel="stylesheet" href="styles-common.css">
+    <link rel="stylesheet" href="styles-dashboard.css">
+</head>
+<body>
+<header>
+    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
+</header>
+
+<div class="container">
+    <h1>Cambiar Datos del Currículum</h1>
+    <form id="editForm">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required>
+
+        <label for="apellido">Apellidos:</label>
+        <input type="text" id="apellido" name="apellido" required>
+
+        <label for="telefono">Teléfono:</label>
+        <input type="text" id="telefono" name="telefono" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required="">
+
+
+        <label for="sexo">Sexo:</label>
+        <select id="sexo" name="sexo">
+            <option value="Hombre">Hombre</option>
+            <option value="Mujer">Mujer</option>
+            <option value="Otro">Otro</option>
+        </select>
+
+        <label for="departamento">Departamento:</label>
+        <select id="departamento" name="departamento" required>
+            <option value="">Seleccione un departamento</option>
+        </select>
+
+        <button type="submit">Guardar</button>
+    </form>
+
+    <p id="successMessage" style="display: none; color: green;">Los datos se han guardado con éxito.</p>
+</div>
+
+<script>
+    // URL base que se ajusta dependiendo de si estamos en entorno local o producción
+    const baseUrl = window.location.hostname.includes('localhost')
+        ? 'http://localhost:8080' // Si es localhost, usar esta URL
+        : window.location.hostname.includes('www')
+            ? 'https://www.gestionatuscv.es' // Si está en www
+            : 'https://gestionatuscv.es'; // Si no está en www
+
+
+// Obtener ID del currículum desde la URL
+const urlParams = new URLSearchParams(window.location.search);
+const curriculumId = urlParams.get('id');
+
+// Obtener el token de autenticación desde localStorage
+const token = localStorage.getItem('token');
+
+if (!token) {
+    // Si no hay token, redirigir al usuario al login
+    alert('Por favor, inicia sesión para continuar.');
+    window.location.href = 'login.html';
+}
+
+// Función para cargar los datos del currículum
+async function loadCurriculumData() {
+    try {
+        const response = await fetch(`${baseUrl}/curriculums/${curriculumId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
+            const curriculum = await response.json();
+            console.log('Curriculum data:', curriculum);  // Agrega un log para ver si los datos llegan correctamente
+            document.getElementById('nombre').value = curriculum.nombre;
+            document.getElementById('apellido').value = curriculum.apellido;
+            document.getElementById('telefono').value = curriculum.telefono;
+            document.getElementById('email').value = curriculum.email;
+            document.getElementById('sexo').value = curriculum.sexo;
+
+            // Asignar el valor al campo de departamento (luego de cargar opciones)
+            const departamentoSelect = document.getElementById('departamento');
+            console.log('Curriculum departamento:', curriculum.departamento); // Mover aquí el log
+
+            // Verificamos que se seleccione el departamento correcto
+            if (curriculum.departamento) {
+                for (let i = 0; i < departamentoSelect.options.length; i++) {
+                    if (departamentoSelect.options[i].value === curriculum.departamento) {
+                        departamentoSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+            } else {
+                console.warn('El currículum no tiene un departamento asignado.');
+            }
+
+        } else {
+            console.error('Error al cargar el currículum:', response.statusText);
+            alert('Error al cargar los datos del currículum.');
+        }
+    } catch (error) {
+        console.error('Error al obtener los datos del currículum:', error);
+        alert('Error al conectar con el servidor.');
+    }
+}
+
+async function loadDepartamentos() {
+    try {
+        // Suponiendo que tienes el userId disponible en el frontend
+        const userId = localStorage.getItem('userId'); // Obtén el userId desde localStorage o donde lo tengas guardado
+
+        const response = await fetch(`${baseUrl}/departamentos?userId=${userId}`, {  // Añadimos el userId a la URL
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
+            const departamentos = await response.json();
+            const departamentoSelect = document.getElementById('departamento');
+            console.log('Departamentos cargados:', departamentos); // Verificamos si los departamentos se están cargando
+
+            // Agregamos cada departamento al select
+            departamentos.forEach(departamento => {
+                const option = document.createElement('option');
+                option.value = departamento.nombre; // Suponemos que 'nombre' es el valor que se debe usar
+                option.text = departamento.nombre;
+                departamentoSelect.add(option);
+            });
+
+        } else {
+            alert('Error al cargar los departamentos.');
+        }
+    } catch (error) {
+        console.error('Error al obtener los departamentos:', error);
+        alert('Error al conectar con el servidor.');
+    }
+}
+
+// Llamar a la función para cargar los datos de departamentos y curriculum cuando se cargue el DOM
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadDepartamentos(); // Cargamos primero los departamentos
+    await loadCurriculumData(); // Luego asignamos el departamento correcto
+});
+
+
+    // Manejo del formulario para guardar los cambios
+    document.getElementById('editForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const nombre = document.getElementById('nombre').value;
+    const apellido = document.getElementById('apellido').value;
+    const telefono = document.getElementById('telefono').value;
+    const email = document.getElementById('email').value;
+    const sexo = document.getElementById('sexo').value;
+    const departamento = document.getElementById('departamento').value;
+
+    const response = await fetch(`${baseUrl}/curriculums/${curriculumId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ nombre, apellido, telefono, email, sexo, departamento })
+    });
+
+    if (response.ok) {
+        const successMessage = document.getElementById('successMessage');
+        successMessage.style.display = 'block'; // Mostrar el mensaje de éxito
+        setTimeout(() => {
+            window.location.href = 'dashboard.html'; // Redirigir al dashboard después de 2 segundos
+        }, 2000);
+    } else {
+        alert('Error al guardar los datos');
+    }
+});
+
+</script>
+</body>
+</html>
+
+contacto.html
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONTACTO</title>
+    <link rel="stylesheet" href="styles-common.css">
+</head>
+<body>
+<header>
+    <!-- Página de contacto que permite a los usuarios enviar un mensaje a través de un formulario.
+         Utiliza un script para hacer una petición POST al backend con los datos del formulario. -->
+    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
+</header>
+<div class="container">
+    <!-- Título de la página -->
+    <h1>CONTACTO</h1>
+
+    <!-- Formulario para que los usuarios introduzcan su nombre, correo y mensaje -->
+    <form id="contactForm">
+        <input type="text" id="name" placeholder="Tu nombre" required>
+        <input type="email" id="email" placeholder="Tu correo electrónico" required>
+        <textarea id="message" placeholder="Tu mensaje" required style="margin-bottom: 10px;"></textarea>
+
+        <!-- Botón de enviar -->
+        <button type="submit">Enviar</button>
+
+        <!-- Botón para volver a la página de inicio -->
+        <button type="button" onclick="location.href='index.html'">Volver</button>
+    </form>
+
+    <!-- Mensaje de confirmación de envío oculto inicialmente -->
+    <div id="confirmationMessage" class="hidden">Tu mensaje ha sido enviado. Nos pondremos en contacto contigo pronto.</div>
+</div>
+
+<!-- Script para manejar el evento de envío del formulario -->
+<script>
+    document.getElementById('contactForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        // Capturo los valores de los campos del formulario
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const message = document.getElementById('message').value;
+
+        // Realizo una solicitud POST al backend con los datos del formulario en formato JSON
+        const response = await fetch('${app.baseUrl}/contact', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: name,
+                email: email,
+                message: message
+            })
+        });
+
+        if (response.ok) {
+            // Si el mensaje se envía correctamente, muestro el mensaje de confirmación y limpio el formulario
+            document.getElementById('confirmationMessage').classList.remove('hidden');
+            document.getElementById('contactForm').reset();
+        } else {
+            alert('Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo.');
+        }
+    });
+</script>
+
+<!-- Script para otras funcionalidades generales -->
+<script src="scripts.js"></script>
+</body>
+
+<!-- Pie de página con enlaces a las políticas, términos y una referencia al desarrollador -->
+<footer>
+    <div class="footer-content">
+        <a href="https://www.jesusdiazmartincv.es" target="_blank"> <!-- Enlace alrededor del logo -->
+            <img src="images/logodeveloper.png" alt="Logo JDM" class="footer-logo">
+        </a>
+        <div class="footer-links">
+            <a href="privacidad.html">Política de Privacidad</a> |
+            <a href="terminos.html">Términos y Condiciones</a> |
+            <a href="contacto.html">Contacto</a>
+        </div>
+        <p>&copy; 2024 GESTIONATUSCV. Todos los derechos reservados.</p>
+        <p> || Aplicación Web creada por Jesús Díaz Martín || </p>
+    </div>
+</footer>
+</html>
+
+
+dashboard.html
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Currículums</title>
+    <link rel="stylesheet" href="styles-common.css">
+    <link rel="stylesheet" href="styles-dashboard.css">
+</head>
+<body>
+<header>
+    <!-- Página principal del panel de gestión de currículums, donde los usuarios pueden subir CVs,
+         realizar búsquedas y generar enlaces de subida. Los administradores también pueden ver los registros. -->
+    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
+</header>
+<div class="container">
+    <!-- Mensaje de bienvenida personalizado con el nombre del usuario -->
+    <h1>BIENVENIDO/A, <span id="username"></span></h1>
+
+    <!-- Botones de acción: subir currículum, cerrar sesión, ver registros (solo admin) -->
+    <div class="actions">
+        <button onclick="location.href='upload_user.html'">Subir Currículum</button>
+        <button id="logoutButton">Cerrar Sesión</button>
+        <button id="viewLogsButton" class="admin-only" style="display:none;">Ver Registros de Usuarios</button> <!-- Botón para ver registros resrvado a rol admin -->
+        <button id="departamentosButton">Departamentos</button> <!-- Botón para la gestión de departamentos -->
+    </div>
+
+    <!-- Sección de búsqueda y filtros -->
+    <div class="search">
+        <input type="text" id="searchInput" placeholder="Buscar por palabras clave">
+        <div class="search-buttons">
+            <button id="searchButton">Buscar</button>
+            <button id="clearButton">Limpiar Filtros</button>
+            <button id="generateLinkButton">Upload Link</button> <!-- Botón para generar un enlace de subida -->
+        </div>
+        <div class="link-container">
+            <!-- Espacio donde se mostrará el enlace generado -->
+            <p id="generatedLink" class="generated-link hidden"></p>
+            <button id="copyButton" class="copy-button hidden">Copiar enlace</button>
+        </div>
+    </div>
+
+    <!-- Tabla donde se mostrarán los resultados de búsqueda de CVs -->
+    <div class="results">
+        <table>
+            <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+                <th>Fecha</th>
+                <th>Sexo</th>
+                <th>Teléfono</th>
+                <th>Email</th>
+                <th>Departamento</th> <!-- Nueva columna de departamento -->
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody id="resultsBody">
+            <!-- Aquí se agregarán los resultados dinámicamente -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal para añadir y visualizar notas en los currículums -->
+<div id="noteModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Notas</h2>
+        <textarea id="noteText" placeholder="Escribe tu nota aquí..."></textarea>
+        <button id="saveNoteButton">Guardar Nota</button>
+        <div id="notesList"></div>
+    </div>
+</div>
+
+<!-- Archivo JavaScript donde están las funcionalidades -->
+<script src="scripts.js"></script>
+<script>
+    // Redirige a la página de departamentos cuando se hace clic en el botón
+    document.getElementById('departamentosButton').addEventListener('click', function() {
+        window.location.href = 'departamentos.html';
+    });
+</script>
+
+</body>
+
+<!-- Pie de página -->
+<footer>
+    <div class="footer-content">
+        <a href="https://www.jesusdiazmartincv.es" target="_blank"> <!-- Enlace alrededor del logo -->
+            <img src="images/logodeveloper.png" alt="Logo JDM" class="footer-logo">
+        </a>
+        <div class="footer-links">
+            <a href="privacidad.html">Política de Privacidad</a> |
+            <a href="terminos.html">Términos y Condiciones</a> |
+            <a href="contacto.html">Contacto</a>
+        </div>
+        <p>&copy; 2024 GESTIONATUSCV. Todos los derechos reservados.</p>
+        <p> || Aplicación Web creada por Jesús Díaz Martín || </p>
+    </div>
+</footer>
+
+</html>
+
+departamentos.html
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Departamentos</title>
+    <link rel="stylesheet" href="styles-departamentos.css">
+</head>
+<body>
+<header>
+    <!-- Encabezado con el logo del sistema -->
+    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo">
+</header>
+
+<h1>Gestión de Departamentos</h1>
+
+<!-- Formulario para agregar nuevos departamentos -->
+<form id="departamentoForm">
+    <div class="input-container">
+        <!-- Input para el nombre del nuevo departamento -->
+        <input type="text" id="nombreDepartamento" placeholder="Nombre del departamento" required>
+        <!-- Botón para agregar el departamento -->
+        <button type="submit">Agregar Departamento</button>
+    </div>
+</form>
+
+<!-- Mensaje de error si el departamento ya existe o si ocurre algún otro problema -->
+<p id="errorMensaje" style="color:red; display:none;"></p>
+
+<!-- Botón para volver a la página anterior -->
+<button id="volverBtn" class="volver-btn">Volver</button>
+
+<!-- Tabla donde se listarán los departamentos ya creados -->
+<table id="tablaDepartamentos">
+    <thead>
+    <tr>
+        <th>Nombre</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Aquí se agregarán dinámicamente los departamentos -->
+    </tbody>
+</table>
+
+<!-- Pie de página con enlaces adicionales -->
+<footer>
+    <div class="footer-content">
+        <a href="https://www.jesusdiazmartincv.es" target="_blank">
+            <!-- Logo personal del desarrollador -->
+            <img src="images/logodeveloper.png" alt="Logo JDM" class="footer-logo">
+        </a>
+        <div class="footer-links">
+            <a href="privacidad.html">Política de Privacidad</a> |
+            <a href="terminos.html">Términos y Condiciones</a> |
+            <a href="contacto.html">Contacto</a>
+        </div>
+        <p>&copy; 2024 GESTIONATUSCV. Todos los derechos reservados.</p>
+        <p> || Aplicación Web creada por Jesús Díaz Martín || </p>
+    </div>
+</footer>
+
+<script>
+    // URL base que se ajusta dependiendo de si estamos en entorno local o producción
+    const baseUrl = window.location.hostname.includes('localhost')
+        ? 'http://localhost:8080' // Si es localhost, usar esta URL
+        : window.location.hostname.includes('www')
+            ? 'https://www.gestionatuscv.es' // Si está en www
+            : 'https://gestionatuscv.es'; // Si no está en www
+
+
+    // Obtiene el userId almacenado en localStorage
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+        // Si no se encuentra el userId, redirige a la página de login
+        window.location.href = '/login.html';
+    }
+
+    // Función para cargar los departamentos asociados al usuario actual
+    function loadDepartamentos() {
+        // Hacemos una petición GET a la API para obtener los departamentos del usuario
+        fetch(`${baseUrl}/departamentos?userId=${userId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al obtener los departamentos');
+                }
+                return response.json();
+            })
+            .then(departamentos => {
+                // Limpiamos la tabla antes de cargar nuevos datos
+                const tbody = document.getElementById('tablaDepartamentos').querySelector('tbody');
+                tbody.innerHTML = '';
+
+                // Recorremos la lista de departamentos recibidos y los añadimos a la tabla
+                departamentos.forEach(depto => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${depto.nombre}</td>
+                        <td>
+                            <button class="eliminar-btn" onclick="confirmDelete(${depto.id})">Eliminar</button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            })
+            .catch(error => console.error("Error al cargar los departamentos:", error));
+    }
+
+    // Función para agregar un nuevo departamento
+    document.getElementById('departamentoForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Evitamos el envío tradicional del formulario
+
+        // Obtenemos el nombre del departamento introducido por el usuario
+        const nombre = document.getElementById('nombreDepartamento').value.trim();
+        const errorMensaje = document.getElementById('errorMensaje');
+
+        // Si el nombre está vacío, mostramos un mensaje de error
+        if (!nombre) {
+            errorMensaje.textContent = "Por favor, ingresa un nombre de departamento.";
+            errorMensaje.style.display = 'block';
+            return;
+        }
+
+        // Realizamos la petición POST para crear un nuevo departamento
+        fetch(`${baseUrl}/departamentos`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            // Enviamos el nombre del departamento y el userId para asociarlo al usuario
+            body: JSON.stringify({ nombre, userId })
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => {
+                    errorMensaje.textContent = text; // Mostramos el mensaje de error en caso de fallo
+                    errorMensaje.style.display = 'block';
+                });
+            } else {
+                errorMensaje.style.display = 'none'; // Ocultamos el mensaje de error si la operación fue exitosa
+                return response.json();
+            }
+        })
+        .then(data => {
+            if (data) {
+                loadDepartamentos(); // Recargamos la lista de departamentos
+                document.getElementById('nombreDepartamento').value = ''; // Limpiamos el campo de entrada
+            }
+        })
+        .catch(error => console.error("Error al agregar el departamento:", error));
+    });
+
+    // Confirmación antes de eliminar un departamento
+    function confirmDelete(id) {
+        if (confirm("¿Estás seguro de que quieres eliminar este departamento?")) {
+            deleteDepartamento(id); // Si el usuario confirma, eliminamos el departamento
+        }
+    }
+
+    // Función para eliminar un departamento específico
+    function deleteDepartamento(id) {
+        fetch(`${baseUrl}/departamentos/${id}`, { method: 'DELETE' })
+            .then(() => loadDepartamentos()) // Recargamos los departamentos tras eliminar
+            .catch(error => console.error("Error al eliminar el departamento:", error));
+    }
+
+    // Botón para volver a la página anterior
+    document.getElementById('volverBtn').addEventListener('click', function() {
+        window.history.back(); // Regresamos a la página anterior
+    });
+
+    // Cargamos los departamentos al cargar la página
+    loadDepartamentos();
+</script>
+</body>
+</html>
+
+forgot-password.html
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar Contraseña</title>
+    <link rel="stylesheet" href="styles-common.css">
+</head>
+<body>
+<header>
+    <!-- Página para recuperar la contraseña, permite al usuario ingresar su correo electrónico
+         para recibir un enlace de restablecimiento. -->
+    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
+</header>
+<div class="container">
+    <h1>Recuperar Contraseña</h1>
+    <form id="forgotPasswordForm">
+        <input type="email" id="email" placeholder="Introduce tu Email" required>
+        <button type="submit">Enviar</button>
+        <button type="button" onclick="location.href='index.html'">Volver</button>
+    </form>
+    <!-- Contenedor para mostrar mensajes -->
+    <div id="message" class="hidden"></div>
+</div>
+
+<!-- Script para manejar el envío del formulario de recuperación de contraseña -->
+<script>
+    document.getElementById('forgotPasswordForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const email = document.getElementById('email').value;
+        const messageContainer = document.getElementById('message');
+
+        // Desactiva el botón para evitar múltiples envíos
+        document.querySelector('button[type="submit"]').disabled = true;
+
+        const response = await fetch('/auth/forgot-password', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email: email })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            messageContainer.classList.remove('hidden');
+            messageContainer.style.color = '#E573FE'; // Color púrpura para éxito
+            messageContainer.textContent = data.message;
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 3000); // Redirigir después de 3 segundos
+        } else {
+            const errorData = await response.json();
+            messageContainer.classList.remove('hidden');
+            messageContainer.style.color = '#FF6F61'; // Color rojo para el error
+            messageContainer.textContent = errorData.message;
+        }
+
+        // Reactiva el botón (opcional dependiendo de tu flujo de trabajo)
+        document.querySelector('button[type="submit"]').disabled = false;
+    });
+</script>
+
+<script src="scripts.js"></script>
+</body>
+<footer>
+    <div class="footer-content">
+        <a href="https://www.jesusdiazmartincv.es" target="_blank"> <!-- Enlace alrededor del logo -->
+            <img src="images/logodeveloper.png" alt="Logo JDM" class="footer-logo">
+        </a>
+        <div class="footer-links">
+            <a href="privacidad.html">Política de Privacidad</a> |
+            <a href="terminos.html">Términos y Condiciones</a> |
+            <a href="contacto.html">Contacto</a>
+        </div>
+        <p>&copy; 2024 GESTIONATUSCV. Todos los derechos reservados.</p>
+        <p> || Aplicación Web creada por Jesús Díaz Martín || </p>
+    </div>
+</footer>
+</html>
+
+index.html
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página de Bienvenida</title>
+    <meta name="description" content="Gestiona y organiza tus CV">
+    <link rel="stylesheet" href="styles-common.css">
+
+    <!-- meta tags para mejorar la optimización en redes sociales -->
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:url" content="https://gestionatuscv.es">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Página de Bienvenida">
+    <meta property="og:description" content="Gestiona y organiza tus CV">
+    <meta property="og:image" content="https://opengraph.b-cdn.net/production/images/015ed697-6e19-4204-b258-aef38bb49009.png?token=EZkEiXiwUoIgSeffPcVmgxTGCm_zmJ5QURWqrccvebk&height=344&width=486&expires=33260663957">
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:domain" content="gestionatuscv.es">
+    <meta property="twitter:url" content="https://gestionatuscv.es">
+    <meta name="twitter:title" content="Página de Bienvenida">
+    <meta name="twitter:description" content="Gestiona y organiza tus CV">
+    <meta name="twitter:image" content="https://opengraph.b-cdn.net/production/images/015ed697-6e19-4204-b258-aef38bb49009.png?token=EZkEiXiwUoIgSeffPcVmgxTGCm_zmJ5QURWqrccvebk&height=344&width=486&expires=33260663957">
+
+    <!-- Cloudflare Web Analytics (Rastreo de trático de página) -->
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "81002494b6c7479dbe29b5b1513d466a"}'></script>
+    <!-- End Cloudflare Web Analytics -->
+
+</head>
+<body>
+<header>
+    <!-- Página de bienvenida que introduce a los usuarios a la plataforma GestionaTusCV.
+         Proporciona botones para que los usuarios puedan iniciar sesión o registrarse. -->
+    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo">
+</header>
+<div class="container">
+    <h2>BIENVENIDO/A</h2>
+    <div class="buttons">
+        <button id="loginButton">Iniciar Sesión</button>
+        <button id="registerButton">Registrarse</button>
+    </div>
+</div>
+<script src="scripts.js"></script>
+</body>
+<footer>
+    <div class="footer-content">
+        <div class="footer-links">
+            <a href="https://www.jesusdiazmartincv.es" target="_blank"> <!-- Enlace alrededor del logo -->
+                <img src="images/logodeveloper.png" alt="Logo JDM" class="footer-logo">
+            </a>
+            <a href="privacidad.html">Política de Privacidad</a> |
+            <a href="terminos.html">Términos y Condiciones</a> |
+            <a href="contacto.html">Contacto</a>
+        </div>
+        <p>&copy; 2024 GESTIONATUSCV. Todos los derechos reservados.</p>
+        <p> || Aplicación Web creada por Jesús Díaz Martín || </p>
+    </div>
+</footer>
+</html>
+
+login.html
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INICIO DE SESIÓN</title>
+    <link rel="stylesheet" href="styles-common.css">
+</head>
+<body>
+<header>
+    <!-- Página de inicio de sesión donde los usuarios pueden ingresar su nombre de usuario o email
+         y contraseña para acceder a la plataforma GestionaTusCV -->
+    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
+</header>
+<div class="container">
+    <h1>INICIO DE SESIÓN</h1>
+    <form id="loginForm">
+        <input type="text" id="login" placeholder="Nombre de Usuario o Email" required>
+        <input type="password" id="password" placeholder="Contraseña" required>
+        <button type="submit">Iniciar Sesión</button>
+        <button type="button" onclick="location.href='index.html'">Volver</button>
+    </form>
+
+    <!-- Aquí añadimos el contenedor para el mensaje -->
+    <div id="loginMessage" style="color: #FF6F61; text-align: center; margin-top: 10px; display: none;"></div>
+    <p>
+        <a href="forgot-password.html" class="link-blanco" style="color: white;">¿Olvidaste tu contraseña? Haz clic aquí</a>
+    </p>
+</div>
+<script src="scripts.js"></script>
+</body>
+<footer>
+    <div class="footer-content">
+        <a href="https://www.jesusdiazmartincv.es" target="_blank"> <!-- Enlace alrededor del logo -->
+            <img src="images/logodeveloper.png" alt="Logo JDM" class="footer-logo">
+        </a>
+        <div class="footer-links">
+            <a href="privacidad.html">Política de Privacidad</a> |
+            <a href="terminos.html">Términos y Condiciones</a> |
+            <a href="contacto.html">Contacto</a>
+        </div>
+        <p>&copy; 2024 GESTIONATUSCV. Todos los derechos reservados.</p>
+        <p> || Aplicación Web creada por Jesús Díaz Martín || </p>
+    </div>
+</footer>
+</html>
+
+privacidad.html
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVISO DE PRIVACIDAD</title>
+    <link rel="stylesheet" href="styles-common.css">
+</head>
+<body>
+<header>
+    <!-- Página de aviso de privacidad que explica cómo se recopila, utiliza y protege la información personal de los usuarios de la aplicación GestionaTusCV -->
+    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
+</header>
+<div class="container">
+    <h1>AVISO DE PRIVACIDAD</h1>
+    <div class="content">
+        <p>[GESTIONATUSCV] se compromete a proteger su privacidad. Este Aviso de Privacidad describe cómo recopilamos, usamos y protegemos su información personal.</p>
+        <p><strong>Información que recopilamos:</strong></p>
+        <ul>
+            <li>Nombre de usuario/a</li>
+            <li>Dirección de correo electrónico</li>
+        </ul>
+        <p><strong>Uso de la información:</strong></p>
+        <ul>
+            <li>La información recopilada se utilizará únicamente para propósitos de prueba de la aplicación.</li>
+            <li>Sus datos serán eliminados automáticamente después de 30 minutos de su registro.</li>
+        </ul>
+        <p><strong>Protección de la información:</strong> Implementamos medidas de seguridad para proteger sus datos durante su uso temporal en nuestra aplicación.</p>
+        <p><strong>Consentimiento:</strong> Al usar nuestra aplicación, usted acepta la recopilación y el uso de su información según lo descrito en este Aviso de Privacidad.</p>
+        <p><strong>Uso de Cookies:</strong> No utilizamos cookies en esta aplicación para el seguimiento de sesiones o almacenamiento de datos personales.</p>
+        <p><strong>Derechos de los Usuarios/as:</strong> Usted tiene derecho a acceder, rectificar y suprimir sus datos personales en cualquier momento. Para ejercer estos derechos, por favor contáctenos en <a href="mailto:info@gestionatuscv.es" class="footer-email" style="color: white;">info@gestionatuscv.es</a>.</p>
+        <p>Para más información, por favor contáctenos en <a href="mailto:info@gestionatuscv.es" class="footer-email" style="color: white;">info@gestionatuscv.es</a>.</p>
+    </div>
+    <div class="buttons">
+        <button onclick="location.href='index.html'">Volver al inicio</button>
+    </div>
+</div>
+<script src="scripts.js"></script>
+</body>
+<footer>
+    <div class="footer-content">
+        <a href="https://www.jesusdiazmartincv.es" target="_blank"> <!-- Enlace alrededor del logo -->
+            <img src="images/logodeveloper.png" alt="Logo JDM" class="footer-logo">
+        </a>
+        <div class="footer-links">
+            <a href="privacidad.html">Política de Privacidad</a> |
+            <a href="terminos.html">Términos y Condiciones</a> |
+            <a href="contacto.html">Contacto</a>
+        </div>
+        <p>&copy; 2024 GESTIONATUSCV. Todos los derechos reservados.</p>
+        <p> || Aplicación Web creada por Jesús Díaz Martín || </p>
+    </div>
+</footer>
+
+</html>
+
+register.html
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <link rel="stylesheet" href="styles-common.css">
+</head>
+<body>
+<header>
+    <!-- Página de registro de usuario. Permite al usuario crear una cuenta proporcionando un nombre de usuario, correo electrónico y contraseña, aceptando los términos y condiciones y el aviso de privacidad. -->
+    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
+</header>
+<div class="container">
+    <h1>REGISTRO DE USUARIO/a</h1>
+    <form id="registerForm">
+        <input type="text" id="username" placeholder="Nombre de Usuario/a" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Contraseña" required>
+        <p style="color: #ff0000; font-weight: bold;">Atención: Tras 30 minutos, tus datos quedarán eliminados.</p>
+        <p style="color: #ff0000; font-weight: bold;">Consejo: Usa una contraseña exclusiva para esta prueba.</p>
+
+        <!-- Texto de la etiqueta fuera del contenedor del checkbox -->
+        <p style="color: #ffffff;">Acepto los <a href="terminos.html" class="link-blanco">Términos de Uso</a> y el <a href="privacidad.html" class="link-blanco">Aviso de Privacidad</a>.</p>
+        <!-- Checkbox en su propio contenedor -->
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="consent" required>
+        </div>
+
+        <button type="submit">Registrarse</button>
+        <button type="button" onclick="location.href='index.html'">Volver</button>
+    </form>
+    <div id="message" class="hidden" style="margin-top: 20px; text-align: center;"></div>
+</div>
+<script src="scripts.js"></script>
+</body>
+<footer>
+    <div class="footer-content">
+        <a href="https://www.jesusdiazmartincv.es" target="_blank"> <!-- Enlace alrededor del logo -->
+            <img src="images/logodeveloper.png" alt="Logo JDM" class="footer-logo">
+        </a>
+        <div class="footer-links">
+            <a href="privacidad.html">Política de Privacidad</a> |
+            <a href="terminos.html">Términos y Condiciones</a> |
+            <a href="contacto.html">Contacto</a>
+        </div>
+        <p>&copy; 2024 GESTIONATUSCV. Todos los derechos reservados.</p>
+        <p> || Aplicación Web creada por Jesús Díaz Martín || </p>
+    </div>
+</footer>
+</html>
+
+resetpassword.html
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restablecer Contraseña</title>
+    <link rel="stylesheet" href="styles-common.css">
+</head>
+<body>
+<header>
+    <!-- Página para restablecer la contraseña. El usuario ingresa su nueva contraseña usando un token enviado por correo electrónico. -->
+    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
+</header>
+<div class="container">
+    <h1>Restablecer Contraseña</h1>
+    <form id="resetPasswordForm">
+        <input type="hidden" id="token" value="">
+        <input type="password" id="newPassword" placeholder="Nueva Contraseña" required>
+        <button type="submit">Restablecer Contraseña</button>
+    </form>
+</div>
+<script>
+    const baseUrl = 'https://gestionatuscv.es'; // Puedes cambiar esto manualmente según el entorno
+    document.addEventListener('DOMContentLoaded', function() {
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get('token');
+        document.getElementById('token').value = token;
+
+        document.getElementById('resetPasswordForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const newPassword = document.getElementById('newPassword').value;
+
+            const response = await fetch(baseUrl + '/auth/reset-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    token: token,
+                    newPassword: newPassword
+                })
+            });
+
+            if (response.ok) {
+                alert('Contraseña restablecida correctamente');
+                window.location.href = 'login.html';
+            } else {
+                alert('Error al restablecer la contraseña');
+            }
+        });
+    });
+</script>
+</body>
+<footer>
+    <div class="footer-content">
+        <a href="https://www.jesusdiazmartincv.es" target="_blank"> <!-- Enlace alrededor del logo -->
+            <img src="images/logodeveloper.png" alt="Logo JDM" class="footer-logo">
+        </a>
+        <div class="footer-links">
+            <a href="privacidad.html">Política de Privacidad</a> |
+            <a href="terminos.html">Términos y Condiciones</a> |
+            <a href="contacto.html">Contacto</a>
+        </div>
+        <p>&copy; 2024 GESTIONATUSCV. Todos los derechos reservados.</p>
+        <p> || Aplicación Web creada por Jesús Díaz Martín || </p>
+    </div>
+</footer>
+
+</html>
+
+
+términos.html
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Términos de Uso</title>
+    <link rel="stylesheet" href="styles-common.css">
+</head>
+<body>
+<header>
+    <!-- Página que contiene los Términos y Condiciones de uso. Aquí se establecen las condiciones bajo las cuales los usuarios aceptan utilizar la plataforma. -->
+    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
+</header>
+<div class="container">
+    <h1>TÉRMINOS DE USO</h1>
+    <div class="content">
+        <p>Bienvenido/a a [GESTIONATUSCV]. Al utilizar nuestra aplicación, usted acepta cumplir con los siguientes términos:</p>
+        <ol>
+            <li><strong>Uso de la Aplicación</strong>: Esta aplicación es una herramienta de prueba y gestión de currículums. Su uso está limitado a propósitos de prueba y evaluación.</li>
+            <li><strong>Registro y Eliminación de Datos</strong>: Los datos que usted proporcione serán eliminados automáticamente después de 30 minutos. No conservamos sus datos personales más allá del tiempo indicado.</li>
+            <li><strong>Seguridad</strong>: Implementamos medidas de seguridad para proteger sus datos durante el uso de la aplicación, no obstante, le recomendamos usar una contraseña que no use normalmente y sea usada única y exclusivamente para este fin.</li>
+            <li><strong>Consentimiento</strong>: Al registrarse en la aplicación, usted acepta estos términos y el Aviso de Privacidad.</li>
+            <li><strong>Limitación de Responsabilidad</strong>: [GESTIONATUSCV] no se hace responsable de cualquier daño o pérdida resultante del uso de esta aplicación, ya sea directo, indirecto, incidental o consecuente. El uso de la aplicación es bajo su propio riesgo.</li>
+            <li><strong>Derechos de Propiedad Intelectual</strong>: Todos los derechos, títulos e intereses, incluidos, pero no limitados a, los derechos de propiedad intelectual en esta aplicación y en el contenido que contiene, son propiedad de [Jesús Díaz Martín]. No se permite la reproducción, distribución o uso de cualquier contenido sin autorización previa por escrito.</li>
+            <li><strong>Modificaciones</strong>: [GESTIONATUSCV] se reserva el derecho de modificar estos términos y condiciones en cualquier momento. Cualquier cambio será efectivo inmediatamente después de la publicación en la aplicación. El uso continuado de la aplicación implica la aceptación de los términos modificados.</li>
+        </ol>
+        <p>Para cualquier consulta, por favor contáctenos en <a href="mailto:info@gestionatuscv.es" class="footer-email" style="color: white;">info@gestionatuscv.es</a>.</p>
+    </div>
+    <div class="buttons">
+        <button onclick="location.href='index.html'">Volver al inicio</button>
+    </div>
+</div>
+<script src="scripts.js"></script>
+</body>
+<footer>
+    <div class="footer-content">
+        <a href="https://www.jesusdiazmartincv.es" target="_blank"> <!-- Enlace alrededor del logo -->
+            <img src="images/logodeveloper.png" alt="Logo JDM" class="footer-logo">
+        </a>
+        <div class="footer-links">
+            <a href="privacidad.html">Política de Privacidad</a> |
+            <a href="terminos.html">Términos y Condiciones</a> |
+            <a href="contacto.html">Contacto</a>
+        </div>
+        <p>&copy; 2024 GESTIONATUSCV. Todos los derechos reservados.</p>
+        <p> || Aplicación Web creada por Jesús Díaz Martín || </p>
+    </div>
+</footer>
+
+</html>
+
+upload.html
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subir Currículum</title>
+    <link rel="stylesheet" href="styles-common.css">
+</head>
+<body>
+<header>
+    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
+</header>
+<div class="container">
+    <h1>Subir Currículum</h1>
+    <form id="uploadForm">
+        <input type="file" id="pdfFile" accept="application/pdf" required>
+        <input type="text" id="nombre" placeholder="Nombre" required pattern="[A-Za-zÀ-ÿ\s]+" title="El nombre solo puede contener letras y espacios.">
+        <input type="text" id="apellido" placeholder="Apellido" required pattern="[A-Za-zÀ-ÿ\s]+" title="El apellido solo puede contener letras y espacios.">
+        <select id="sexo" required>
+            <option value="">Seleccionar Sexo</option>
+            <option value="Hombre">Hombre</option>
+            <option value="Mujer">Mujer</option>
+            <option value="Otro">Otro</option>
+        </select>
+        <select id="departamentoSelect" required>
+            <option value="">Seleccionar Departamento</option>
+        </select>
+        <input type="text" id="telefono" placeholder="Teléfono" required pattern="^\+?[0-9]{9,15}$" title="El teléfono solo puede contener números y opcionalmente el signo + al inicio.">
+        <input type="email" id="email" placeholder="Email" required>
+        <button type="submit">Subir</button>
+    </form>
+    <div id="uploadMessage" class="hidden">Currículum subido exitosamente.</div>
+    <div id="errorMessage" class="hidden">Error: Enlace de subida no válido o ha expirado.</div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // URL base que se ajusta dependiendo de si estamos en entorno local o producción
+    const baseUrl = window.location.hostname.includes('localhost')
+        ? 'http://localhost:8080' // Si es localhost, usar esta URL
+        : window.location.hostname.includes('www')
+            ? 'https://www.gestionatuscv.es' // Si está en www
+            : 'https://gestionatuscv.es'; // Si no está en www
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');  // Capturo el token desde la URL
+    const userId = urlParams.get('userId'); // Capturo el userId desde la URL
+
+    // Verifica si el userId está presente en la URL
+    if (!userId) {
+        console.error("userId no está definido en la URL.");
+        alert("No se ha encontrado un userId válido. Por favor, contacta con el administrador.");
+        return;
+    }
+
+    // Cargar los departamentos desde el servidor para el selector
+    fetch(`${baseUrl}/departamentos?userId=${userId}`)
+        .then(response => response.json())
+        .then(departamentos => {
+            const departamentoSelect = document.getElementById('departamentoSelect');
+            departamentos.forEach(depto => {
+                const option = document.createElement('option');
+                option.value = depto.nombre;
+                option.textContent = depto.nombre;
+                departamentoSelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error("Error al cargar departamentos:", error);
+        });
+
+    // Manejador del formulario de subida
+    document.getElementById('uploadForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const pdfFile = document.getElementById('pdfFile').files[0];
+        const nombre = document.getElementById('nombre').value;
+        const apellido = document.getElementById('apellido').value;
+        const sexo = document.getElementById('sexo').value;
+        const departamento = document.getElementById('departamentoSelect').value;
+        const telefono = document.getElementById('telefono').value;
+        const email = document.getElementById('email').value;
+
+        // Validación adicional para asegurarse de que el archivo es un PDF
+        if (!pdfFile || pdfFile.type !== "application/pdf") {
+            alert('Por favor, sube un archivo PDF válido.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('token', token);  // Añadimos el token al formData
+        formData.append('file', pdfFile);
+        formData.append('nombre', nombre);
+        formData.append('apellido', apellido);
+        formData.append('sexo', sexo);
+        formData.append('departamento', departamento);
+        formData.append('telefono', telefono);
+        formData.append('email', email);
+
+        fetch(`${baseUrl}/curriculums/upload_with_token`, {  // Cambiamos la URL al endpoint correcto
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(message => {
+            if (message.includes("Enlace de subida no válido o ha expirado")) {
+                document.getElementById('errorMessage').classList.remove('hidden');
+            } else {
+                document.getElementById('uploadMessage').textContent = message;
+                document.getElementById('uploadMessage').classList.remove('hidden');
+                // Redireccionar al index después de 2 segundos
+                setTimeout(function() {
+                    window.location.href = '/index.html';
+                }, 2000);
+            }
+        })
+        .catch(error => {
+            alert('Error al subir el currículum.');
+        });
+    });
+});
+</script>
+</body>
+</html>
+
+
+upload-user.html
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subir Currículum (Usuario)</title>
+    <link rel="stylesheet" href="styles-common.css">
+    <!-- Página para la carga de C.V desde el propio usuario -->
+</head>
+<body>
+<header>
+    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
+</header>
+<div class="container">
+    <h1>Subir Currículum (Usuario)</h1>
+    <form id="uploadForm">
+        <input type="file" id="pdfFile" accept="application/pdf" required>
+        <!-- Validación: solo letras y espacios en nombre y apellido -->
+        <input type="text" id="nombre" placeholder="Nombre" required pattern="[A-Za-zÀ-ÿ\s]+" title="El nombre solo puede contener letras y espacios.">
+        <input type="text" id="apellido" placeholder="Apellido" required pattern="[A-Za-zÀ-ÿ\s]+" title="El apellido solo puede contener letras y espacios.">
+        <select id="sexo" required>
+            <option value="">Seleccionar Sexo</option>
+            <option value="Hombre">Hombre</option>
+            <option value="Mujer">Mujer</option>
+            <option value="Otro">Otro</option>
+        </select>
+        <!-- Selector de Departamento -->
+        <select id="departamentoSelect" required>
+            <option value="">Seleccionar Departamento</option>
+        </select>
+        <!-- Validación: solo números y el signo + al inicio en el teléfono -->
+        <input type="text" id="telefono" placeholder="Teléfono" required pattern="^\+?[0-9]{9,15}$" title="El teléfono solo puede contener números y opcionalmente el signo + al inicio.">
+        <input type="email" id="email" placeholder="Email" required>
+        <!-- Campo oculto para el userId -->
+        <input type="hidden" id="userId" value="">
+        <button type="submit">Subir</button>
+        <button id="volverBtn">Volver</button>
+    </form>
+    <div id="uploadMessage" class="hidden">Currículum subido exitosamente.</div>
+    <div id="errorMessage" class="hidden">Error al subir el currículum.</div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+
+    // URL base que se ajusta dependiendo de si estamos en entorno local o producción
+    const baseUrl = window.location.hostname.includes('localhost')
+        ? 'http://localhost:8080' // Si es localhost, usar esta URL
+        : window.location.hostname.includes('www')
+            ? 'https://www.gestionatuscv.es' // Si está en www
+            : 'https://gestionatuscv.es'; // Si no está en www
+
+        // Simulando que el userId se obtiene al cargar la página (por ejemplo, desde localStorage)
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+            alert('Error: userId no encontrado.');
+            return;
+        }
+        document.getElementById('userId').value = userId;
+
+        // Funcionalidad para el botón "Volver"
+        document.getElementById('volverBtn').addEventListener('click', function() {
+            window.location.href = '/dashboard.html';
+        });
+
+        // Añadir confirmación al hacer clic en el logo
+        document.getElementById('logo').addEventListener('click', function(event) {
+            event.preventDefault();
+            if (confirm("Se va a cerrar la sesión, ¿estás seguro?")) {
+                window.location.href = '/index.html';
+            }
+        });
+
+        // Cargar los departamentos desde el servidor para el selector
+        fetch(`${baseUrl}/departamentos?userId=${userId}`)
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw new Error(err.error); });
+                }
+                return response.json();
+            })
+            .then(departamentos => {
+                const departamentoSelect = document.getElementById('departamentoSelect');
+                if (Array.isArray(departamentos)) {  // Asegúrate de que departamentos sea un array
+                    departamentos.forEach(depto => {
+                        const option = document.createElement('option');
+                        option.value = depto.nombre;
+                        option.textContent = depto.nombre;
+                        departamentoSelect.appendChild(option);
+                    });
+                } else {
+                    console.error("Departamentos no es un array:", departamentos);
+                }
+            })
+            .catch(error => {
+                console.error('Error al cargar departamentos:', error);
+            });
+
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const pdfFile = document.getElementById('pdfFile').files[0];
+            const nombre = document.getElementById('nombre').value;
+            const apellido = document.getElementById('apellido').value;
+            const sexo = document.getElementById('sexo').value;
+            const departamento = document.getElementById('departamentoSelect').value;
+            const telefono = document.getElementById('telefono').value;
+            const email = document.getElementById('email').value;
+
+            const formData = new FormData();
+            formData.append('file', pdfFile);
+            formData.append('nombre', nombre);
+            formData.append('apellido', apellido);
+            formData.append('sexo', sexo);
+            formData.append('departamento', departamento);
+            formData.append('telefono', telefono);
+            formData.append('email', email);
+            formData.append('userId', userId); // Enviamos el userId
+
+            fetch(`${baseUrl}/curriculums/upload`, { // Endpoint para la subida manual de currículums
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`  // Autenticación con el token del usuario
+                },
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al subir el currículum.');
+                }
+                return response.json();  // Asumiendo que el servidor devuelve un JSON con la información
+            })
+            .then(data => {
+                document.getElementById('uploadMessage').classList.remove('hidden');
+                document.getElementById('errorMessage').classList.add('hidden');
+
+                // Redireccionar al dashboard después de 2 segundos
+                setTimeout(function() {
+                    window.location.href = '/dashboard.html';
+                }, 2000);
+            })
+            .catch(error => {
+                document.getElementById('uploadMessage').classList.add('hidden');
+                document.getElementById('errorMessage').classList.remove('hidden');
+            });
+        });
+    });
+</script>
+</body>
+</html>
+
+
+scripts.js
+
+// Evento que se activa cuando el DOM ha sido cargado completamente
+document.addEventListener('DOMContentLoaded', function() {
+
+    // URL base que se ajusta dependiendo de si estamos en entorno local o producción
+    const baseUrl = window.location.hostname.includes('localhost')
+        ? 'http://localhost:8080' // Si es localhost, usar esta URL
+        : window.location.hostname.includes('www')
+            ? 'https://www.gestionatuscv.es' // Si está en www
+            : 'https://gestionatuscv.es'; // Si no está en www
+
+    // Obtiene el token de autenticación almacenado en localStorage
+    const token = localStorage.getItem('token');
+
+    // Obtiene el ID de usuario almacenado
+    const userId = localStorage.getItem('userId');
+    const linkKey = `generatedLink_${userId}`; // Clave para almacenar el enlace generado
+    const expirationKey = `linkExpiration_${userId}`; // Clave para la expiración del enlace
+    const expirationTimeInSeconds = 5 * 24 * 60 * 60; // Tiempo de expiración en segundos (5 días)
+    const errorMessage = document.getElementById('errorMessage'); // Mensaje de error
+    const logo = document.getElementById('logo'); // Logo para el evento de clic
+
+    // Manejador de clics en el logo para cerrar sesión
+    if (logo) {
+        logo.addEventListener('click', function() {
+            if (token) {
+                const confirmLogout = confirm("Se va a cerrar la sesión, ¿estás seguro?"); // Confirmación de cierre de sesión
+                if (confirmLogout) {
+                    localStorage.removeItem('token'); // Elimina el token de localStorage
+                    localStorage.removeItem('username'); // Elimina el nombre de usuario
+                    localStorage.removeItem('userId'); // Elimina el ID de usuario
+                    window.location.href = 'index.html'; // Redirige a la página de inicio
+                }
+            } else {
+                window.location.href = 'index.html'; // Si no hay token, redirige a la página de inicio
+            }
+        });
+    }
+
+    // Botones de inicio de sesión y registro
+    const loginButton = document.getElementById('loginButton'); // Botón de inicio de sesión
+    const registerButton = document.getElementById('registerButton'); // Botón de registro
+
+    // Evento para redirigir a la página de login
+    if (loginButton) {
+        loginButton.addEventListener('click', function() {
+            window.location.href = 'login.html';
+        });
+    }
+
+    // Evento para redirigir a la página de registro
+    if (registerButton) {
+        registerButton.addEventListener('click', function() {
+            window.location.href = 'register.html';
+        });
+    }
+
+    // Botón para generar el enlace de subida de currículum
+    const generateLinkButton = document.getElementById('generateLinkButton');
+    const generatedLink = document.getElementById('generatedLink'); // Enlace generado
+    const copyButton = document.getElementById('copyButton'); // Botón para copiar el enlace
+    const linkContainer = document.querySelector(".link-container"); // Contenedor del enlace generado
+
+    // Función para formatear la diferencia de tiempo
+    function formatTimeDifference(timeDifference) {
+        const days = Math.floor(timeDifference / (24 * 60 * 60)); // Calcula días
+        const hours = Math.floor((timeDifference % (24 * 60 * 60)) / (60 * 60)); // Calcula horas
+        const minutes = Math.floor((timeDifference % (60 * 60)) / 60); // Calcula minutos
+        return `${days} días, ${hours} horas, y ${minutes} minutos`; // Devuelve la diferencia formateada
+    }
+
+    // Verifica si ya existe un enlace generado
+    function checkExistingLink() {
+        const existingLink = localStorage.getItem(linkKey); // Obtiene el enlace existente
+        const linkExpiration = localStorage.getItem(expirationKey); // Obtiene la fecha de expiración
+
+        if (existingLink && linkExpiration) { // Si existe un enlace y una expiración
+            const currentTime = Math.floor(Date.now() / 1000); // Tiempo actual en segundos
+            const timeDifference = linkExpiration - currentTime; // Calcula la diferencia de tiempo
+
+            if (timeDifference > 0) { // Si aún no ha expirado
+                generatedLink.textContent = `${existingLink}`; // Muestra el enlace
+                generatedLink.classList.remove('hidden'); // Lo hace visible
+                linkContainer.classList.add('show'); // Muestra el contenedor
+                copyButton.classList.add('show'); // Muestra el botón de copiar
+
+                const timeRemaining = formatTimeDifference(timeDifference); // Calcula el tiempo restante
+                const warningMessage = `Ya tienes un enlace generado que caducará en ${timeRemaining}.`; // Mensaje de advertencia
+                alert(warningMessage); // Muestra el mensaje de advertencia
+                return true; // Retorna true si hay un enlace válido
+            } else {
+                localStorage.removeItem(linkKey); // Elimina el enlace expirado
+                localStorage.removeItem(expirationKey); // Elimina la expiración
+            }
+        }
+        return false; // Retorna false si no hay enlace válido
+    }
+
+    // Evento para generar un nuevo enlace
+        if (generateLinkButton) {
+            generateLinkButton.addEventListener('click', function() {
+                if (checkExistingLink()) { // Verifica si ya existe un enlace
+                    return;
+                }
+
+                // Realiza la petición para generar un nuevo enlace
+                fetch(`${baseUrl}/curriculums/generate-upload-link`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}` // Envía el token en la cabecera
+                    }
+                })
+                .then(response => response.text()) // Obtiene el texto del enlace
+                .then(link => {
+                    const currentTime = Math.floor(Date.now() / 1000); // Tiempo actual en segundos
+                    const expirationTime = currentTime + expirationTimeInSeconds; // Calcula el tiempo de expiración
+
+                    localStorage.setItem(linkKey, link); // Almacena el enlace en localStorage
+                    localStorage.setItem(expirationKey, expirationTime); // Almacena la fecha de expiración
+
+                    generatedLink.textContent = `${link}`; // Muestra el enlace generado
+                    generatedLink.classList.remove('hidden'); // Lo hace visible
+                    linkContainer.classList.add('show'); // Muestra el contenedor
+                    copyButton.classList.add('show'); // Muestra el botón de copiar
+                })
+                .catch(error => {
+                    alert('Error al generar el enlace.'); // Muestra un error si algo falla
+                });
+            });
+
+            // Evento para copiar el enlace al portapapeles
+            copyButton.addEventListener('click', function() {
+                navigator.clipboard.writeText(generatedLink.textContent).then(function() {
+                    alert("Enlace copiado al portapapeles"); // Muestra éxito
+                }, function() {
+                    alert("No se pudo copiar el enlace"); // Muestra error
+                });
+            });
+        }
+
+        // Función para obtener los currículums del usuario
+        async function fetchCurriculums() {
+            const response = await fetch(`${baseUrl}/curriculums/usuario`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}` // Envía el token en la cabecera
+                }
+            });
+
+            if (response.ok) {
+                const results = await response.json(); // Convierte la respuesta a JSON
+                results.sort((a, b) => new Date(b.fechaInsercion) - new Date(a.fechaInsercion)); // Ordena los currículums por fecha
+                const resultsBody = document.getElementById('resultsBody'); // Cuerpo de los resultados
+                if (resultsBody) {
+                    resultsBody.innerHTML = ''; // Limpia el contenido previo
+                    results.forEach(result => { // Itera sobre cada currículum
+                        const tr = document.createElement('tr'); // Crea una nueva fila
+
+                        // Inserta los datos del currículum en la fila, incluyendo el ID con data-id-curriculum
+                        tr.innerHTML = `
+                            <td data-id-curriculum="${result.id}" data-label="Nombre">${result.nombre}</td>
+                            <td data-label="Apellido">${result.apellido}</td>
+                            <td data-label="Fecha">${new Date(result.fechaInsercion).toLocaleDateString()}</td>
+                            <td data-label="Sexo">${result.sexo}</td>
+                            <td data-label="Teléfono">${result.telefono}</td>
+                            <td data-label="Email">${result.email}</td>
+                            <td data-label="Departamento">
+                                 <select class="departamento-dropdown">
+                                        <option value="${result.departamento}" selected>${result.departamento}</option>
+                                 </select>
+                            </td>
+                        `;
+
+                        const actionsTd = document.createElement('td'); // Columna para las acciones
+                        actionsTd.setAttribute('data-label', 'Acciones'); // Etiqueta para móviles
+                        actionsTd.classList.add('action-buttons'); // Añade clase de botones de acción
+
+                        // **Nuevo** Botón para editar el currículum
+                        const editButton = document.createElement('button');
+                        editButton.textContent = 'Editar'; // Texto del botón
+                        editButton.addEventListener('click', () => {
+                        // Redirige a cambiar-datos.html pasando el ID del currículum como parámetro en la URL
+                        window.location.href = `cambiar-datos.html?id=${result.id}`;
+                        });
+                        actionsTd.appendChild(editButton); // Añade el botón a la columna
+
+                        // Botón para ver el currículum
+                        const viewButton = document.createElement('button');
+                        viewButton.textContent = 'Ver'; // Texto del botón
+                        viewButton.addEventListener('click', () => viewCv(result.id)); // Evento para ver currículum
+                        actionsTd.appendChild(viewButton); // Añade el botón a la columna
+
+                        // Botón para eliminar el currículum
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = 'Eliminar'; // Texto del botón
+                        deleteButton.addEventListener('click', () => deleteCv(result.id)); // Evento para eliminar currículum
+                        actionsTd.appendChild(deleteButton); // Añade el botón a la columna
+
+                        // Botón para añadir notas
+                        const notesButton = document.createElement('button');
+                        notesButton.textContent = 'Notas'; // Texto del botón
+                        notesButton.addEventListener('click', () => openNoteModal(result.id)); // Evento para añadir notas
+                        actionsTd.appendChild(notesButton); // Añade el botón a la columna
+
+                        tr.appendChild(actionsTd); // Añade la columna a la fila
+                        resultsBody.appendChild(tr); // Añade la fila al cuerpo de la tabla
+                    });
+                    // Llama a la función para llenar los dropdowns de departamentos después de cargar los currículums
+                    llenarDropdowns();
+                }
+            } else {
+                alert('Error al cargar los currículums'); // Muestra un error si algo falla
+            }
+        }
+
+        // Función para obtener departamentos dinámicamente desde el backend
+        async function cargarDepartamentos() {
+            if (!userId) {
+                    console.error('userId no está definido.');
+                    return [];
+                }
+            const response = await fetch(`${baseUrl}/departamentos?userId=${userId}`, { // Ruta a tu API de departamentos
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}` // Envía el token en la cabecera si es necesario
+                }
+            });
+
+            if (!response.ok) {
+                    console.error(`Error al cargar departamentos: ${response.statusText}`);
+                    return [];
+                }
+
+            const departamentos = await response.json();
+                if (!Array.isArray(departamentos)) {
+                    console.error('La respuesta no es un array de departamentos.');
+                    return [];
+                }
+
+                return departamentos;
+        }
+
+        // Función para llenar el dropdown con departamentos
+        async function llenarDropdowns() {
+            const departamentos = await cargarDepartamentos();
+
+            // Asumiendo que los resultados del currículum están en una tabla en #resultsBody
+            const rows = document.querySelectorAll('#resultsBody tr');
+
+            if (!departamentos || !rows.length) {
+                    console.error('No se encontraron filas en la tabla de currículums.');
+                    return;
+                }
+
+            rows.forEach(row => {
+                    const dropdown = row.querySelector('.departamento-dropdown');
+                    const selectedValue = dropdown.value; // Guardo el valor seleccionado previamente
+
+                    dropdown.innerHTML = ''; // Limpia opciones anteriores
+
+                    // Añadir opción de cada departamento
+                    departamentos.forEach(depto => {
+                        const option = document.createElement('option');
+                        option.value = depto.nombre; // Aquí uso el nombre del departamento, ajústalo si usas ID en vez de nombre
+                        option.textContent = depto.nombre;
+                        if (depto.nombre === selectedValue) {
+                            option.selected = true; // Mantengo el departamento seleccionado
+                        }
+                        dropdown.appendChild(option);
+                    });
+
+                    // Evento para actualizar el departamento en la base de datos
+                    dropdown.addEventListener('change', async function() {
+                        const nuevoDepartamento = this.value;
+                        const idCurriculum = row.querySelector('td[data-id-curriculum]').getAttribute('data-id-curriculum');
+
+                        const response = await fetch(`${baseUrl}/curriculums/${idCurriculum}/departamento`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({ departamento: nuevoDepartamento })
+                        });
+
+                        if (response.ok) {
+                            alert('Departamento actualizado');
+                        } else {
+                            alert('Error al actualizar el departamento');
+                        }
+                });
+            });
+        }
+
+        // Función para ver un currículum en formato PDF
+        async function viewCv(id) {
+            const response = await fetch(`${baseUrl}/curriculums/pdf/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}` // Envía el token en la cabecera
+                }
+            });
+
+            if (response.ok) {
+                const blob = await response.blob(); // Convierte la respuesta en un archivo binario
+                const url = URL.createObjectURL(blob); // Crea una URL para el archivo
+                window.open(url); // Abre el PDF en una nueva ventana
+            } else {
+                alert('Error al ver el currículum'); // Muestra un error si algo falla
+            }
+        }
+
+        // Función para eliminar un currículum
+        async function deleteCv(id) {
+            if (confirm('¿Estás seguro?')) { // Confirmación de eliminación
+                const response = await fetch(`${baseUrl}/curriculums/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}` // Envía el token en la cabecera
+                    }
+                });
+
+                if (response.ok) {
+                    fetchCurriculums(); // Actualiza la lista de currículums
+                } else {
+                    alert('Error al eliminar el currículum'); // Muestra un error si algo falla
+                }
+            }
+        }
+
+        // Función para abrir el modal de notas
+        async function openNoteModal(curriculumId) {
+            const modal = document.getElementById('noteModal'); // Modal de notas
+            const noteText = document.getElementById('noteText'); // Área de texto de la nota
+            const saveNoteButton = document.getElementById('saveNoteButton'); // Botón para guardar la nota
+            const notesList = document.getElementById('notesList'); // Lista de notas
+
+            notesList.innerHTML = ''; // Limpia la lista de notas
+
+            // Obtiene las notas del currículum
+            const response = await fetch(`${baseUrl}/curriculums/${curriculumId}/notas`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}` // Envía el token en la cabecera
+                }
+            });
+
+            if (response.ok) {
+                const notes = await response.json(); // Convierte la respuesta a JSON
+                notes.sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion)); // Ordena las notas por fecha
+
+                // Itera sobre las notas y las añade a la lista
+                notes.forEach(note => {
+                    const noteElement = document.createElement('div'); // Crea un contenedor para cada nota
+                    noteElement.classList.add('note'); // Añade la clase de estilo de nota
+                    noteElement.innerHTML = `
+                        <p>${note.contenido}</p> <!-- Muestra el contenido de la nota -->
+                        <span>${new Date(note.fechaCreacion).toLocaleString()}</span> <!-- Muestra la fecha de creación -->
+                    `;
+                    notesList.appendChild(noteElement); // Añade la nota a la lista
+                });
+            } else {
+                alert('Error al cargar las notas'); // Muestra un error si algo falla
+            }
+
+            modal.style.display = 'block'; // Muestra el modal
+            saveNoteButton.onclick = async function() { // Evento para guardar la nota
+                const content = noteText.value.trim(); // Obtiene el contenido de la nota
+                if (content) {
+                    const response = await fetch(`${baseUrl}/curriculums/${curriculumId}/notas`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json', // Indica que el contenido es JSON
+                            'Authorization': `Bearer ${token}` // Envía el token en la cabecera
+                        },
+                        body: JSON.stringify({ contenido: content }) // Envía la nota en el cuerpo de la solicitud
+                    });
+
+                    if (response.ok) {
+                        noteText.value = ''; // Limpia el campo de texto
+                        modal.style.display = 'none'; // Oculta el modal
+                        fetchCurriculums(); // Actualiza la lista de currículums
+                    } else {
+                        alert('Error al guardar la nota'); // Muestra un error si algo falla
+                    }
+                } else {
+                    alert('La nota no puede estar vacía'); // Muestra un mensaje si el campo está vacío
+                }
+            };
+
+            const closeModal = document.getElementsByClassName('close')[0]; // Botón para cerrar el modal
+            closeModal.onclick = function() {
+                modal.style.display = 'none'; // Oculta el modal al hacer clic en el botón de cerrar
+            };
+            window.onclick = function(event) {
+                if (event.target == modal) { // Si se hace clic fuera del modal, lo oculta
+                    modal.style.display = 'none';
+                }
+            };
+        }
+
+        // Si estamos en el dashboard, obtenemos los currículums
+        if (window.location.pathname.endsWith('dashboard.html')) {
+            fetchCurriculums();
+
+            const username = localStorage.getItem('username'); // Obtiene el nombre de usuario
+            if (username === 'JESUS DIAZ') { // Si el usuario es JESUS DIAZ, muestra el panel de administración
+                const adminPanel = document.createElement('div'); // Crea un panel de administración
+                adminPanel.style.marginTop = '20px';
+                adminPanel.style.textAlign = 'center';
+
+                const viewLogsButton = document.createElement('button'); // Botón para ver registros de usuarios
+                viewLogsButton.textContent = 'Ver registros de usuarios'; // Texto del botón
+                viewLogsButton.style.backgroundColor = '#e573fe'; // Estilo del botón
+                viewLogsButton.style.color = 'white';
+                viewLogsButton.style.border = 'none';
+                viewLogsButton.style.padding = '10px 20px';
+                viewLogsButton.style.borderRadius = '4px';
+                viewLogsButton.style.cursor = 'pointer';
+                viewLogsButton.style.marginTop = '20px';
+
+                // Evento para ver los registros de usuarios
+                viewLogsButton.addEventListener('click', async function() {
+                    const response = await fetch(`${baseUrl}/admin/registro-usuarios`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}` // Envía el token en la cabecera
+                        }
+                    });
+
+                    if (response.ok) {
+                        const logs = await response.json(); // Convierte la respuesta a JSON
+                        let formattedLogs = logs.map(log => { // Formatea los registros
+                            let logTime = new Date(log.timestamp); // Convierte la fecha
+                            logTime.setMinutes(logTime.getMinutes() - 30); // Ajusta la zona horaria
+
+                            return `Usuario: ${log.username} | Fecha de Registro: ${logTime.toLocaleString()}`; // Formatea el log
+                        }).join('\n');
+
+                        alert(formattedLogs); // Muestra los registros
+                    } else {
+                        alert('Error al cargar los registros'); // Muestra un error si algo falla
+                    }
+                });
+
+                const container = document.querySelector('.container'); // Contenedor principal
+                container.insertBefore(adminPanel, container.firstChild); // Inserta el panel de admin al inicio
+                adminPanel.appendChild(viewLogsButton); // Añade el botón al panel
+            }
+        }
+
+        // Manejo del formulario de registro
+        document.getElementById('registerForm')?.addEventListener('submit', async function(event) {
+            event.preventDefault(); // Evita el comportamiento predeterminado del formulario
+            const username = document.getElementById('username').value; // Obtiene el nombre de usuario
+            const email = document.getElementById('email').value; // Obtiene el email
+            const password = document.getElementById('password').value; // Obtiene la contraseña
+            const roles = "USER"; // Asigna el rol de usuario por defecto
+
+            // Realiza la solicitud de registro
+            const response = await fetch(`${baseUrl}/auth/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json' // El cuerpo de la solicitud es JSON
+                },
+                body: JSON.stringify({ username, email, password, roles }) // Envía los datos del formulario
+            });
+
+            const messageContainer = document.getElementById('message'); // Contenedor del mensaje
+
+            if (response.ok) {
+                messageContainer.classList.remove('hidden'); // Muestra el mensaje de éxito
+                messageContainer.style.color = '#E573FE'; // Color rosado
+                messageContainer.textContent = 'Registro exitoso. Redirigiendo a inicio de sesión...'; // Mensaje de éxito
+                setTimeout(() => {
+                    window.location.href = 'login.html'; // Redirige al login
+                }, 3000); // Espera 3 segundos antes de redirigir
+            } else {
+                const errorText = await response.text(); // Obtiene el mensaje de error
+                messageContainer.classList.remove('hidden'); // Muestra el mensaje de error
+                messageContainer.style.color = '#FF6F61'; // Color rojo
+                messageContainer.innerHTML = errorText.replace('<a href=\'/reset-password\'>', '<a href=\'forgot-password.html\' style="color: white;">'); // Ajusta el enlace de recuperación de contraseña
+
+                if (errorText.includes("Redirigiendo a la recuperación de contraseña")) {
+                    setTimeout(() => {
+                        window.location.href = 'forgot-password.html'; // Redirige a la página de recuperación de contraseña
+                    }, 3000); // Espera 3 segundos antes de redirigir
+                }
+            }
+        });
+
+        // Manejo del formulario de inicio de sesión
+        document.getElementById('loginForm')?.addEventListener('submit', async function(event) {
+            event.preventDefault(); // Evita el comportamiento predeterminado del formulario
+            const username = document.getElementById('login').value; // Obtiene el nombre de usuario
+            const password = document.getElementById('password').value; // Obtiene la contraseña
+
+            // Realiza la solicitud de inicio de sesión
+            const response = await fetch(`${baseUrl}/auth/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json' // El cuerpo de la solicitud es JSON
+                },
+                body: JSON.stringify({ username, password }) // Envía los datos del formulario
+            });
+
+            const messageContainer = document.getElementById('loginMessage'); // Contenedor del mensaje
+            messageContainer.style.display = 'block'; // Muestra el mensaje
+
+            if (response.ok) {
+                const data = await response.json(); // Convierte la respuesta a JSON
+                localStorage.setItem('token', data.token); // Almacena el token en localStorage
+                localStorage.setItem('username', data.username); // Almacena el nombre de usuario
+                localStorage.setItem('userId', data.userId); // Almacena el ID de usuario
+                window.location.href = 'dashboard.html'; // Redirige al dashboard
+            } else {
+                const errorData = await response.text(); // Obtiene el mensaje de error
+                if (errorData.includes('El usuario no existe')) {
+                    messageContainer.innerHTML = 'El usuario no existe.'; // Muestra un mensaje de error
+                } else if (errorData.includes('Contraseña incorrecta')) {
+                    messageContainer.innerHTML = 'Contraseña incorrecta. Inténtalo de nuevo. <a href="forgot-password.html" style="color: white;">¿Olvidaste tu contraseña?</a>'; // Mensaje de contraseña incorrecta
+                } else if (errorData.includes('La cuenta está bloqueada')) {
+                    messageContainer.innerHTML = 'Has alcanzado el límite de intentos. Redirigiendo a la recuperación de contraseña...'; // Mensaje de cuenta bloqueada
+                    setTimeout(() => {
+                        window.location.href = 'forgot-password.html'; // Redirige a la página de recuperación de contraseña
+                    }, 3000); // Espera 3 segundos antes de redirigir
+                } else {
+                    messageContainer.innerHTML = 'Error en el inicio de sesión'; // Mensaje de error genérico
+                }
+                messageContainer.style.color = '#FF6F61'; // Color rojo
+                messageContainer.style.marginTop = '20px'; // Espaciado superior
+                messageContainer.style.textAlign = 'center'; // Alineación centrada
+            }
+        });
+
+        // Establece el nombre de usuario en la interfaz
+        if (document.getElementById('username')) {
+            document.getElementById('username').innerText = localStorage.getItem('username');
+        }
+
+        // Evento para cerrar sesión
+        document.getElementById('logoutButton')?.addEventListener('click', function() {
+            localStorage.removeItem('token'); // Elimina el token de localStorage
+            localStorage.removeItem('username'); // Elimina el nombre de usuario
+            localStorage.removeItem('userId'); // Elimina el ID de usuario
+            window.location.href = 'index.html'; // Redirige a la página de inicio
+        });
+
+        // Botón de búsqueda de currículums
+        document.getElementById('searchButton')?.addEventListener('click', async function() {
+            performSearch(); // Llama a la función de búsqueda
+        });
+
+        // Busca currículums al presionar Enter en el input de búsqueda
+        document.getElementById('searchInput')?.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Evita el comportamiento por defecto del Enter
+                performSearch(); // Realiza la búsqueda
+            }
+        });
+
+        // Botón para limpiar el campo de búsqueda y recargar currículums
+        document.getElementById('clearButton')?.addEventListener('click', function() {
+            document.getElementById('searchInput').value = ''; // Limpia el input de búsqueda
+            fetchCurriculums(); // Recarga la lista de currículums
+        });
+
+        // Formulario de recuperación de contraseña
+        document.getElementById('forgotPasswordForm')?.addEventListener('submit', async function(event) {
+            event.preventDefault(); // Evita el comportamiento predeterminado del formulario
+            const email = document.getElementById('email').value; // Obtiene el email del usuario
+            const messageContainer = document.getElementById('message'); // Contenedor del mensaje
+
+            document.querySelector('button[type="submit"]').disabled = true; // Deshabilita el botón de envío
+
+            // Realiza la solicitud de recuperación de contraseña
+            const response = await fetch(`${baseUrl}/auth/forgot-password`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json' // El cuerpo de la solicitud es JSON
+                },
+                body: JSON.stringify({ email }) // Envía el email en el cuerpo de la solicitud
+            });
+
+            if (response.ok) {
+                const data = await response.json(); // Convierte la respuesta a JSON
+                messageContainer.classList.remove('hidden'); // Muestra el mensaje de éxito
+                messageContainer.style.color = '#E573FE'; // Color rosado
+                messageContainer.textContent = data.message; // Muestra el mensaje de éxito
+                setTimeout(() => {
+                    window.location.href = 'login.html'; // Redirige a la página de login
+                }, 3000); // Espera 3 segundos antes de redirigir
+            } else {
+                const errorData = await response.json(); // Convierte la respuesta a JSON
+                messageContainer.classList.remove('hidden'); // Muestra el mensaje de error
+                messageContainer.style.color = '#FF6F61'; // Color rojo
+                messageContainer.textContent = errorData.message; // Muestra el mensaje de error
+            }
+
+            document.querySelector('button[type="submit"]').disabled = false; // Habilita el botón de envío
+        });
+
+        // Parámetros de la URL
+        const params = new URLSearchParams(window.location.search);
+        const userIdParam = params.get('user'); // Obtiene el parámetro "user" de la URL
+
+        // Manejo del formulario de subida de currículum
+        document.getElementById('uploadForm')?.addEventListener('submit', function(event) {
+            event.preventDefault(); // Evita el comportamiento predeterminado del formulario
+            const uploadId = document.getElementById('uploadId').value; // Obtiene el ID de subida
+            const password = document.getElementById('password').value; // Obtiene la contraseña
+            const pdfFile = document.getElementById('pdfFile').files[0]; // Obtiene el archivo PDF
+
+            if (!pdfFile || pdfFile.type !== "application/pdf") { // Verifica que el archivo sea PDF
+                errorMessage.style.display = 'block'; // Muestra mensaje de error si no es PDF
+                return;
+            } else {
+                errorMessage.style.display = 'none'; // Oculta el mensaje de error si es PDF
+            }
+
+            const formData = new FormData(); // Crea un nuevo objeto FormData
+            formData.append('uploadId', uploadId); // Añade el ID de subida
+            formData.append('password', password); // Añade la contraseña
+            formData.append('file', pdfFile); // Añade el archivo PDF
+            formData.append('nombre', document.getElementById('nombre').value); // Añade el nombre
+            formData.append('apellido', document.getElementById('apellido').value); // Añade el apellido
+            formData.append('sexo', document.getElementById('sexo').value); // Añade el sexo
+            formData.append('telefono', document.getElementById('telefono').value); // Añade el teléfono
+            formData.append('email', document.getElementById('email').value); // Añade el email
+
+            // Realiza la solicitud de subida del currículum
+            fetch('/curriculums/upload_with_password', {
+                method: 'POST', // Método POST
+                body: formData // Envía los datos del formulario
+            })
+            .then(response => response.text()) // Convierte la respuesta a texto
+            .then(text => {
+                if (text === "Currículum subido exitosamente") {
+                    document.getElementById('uploadMessage').classList.remove('hidden'); // Muestra mensaje de éxito
+                    setTimeout(() => {
+                        document.getElementById('uploadMessage').classList.add('hidden'); // Oculta el mensaje
+                        location.href = 'success_page.html'; // Redirige a la página de éxito
+                    }, 3000); // Espera 3 segundos antes de redirigir
+                } else {
+                    alert(text); // Muestra mensaje de error
+                }
+            })
+            .catch(error => {
+                console.error('Error al subir el currículum:', error); // Muestra el error en la consola
+                alert('Error al subir el currículum.'); // Muestra un mensaje de error
+            });
+        });
+
+        // Manejo de la edición de currículum en cambiar-datos.html
+        document.addEventListener('DOMContentLoaded', async function () {
+
+        const token = localStorage.getItem('token'); // Asegúrate de que el token esté disponible
+            if (!token) {
+                alert('No se ha encontrado el token de autenticación. Por favor, inicia sesión nuevamente.');
+                window.location.href = 'login.html'; // Redirige al login si no hay token
+                return;
+            }
+
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+
+            if (id) {
+                // Obtener los datos del currículum por su ID
+                const response = await fetch(`${baseUrl}/curriculums/${id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const curriculum = await response.json();
+
+                    // Rellenar los campos del formulario
+                    document.getElementById('nombre').value = curriculum.nombre;
+                    document.getElementById('apellido').value = curriculum.apellido;
+                    document.getElementById('telefono').value = curriculum.telefono;
+                    document.getElementById('sexo').value = curriculum.sexo;
+                } else {
+                    alert('Error al cargar los datos del currículum.');
+                }
+            }
+
+            // Manejo del formulario para guardar los cambios
+            document.getElementById('editForm').addEventListener('submit', async function(event) {
+                event.preventDefault();
+
+                const nombre = document.getElementById('nombre').value;
+                const apellido = document.getElementById('apellido').value;
+                const telefono = document.getElementById('telefono').value;
+                const sexo = document.getElementById('sexo').value;
+                const departamento = document.getElementById('departamento').value;
+
+                const response = await fetch(`${baseUrl}/curriculums/update/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ nombre, apellido, telefono, sexo })
+                });
+
+                if (response.ok) {
+                    const successMessage = document.getElementById('successMessage');
+                    successMessage.style.display = 'block'; // Mostrar el mensaje de éxito
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html'; // Redirigir al dashboard después de 2 segundos
+                    }, 2000);
+                } else {
+                    alert('Error al guardar los datos');
+                }
+            });
+        });
+
+
+        // Función para realizar la búsqueda de currículums
+        async function performSearch() {
+            const searchInput = document.getElementById('searchInput').value; // Obtiene el valor de búsqueda
+            const response = await fetch(`${baseUrl}/curriculums/buscar/clave?clave=${searchInput}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}` // Envía el token en la cabecera
+                }
+            });
+
+            if (response.ok) {
+                const results = await response.json(); // Convierte la respuesta a JSON
+                const resultsBody = document.getElementById('resultsBody'); // Cuerpo de la tabla de resultados
+                if (resultsBody) {
+                    resultsBody.innerHTML = ''; // Limpia los resultados previos
+                    results.forEach(result => { // Itera sobre los resultados
+                        const tr = document.createElement('tr'); // Crea una nueva fila
+
+                        // Inserta los datos del currículum en la fila
+                        tr.innerHTML = `
+                            <td data-label="Nombre">${result.nombre}</td>
+                            <td data-label="Apellido">${result.apellido}</td>
+                            <td data-label="Fecha">${new Date(result.fechaInsercion).toLocaleDateString()}</td>
+                            <td data-label="Sexo">${result.sexo}</td>
+                            <td data-label="Teléfono">${result.telefono}</td>
+                            <td data-label="Email">${result.email}</td>
+                            <td data-label="Departamento">
+                                <select class="departamento-dropdown">
+                                    <option value="${result.departamento}" selected>${result.departamento}</option>
+                                </select>
+                            </td>
+                        `;
+
+                        const actionsTd = document.createElement('td'); // Columna para las acciones
+                        actionsTd.setAttribute('data-label', 'Acciones'); // Etiqueta para móviles
+                        actionsTd.classList.add('action-buttons'); // Añade clase de botones de acción
+
+                        // Botón para ver el currículum
+                        const viewButton = document.createElement('button');
+                        viewButton.textContent = 'Ver'; // Texto del botón
+                        viewButton.addEventListener('click', () => viewCv(result.id)); // Evento para ver currículum
+                        actionsTd.appendChild(viewButton); // Añade el botón a la columna
+
+                        // Botón para eliminar el currículum
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = 'Eliminar'; // Texto del botón
+                        deleteButton.addEventListener('click', () => deleteCv(result.id)); // Evento para eliminar currículum
+                        actionsTd.appendChild(deleteButton); // Añade el botón a la columna
+
+                        // Botón para añadir notas
+                        const notesButton = document.createElement('button');
+                        notesButton.textContent = 'Notas'; // Texto del botón
+                        notesButton.addEventListener('click', () => openNoteModal(result.id)); // Evento para añadir notas
+                        actionsTd.appendChild(notesButton); // Añade el botón a la columna
+
+                        tr.appendChild(actionsTd); // Añade la columna a la fila
+                        resultsBody.appendChild(tr); // Añade la fila al cuerpo de la tabla
+                    });
+
+                    // Llama a la función para llenar los dropdowns de departamentos después de cargar los currículums
+                    llenarDropdowns();
+                }
+            } else {
+                alert('Error en la búsqueda'); // Muestra un mensaje de error si algo falla
+            }
+        }
+    });
+
+styles-common.css
+
+/* Estilo general del cuerpo */
+body {
+    font-family: Arial, sans-serif; /* Fuente principal de la página */
+    background-color: #1c1c1c; /* Color de fondo oscuro */
+    color: #ffffff; /* Color del texto en blanco */
+    font-size: 15px; /* Tamaño de fuente base */
+    transition: background-color 0.5s ease; /* Transición suave al cambiar el color de fondo */
+    margin: 0; /* Eliminar márgenes por defecto */
+    padding: 0; /* Eliminar relleno por defecto */
+}
+
+/* Contenedor principal */
+.container {
+    width: 80%; /* Ocupa el 80% del ancho disponible */
+    margin: 0 auto; /* Centra el contenedor horizontalmente */
+    padding-top: 20px; /* Espacio superior de 20px */
+    background-color: #333333; /* Fondo oscuro del contenedor */
+    padding: 20px; /* Relleno interior */
+    border-radius: 8px; /* Bordes redondeados de 8px */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra alrededor del contenedor */
+}
+
+/* Estilos generales para los botones */
+button {
+    background-color: #E573FE; /* Color de fondo púrpura */
+    color: white; /* Color del texto blanco */
+    border: none; /* Eliminar bordes */
+    padding: 12px 24px; /* Espaciado interior del botón */
+    cursor: pointer; /* Mostrar el puntero de clic */
+    margin-right: 10px; /* Espaciado a la derecha */
+    margin-bottom: 10px; /* Espaciado inferior */
+    border-radius: 8px; /* Bordes redondeados de 8px */
+    font-size: 16px; /* Tamaño de la fuente del botón */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave en el botón */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Transiciones suaves */
+}
+
+/* Efectos de botón al pasar el cursor */
+button:hover {
+    background-color: #7C3E8A; /* Cambia el color de fondo al pasar el ratón */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra más intensa al pasar el ratón */
+}
+
+/* Efectos de botón al hacer clic */
+button:active {
+    transform: scale(0.95); /* Reduce el tamaño del botón al hacer clic */
+}
+
+/* Estilos para inputs y selects */
+input, select {
+    padding: 12px; /* Espaciado interior */
+    margin-bottom: 10px; /* Espaciado inferior */
+    border: 1px solid #ccc; /* Borde gris claro */
+    border-radius: 8px; /* Bordes redondeados de 8px */
+    background-color: #444444; /* Fondo gris oscuro */
+    color: white; /* Texto en blanco */
+    font-size: 16px; /* Tamaño de la fuente */
+    box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.1); /* Sombra interna sutil */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Transición suave en borde y sombra */
+}
+
+/* Estilo de los campos de entrada al enfocarse */
+input:focus, select:focus {
+    outline: none; /* Eliminar el borde por defecto de enfoque */
+    border-color: #e573fe; /* Color púrpura para el borde al enfocarse */
+    box-shadow: 0px 0px 8px rgba(108, 99, 255, 0.5); /* Sombra luminosa al enfocar */
+}
+
+/* Ocultar elementos */
+.hidden {
+    display: none; /* Ocultar elementos */
+}
+
+/* Estilo para encabezados */
+h1, h2 {
+    text-align: center; /* Centrar texto */
+    color: #ffffff; /* Color del texto blanco */
+    margin: 15px 0; /* Márgenes superior e inferior de 15px */
+}
+
+/* Estilos del header */
+header {
+    display: flex; /* Usar flexbox para centrar elementos */
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Centrar verticalmente */
+    width: 100%; /* Ocupa todo el ancho disponible */
+    background-color: #1c1c1c; /* Fondo oscuro */
+    padding: 10px 0; /* Relleno superior e inferior */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* Sombra en el header */
+    z-index: 1000; /* Colocación superior */
+}
+
+/* Estilo para el logo */
+header .logo {
+    height: 100px; /* Altura del logo */
+    width: auto; /* Ajustar el ancho automáticamente */
+    max-width: 100%; /* No exceder el 100% del contenedor */
+    object-fit: contain; /* Mantener las proporciones del logo */
+    margin: 0 auto; /* Centrar el logo */
+    display: block; /* Mostrar como bloque */
+}
+
+/* Estilos de botones y acciones */
+.buttons, .actions, .search {
+    text-align: center; /* Centrar botones y elementos */
+}
+
+/* Estilo para formularios */
+form {
+    display: flex; /* Usar flexbox para organizar los campos */
+    flex-direction: column; /* Colocar los elementos en columna */
+    align-items: center; /* Centrar horizontalmente */
+}
+
+form input, form select, form button {
+    width: 100%; /* Ancho completo */
+    max-width: 400px; /* Limitar el ancho a 400px */
+    margin-bottom: 10px; /* Espaciado inferior */
+}
+
+/* Estilo para el contenedor de acciones */
+.actions {
+    display: flex; /* Flexbox para organizar los botones */
+    justify-content: center; /* Centrar horizontalmente */
+    gap: 10px; /* Espaciado entre botones */
+    margin-bottom: 20px; /* Espaciado inferior */
+    flex-wrap: wrap; /* Permitir que los botones se apilen si no hay espacio */
+}
+
+/* Estilo para la sección de búsqueda */
+.search {
+    display: flex; /* Usar flexbox para organizar la búsqueda */
+    flex-direction: column; /* Organizar elementos en columna */
+    align-items: center; /* Centrar horizontalmente */
+    margin-bottom: 20px; /* Espaciado inferior */
+}
+
+.search input {
+    flex: 1; /* Permitir que el input crezca */
+    margin-right: 10px; /* Espaciado a la derecha */
+    background-color: #444444; /* Fondo gris oscuro */
+    color: white; /* Texto en blanco */
+}
+
+.search-buttons {
+    display: flex; /* Flexbox para los botones de búsqueda */
+    justify-content: center; /* Centrar horizontalmente */
+    width: 100%; /* Ancho completo */
+    max-width: 400px; /* Limitar a 400px */
+    margin-top: 10px; /* Espaciado superior */
+    flex-wrap: wrap; /* Apilar botones si es necesario */
+    gap: 10px; /* Espaciado entre botones */
+}
+
+/* Estilo para la tabla de resultados */
+.results {
+    max-height: 70vh; /* Limitar la altura a 70% de la ventana */
+    overflow-y: auto; /* Scroll vertical si es necesario */
+    background-color: #333333; /* Fondo oscuro */
+    padding: 20px; /* Relleno interior */
+    border-radius: 8px; /* Bordes redondeados */
+    margin-top: 20px; /* Espaciado superior */
+    color: white; /* Texto en blanco */
+}
+
+/* Apariencia de las tablas */
+table {
+    width: 100%; /* Ocupa el 100% del contenedor */
+    border-collapse: collapse; /* Eliminar espacios entre celdas */
+    background-color: #2c2c2c; /* Fondo oscuro de la tabla */
+    border-radius: 8px; /* Bordes redondeados */
+    overflow: hidden; /* Ocultar contenido que se salga del borde */
+    table-layout: fixed; /* Distribuir las celdas equitativamente */
+}
+
+thead th {
+    background-color: #e573fe; /* Fondo púrpura para encabezados */
+    color: white; /* Texto en blanco */
+    padding: 12px; /* Espaciado interior */
+    font-size: 16px; /* Tamaño del texto */
+    text-align: left; /* Alinear a la izquierda */
+}
+
+tbody tr {
+    border-bottom: 1px solid #444; /* Línea de separación entre filas */
+}
+
+tbody tr:hover {
+    background-color: #3a3a3a; /* Fondo gris al pasar el ratón */
+    transition: background-color 0.3s ease; /* Transición suave */
+}
+
+tbody td {
+    padding: 12px; /* Espaciado interior de las celdas */
+    color: #ccc; /* Color del texto gris claro */
+    font-size: 14px; /* Tamaño de la fuente en las celdas */
+    text-align: left; /* Alinear el texto a la izquierda */
+}
+
+/* Estilos para los botones de acción en la tabla */
+.action-buttons {
+    display: flex; /* Flexbox para organizar los botones */
+    justify-content: space-between; /* Distribuir los botones equitativamente */
+    gap: 10px; /* Espaciado entre botones */
+    flex-wrap: wrap; /* Permitir que los botones se apilen si no hay espacio */
+}
+
+.action-buttons button {
+    flex: 1; /* Hacer que los botones se adapten al espacio disponible */
+    min-width: 80px; /* Mínimo ancho de los botones */
+    padding: 10px; /* Espaciado interior */
+}
+
+/* Estilos para dispositivos móviles */
+@media (max-width: 767px) {
+    .link-container {
+        display: none; /* Ocultar el contenedor del enlace generado */
+        flex-direction: column; /* Disposición en columna */
+        align-items: center; /* Centrar horizontalmente */
+        margin-top: 10px; /* Espaciado superior */
+        width: 100%; /* Ancho completo */
+    }
+
+    .link-container.show {
+        display: flex; /* Mostrar el contenedor cuando sea necesario */
+    }
+
+    .generated-link {
+        background-color: #444444; /* Fondo gris oscuro */
+        color: white; /* Texto en blanco */
+        padding: 10px; /* Espaciado interior */
+        border-radius: 8px; /* Bordes redondeados */
+        margin-bottom: 10px; /* Espaciado inferior */
+        word-wrap: break-word; /* Ajuste de palabras largas */
+        text-align: center; /* Centrar texto */
+        max-width: 100%; /* No exceder el ancho del contenedor */
+    }
+
+    .copy-button {
+        background-color: #7C3E8A; /* Fondo púrpura */
+        color: white; /* Texto en blanco */
+        border: none; /* Eliminar bordes */
+        padding: 10px 20px; /* Espaciado interior */
+        cursor: pointer; /* Mostrar puntero de clic */
+        border-radius: 4px; /* Bordes redondeados */
+        font-size: 14px; /* Tamaño de la fuente */
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+        transition: background-color 0.3s ease; /* Transición suave */
+    }
+
+    .copy-button:hover {
+        background-color: #E573FE; /* Cambiar el color de fondo al pasar el ratón */
+    }
+
+    .container {
+        width: auto; /* Ajustar el ancho automáticamente */
+        padding: 20px; /* Relleno interior */
+    }
+
+    .search-buttons {
+        flex-direction: column; /* Organizar los botones en columna */
+        gap: 10px; /* Espaciado entre botones */
+    }
+
+    button {
+        width: 100%; /* Hacer que los botones ocupen todo el ancho */
+        margin-bottom: 10px; /* Espaciado inferior */
+    }
+
+    table {
+        width: 100%; /* Ocupa todo el ancho del contenedor */
+        border-collapse: collapse; /* Eliminar espacios entre celdas */
+    }
+
+    thead {
+        display: none; /* Ocultar el encabezado en dispositivos móviles */
+    }
+
+    tbody tr {
+        display: block; /* Mostrar cada fila como un bloque independiente */
+        border-bottom: 1px solid #333; /* Línea de separación entre filas */
+        margin-bottom: 10px; /* Espaciado inferior */
+    }
+
+    tbody td {
+        display: block; /* Mostrar cada celda como un bloque */
+        text-align: right; /* Alinear texto a la derecha */
+        padding: 10px; /* Espaciado interior */
+        border-bottom: 1px solid #444; /* Línea de separación en las celdas */
+        position: relative; /* Posicionar de forma relativa para el contenido antes */
+        padding-left: 50%; /* Dejar espacio a la izquierda para el contenido antes */
+    }
+
+    tbody td::before {
+        content: attr(data-label); /* Mostrar el atributo data-label antes del contenido */
+        position: absolute; /* Posicionar de forma absoluta */
+        left: 10px; /* Colocar a 10px de la izquierda */
+        width: 45%; /* Ancho del 45% */
+        padding-right: 10px; /* Espaciado a la derecha */
+        white-space: nowrap; /* Evitar que las palabras se corten */
+        text-align: left; /* Alinear el texto a la izquierda */
+        font-weight: bold; /* Texto en negrita */
+    }
+
+    tbody td .action-buttons {
+        justify-content: flex-end; /* Mover los botones a la derecha */
+    }
+
+    tbody td button {
+        padding: 5px 10px; /* Espaciado interior reducido */
+        cursor: pointer; /* Mostrar puntero de clic */
+    }
+
+    tbody td button:hover {
+        background-color: #7C3E8A; /* Cambiar el color de fondo al pasar el ratón */
+    }
+
+    #viewLogsButton {
+        width: 80%; /* Ancho del 80% */
+        margin: 10px auto; /* Centrar el botón y añadir margen superior */
+    }
+}
+
+/* Centrar la palabra "Acciones" */
+@media (max-width: 1024px) {
+    th:nth-child(6) {
+        text-align: center; /* Centrar el texto en la columna de acciones */
+    }
+}
+
+/* Estilos para el modal de notas */
+.modal {
+    display: none; /* Ocultar el modal por defecto */
+    position: fixed; /* Posicionamiento fijo para superponerlo */
+    z-index: 1; /* Colocar el modal en la parte superior */
+    left: 0; /* Posicionar en el lado izquierdo */
+    top: 0; /* Posicionar en la parte superior */
+    width: 100%; /* Ocupa todo el ancho */
+    height: 100%; /* Ocupa todo el alto */
+    overflow: auto; /* Habilitar scroll si es necesario */
+    background-color: rgba(0,0,0,0.4); /* Fondo semi-transparente */
+    padding-top: 60px; /* Añadir espacio en la parte superior */
+}
+
+.modal-content {
+    background-color: #fefefe; /* Fondo blanco para el contenido del modal */
+    margin: 5% auto; /* Centrar el modal */
+    padding: 20px; /* Relleno interior */
+    border: 1px solid #888; /* Borde gris claro */
+    width: 80%; /* Ocupa el 80% del ancho disponible */
+    max-width: 500px; /* Ancho máximo de 500px */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+}
+
+.close {
+    color: #aaa; /* Color gris claro para el botón de cerrar */
+    float: right; /* Posicionar a la derecha */
+    font-size: 28px; /* Tamaño de la fuente */
+    font-weight: bold; /* Texto en negrita */
+}
+
+.close:hover,
+.close:focus {
+    color: black; /* Cambiar el color al pasar el ratón o al enfocarse */
+    text-decoration: none; /* Eliminar subrayado */
+    cursor: pointer; /* Mostrar puntero de clic */
+}
+
+#noteText {
+    width: 100%; /* Ocupa todo el ancho */
+    height: 150px; /* Altura de 150px */
+    margin-bottom: 10px; /* Espaciado inferior */
+}
+
+#saveNoteButton {
+    background-color: #e573fe; /* Fondo púrpura */
+    color: white; /* Texto en blanco */
+    border: none; /* Eliminar bordes */
+    padding: 10px 20px; /* Espaciado interior */
+    cursor: pointer; /* Mostrar puntero de clic */
+    border-radius: 4px; /* Bordes redondeados */
+}
+
+#saveNoteButton:hover {
+    background-color: #7C3E8A; /* Cambiar el color de fondo al pasar el ratón */
+}
+
+.note {
+    background-color: #444; /* Fondo gris oscuro para las notas */
+    padding: 10px; /* Espaciado interior */
+    margin-bottom: 10px; /* Espaciado inferior */
+    border-radius: 4px; /* Bordes redondeados */
+}
+
+.note span {
+    display: block; /* Mostrar como bloque */
+    color: #ccc; /* Texto gris claro */
+    font-size: 0.9em; /* Tamaño reducido */
+    margin-top: 5px; /* Espaciado superior */
+    text-align: right; /* Alinear texto a la derecha */
+}
+
+/* Enlaces */
+.link-blanco {
+    color: white; /* Texto en blanco */
+    text-decoration: underline; /* Subrayar texto */
+    font-weight: bold; /* Negrita */
+}
+
+/* Estilos para el pie de página */
+footer {
+    background-color: #222; /* Fondo gris oscuro */
+    color: #bbb; /* Texto gris claro */
+    padding: 20px 0; /* Espaciado superior e inferior */
+    text-align: center; /* Centrar texto */
+    margin-top: 20px; /* Espaciado superior */
+    font-size: 14px; /* Tamaño de la fuente */
+    display: flex; /* Flexbox para organizar el contenido */
+    flex-direction: column; /* Disposición en columna */
+    align-items: center; /* Centrar horizontalmente */
+    gap: 10px; /* Espaciado entre elementos */
+}
+
+footer a {
+    color: #e573fe; /* Texto púrpura */
+    text-decoration: none; /* Eliminar subrayado */
+    margin: 0 10px; /* Espaciado horizontal */
+}
+
+footer a:hover {
+    text-decoration: underline; /* Subrayar al pasar el ratón */
+    color: #7C3E8A; /* Cambiar el color del texto */
+}
+
+/* Animación de aparición suave en la carga de la página */
+.fade-in {
+    opacity: 0; /* Comenzar con opacidad 0 */
+    animation: fadeInAnimation 1.5s forwards ease-in-out; /* Animación de entrada */
+}
+
+@keyframes fadeInAnimation {
+    to {
+        opacity: 1; /* Llegar a opacidad 1 */
+    }
+}
+
+/* Estilo para el logo en el footer */
+.footer-logo {
+    height: 60px; /* Altura del logo */
+    width: auto; /* Ajustar el ancho automáticamente */
+    display: block; /* Mostrar como bloque */
+    margin: 0 auto; /* Centrar el logo */
+    padding-bottom: 10px; /* Espaciado inferior */
+}
+
+styles-dashboard.css
+
+/* Estilo general del cuerpo */
+body {
+    font-family: Arial, sans-serif; /* Tipografía del cuerpo */
+    background-color: #1c1c1c; /* Color de fondo oscuro */
+    color: #ffffff; /* Color de texto blanco */
+    font-size: 15px; /* Tamaño de fuente */
+    transition: background-color 0.5s ease; /* Transición suave para cambios de color */
+    margin: 0; /* Eliminar márgenes */
+    padding: 0; /* Eliminar relleno */
+}
+
+/* Contenedor principal */
+.container {
+    width: 80%; /* Ancho del 80% */
+    margin: 0 auto; /* Centrar el contenedor horizontalmente */
+    padding-top: 20px; /* Espacio superior de 20px */
+    background-color: #333333; /* Fondo gris oscuro */
+    padding: 20px; /* Relleno interno de 20px */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra alrededor del contenedor */
+}
+
+/* Estilos generales para los botones */
+button {
+    background-color: #E573FE; /* Color de fondo rosado */
+    color: white; /* Texto blanco */
+    border: none; /* Sin borde */
+    padding: 12px 24px; /* Relleno interno del botón */
+    cursor: pointer; /* Cambia el cursor a mano al pasar por el botón */
+    margin-right: 10px; /* Espacio a la derecha del botón */
+    margin-bottom: 10px; /* Espacio inferior del botón */
+    border-radius: 8px; /* Bordes redondeados */
+    font-size: 16px; /* Tamaño de fuente */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra ligera bajo el botón */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Transición suave para color y escala */
+}
+
+/* Efectos de botón al pasar el cursor */
+button:hover {
+    background-color: #7C3E8A; /* Cambio de color de fondo al pasar el cursor */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Incremento de la sombra */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Transición para el color de fondo y la sombra */
+}
+
+/* Efectos de botón al hacer clic */
+button:active {
+    transform: scale(0.95); /* Reduce ligeramente el tamaño del botón al hacer clic */
+    transition: transform 0.1s ease; /* Transición rápida para el cambio de tamaño */
+}
+
+/* Estilos para inputs y selects */
+input, select {
+    padding: 12px; /* Relleno interno */
+    margin-bottom: 10px; /* Espacio inferior */
+    border: 1px solid #ccc; /* Borde gris claro */
+    border-radius: 8px; /* Bordes redondeados */
+    background-color: #444444; /* Fondo gris oscuro */
+    color: white; /* Texto blanco */
+    font-size: 16px; /* Tamaño de fuente */
+    box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.1); /* Sombra interna ligera */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Transiciones suaves para borde y sombra */
+}
+
+/* Estilo de los campos de entrada al enfocarse */
+input:focus, select:focus {
+    outline: none; /* Sin borde exterior de enfoque */
+    border-color: #e573fe; /* Cambia el borde al color rosado */
+    box-shadow: 0px 0px 8px rgba(108, 99, 255, 0.5); /* Añade una sombra rosada brillante */
+}
+
+/* Ocultar elementos */
+.hidden {
+    display: none; /* Oculta completamente los elementos */
+}
+
+/* Estilo para encabezados */
+h1, h2 {
+    text-align: center; /* Alinear al centro */
+    color: #ffffff; /* Color de texto blanco */
+    margin: 15px 0; /* Márgenes superior e inferior */
+}
+
+/* Estilos del header */
+header {
+    display: flex; /* Uso de flexbox para el diseño */
+    justify-content: center; /* Centrar contenido horizontalmente */
+    align-items: center; /* Alinear verticalmente al centro */
+    width: 100%; /* Ocupa el ancho completo */
+    background-color: #1c1c1c; /* Fondo oscuro */
+    padding: 10px 0; /* Espacio vertical interno */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* Sombra inferior */
+    z-index: 1000; /* Posición por encima de otros elementos */
+}
+
+/* Estilo para el logo */
+header .logo {
+    height: 100px; /* Altura del logo */
+    width: auto; /* Ajuste proporcional de la anchura */
+    max-width: 100%; /* Evitar que exceda el 100% del contenedor */
+    object-fit: contain; /* Ajusta el contenido de la imagen sin distorsión */
+    margin: 0 auto; /* Centra el logo */
+    display: block; /* Muestra el logo como bloque */
+}
+
+/* Estilos de botones y acciones */
+.buttons, .actions, .search {
+    text-align: center; /* Centrar el texto en estos contenedores */
+}
+
+/* Estilo para formularios */
+form {
+    display: flex; /* Uso de flexbox */
+    flex-direction: column; /* Elementos dispuestos en columna */
+    align-items: center; /* Centrar los elementos en el eje horizontal */
+}
+
+form input, form select, form button {
+    width: 100%; /* Ancho completo */
+    max-width: 400px; /* Ancho máximo de 400px */
+    margin-bottom: 10px; /* Espacio inferior */
+}
+
+/* Estilo para el contenedor de acciones */
+.actions {
+    display: flex; /* Uso de flexbox */
+    justify-content: center; /* Centrar los elementos horizontalmente */
+    gap: 10px; /* Espacio entre elementos */
+    margin-bottom: 20px; /* Espacio inferior del contenedor */
+}
+
+/* Estilo para la sección de búsqueda */
+.search {
+    display: flex; /* Uso de flexbox */
+    flex-direction: column; /* Disponer elementos en columna */
+    align-items: center; /* Centrar los elementos */
+    margin-bottom: 20px; /* Espacio inferior */
+}
+
+.search input {
+    flex: 1; /* Ocupa todo el espacio disponible */
+    margin-right: 10px; /* Espacio a la derecha */
+    background-color: #444444; /* Fondo gris oscuro */
+    color: white; /* Texto blanco */
+}
+
+/* Colocar los botones de búsqueda en una sola fila */
+.search-buttons {
+    display: flex; /* Uso de flexbox */
+    justify-content: center; /* Centrar los botones */
+    width: 100%; /* Ocupa todo el ancho */
+    max-width: 100%; /* Usar el ancho completo disponible */
+    margin-top: 10px; /* Espacio superior */
+    gap: 10px; /* Espacio entre los botones */
+    flex-wrap: nowrap; /* Evitar que los botones se apilen */
+}
+
+.search-buttons button {
+    flex: 1; /* Los botones ocupan todo el espacio disponible */
+    min-width: 120px; /* Ancho mínimo de los botones */
+}
+
+/* Estilo para la tabla de resultados */
+.results {
+    max-height: 70vh; /* Altura máxima de 70% de la ventana */
+    overflow-y: auto; /* Barra de desplazamiento vertical si es necesario */
+    background-color: #333333; /* Fondo gris oscuro */
+    padding: 20px; /* Relleno interno de 20px */
+    border-radius: 8px; /* Bordes redondeados */
+    margin-top: 20px; /* Espacio superior */
+    color: white; /* Texto blanco */
+}
+
+/* Apariencia de las tablas */
+table {
+    width: 100%; /* Ocupa todo el ancho disponible */
+    border-collapse: collapse; /* Bordes colapsados */
+    background-color: #2c2c2c; /* Fondo gris oscuro */
+    border-radius: 8px; /* Bordes redondeados */
+    overflow: hidden; /* Ocultar desbordes */
+    table-layout: auto; /* Celdas con ancho fijo */
+}
+
+/* Ajustes para el ancho de las columnas de la tabla */
+
+/* Ajustar el ancho de la columna 'nombre' */
+table th:nth-child(1), table td:nth-child(1) {
+    width: auto; /* Deja que se ajuste automáticamente */
+    white-space: normal; /* Permitir que el contenido se ajuste en varias líneas si es necesario */
+}
+
+/* Ajustar el ancho de la columna 'apellidos' */
+table th:nth-child(2), table td:nth-child(2) {
+    width: auto; /* Deja que se ajuste automáticamente */
+    white-space: normal; /* Permitir que el contenido se ajuste en varias líneas si es necesario */
+}
+
+/* Ajustar el ancho de la columna 'sexo' */
+table th:nth-child(4), table td:nth-child(4) {
+    width: auto; /* Deja que se ajuste automáticamente */
+    white-space: normal; /* Permitir que el contenido se ajuste en varias líneas si es necesario */
+}
+
+/* Ajustar el ancho de la columna 'teléfono' */
+table th:nth-child(5), table td:nth-child(5) {
+    width: auto; /* Deja que se ajuste automáticamente */
+    white-space: normal; /* Permitir que el contenido se ajuste en varias líneas si es necesario */
+}
+
+/* Ajustar el ancho de la columna 'correo electrónico' */
+table th:nth-child(6), table td:nth-child(6) {
+    width: auto; /* Permitir que tome el espacio necesario */
+    word-break: break-word; /* Dividir en líneas si es necesario */
+    white-space: normal; /* Permitir que se rompa en varias líneas */
+}
+
+/* Ajustar el ancho de la columna 'departamento' */
+table th:nth-child(7), table td:nth-child(7) {
+    width: auto; /* Permitir que esta columna sea flexible */
+    word-break: break-word; /* Permitir dividir en varias líneas */
+}
+
+/* Corregir el comportamiento del desbordamiento en la tabla */
+table {
+    table-layout: auto; /* Permitir que las columnas ajusten su tamaño según el contenido */
+}
+
+thead th {
+    background-color: #e573fe; /* Fondo rosado */
+    color: white; /* Texto blanco */
+    text-align: left; /* Alinear texto a la izquierda */
+}
+
+tbody tr {
+    border-bottom: 1px solid #444; /* Línea gris entre filas */
+}
+
+tbody tr:hover {
+    background-color: #3a3a3a; /* Cambio de fondo al pasar el cursor */
+    transition: background-color 0.3s ease; /* Transición suave para el color de fondo */
+}
+
+/* Estilos para los botones de acción en la tabla */
+.action-buttons {
+    display: flex; /* Uso de flexbox */
+    justify-content: space-between; /* Espaciado entre botones */
+    gap: 10px; /* Separación entre botones */
+}
+
+.action-buttons button {
+    flex: 1; /* Los botones ocupan el espacio disponible */
+    min-width: 80px; /* Ancho mínimo de 80px */
+    padding: 10px; /* Relleno interno de los botones */
+}
+
+/* Estilos para el modal de notas */
+.modal {
+    display: none; /* Oculta el modal por defecto */
+    position: fixed; /* Posición fija sobre la página */
+    z-index: 1; /* Capas encima de otros elementos */
+    left: 0; /* Alineación a la izquierda */
+    top: 0; /* Alineación en la parte superior */
+    width: 100%; /* Ancho completo */
+    height: 100%; /* Altura completa */
+    overflow: auto; /* Permite el desplazamiento */
+    background-color: rgba(0,0,0,0.4); /* Fondo semi-transparente oscuro */
+    padding-top: 60px; /* Espaciado superior */
+}
+
+.modal-content {
+    background-color: #fefefe; /* Fondo blanco */
+    margin: 5% auto; /* Centrado automático con margen superior */
+    padding: 20px; /* Relleno interno */
+    border: 1px solid #888; /* Borde gris */
+    width: 80%; /* Ancho del 80% */
+    max-width: 500px; /* Ancho máximo de 500px */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+.close {
+    color: #aaa; /* Color gris claro */
+    float: right; /* Alineación a la derecha */
+    font-size: 28px; /* Tamaño grande de fuente */
+    font-weight: bold; /* Negrita */
+}
+
+.close:hover,
+.close:focus {
+    color: black; /* Cambia el color a negro al pasar el cursor */
+    text-decoration: none; /* Sin subrayado */
+    cursor: pointer; /* Cambia el cursor a mano */
+}
+
+#noteText {
+    width: 100%; /* Ocupa el ancho completo */
+    height: 150px; /* Altura de 150px */
+    margin-bottom: 10px; /* Espaciado inferior */
+}
+
+#saveNoteButton {
+    background-color: #e573fe; /* Fondo rosado */
+    color: white; /* Texto blanco */
+    border: none; /* Sin bordes */
+    padding: 10px 20px; /* Relleno interno del botón */
+    cursor: pointer; /* Cambia el cursor a mano */
+    border-radius: 4px; /* Bordes redondeados */
+}
+
+#saveNoteButton:hover {
+    background-color: #7C3E8A; /* Cambia el fondo al pasar el cursor */
+}
+
+.note {
+    background-color: #444; /* Fondo gris oscuro */
+    padding: 10px; /* Relleno interno */
+    margin-bottom: 10px; /* Espaciado inferior */
+    border-radius: 4px; /* Bordes redondeados */
+}
+
+.note span {
+    display: block; /* Muestra los span como bloques */
+    color: #ccc; /* Color de texto gris claro */
+    font-size: 0.9em; /* Tamaño de fuente pequeño */
+    margin-top: 5px; /* Espaciado superior */
+    text-align: right; /* Alineación del texto a la derecha */
+}
+
+/* Enlaces */
+.link-blanco {
+    color: white; /* Texto blanco */
+    text-decoration: underline; /* Subrayado */
+    font-weight: bold; /* Negrita */
+}
+
+/* Estilos para el pie de página */
+footer {
+    background-color: #222; /* Fondo gris oscuro */
+    color: #bbb; /* Texto gris claro */
+    padding: 20px 0; /* Espaciado vertical */
+    text-align: center; /* Alineación centrada */
+    margin-top: 20px; /* Espaciado superior */
+    font-size: 14px; /* Tamaño de fuente pequeño */
+    display: flex; /* Uso de flexbox */
+    flex-direction: column; /* Colocar los elementos en columna */
+    align-items: center; /* Centrar los elementos */
+    gap: 10px; /* Espaciado entre elementos */
+}
+
+footer a {
+    color: #e573fe; /* Enlaces con color rosado */
+    text-decoration: none; /* Sin subrayado por defecto */
+    margin: 0 10px; /* Espaciado horizontal */
+}
+
+footer a:hover {
+    text-decoration: underline; /* Añadir subrayado al pasar el cursor */
+    color: #7C3E8A; /* Cambia el color al pasar el cursor */
+}
+
+/* Animación de aparición suave en la carga de la página */
+.fade-in {
+    opacity: 0; /* Comienza invisible */
+    animation: fadeInAnimation 1.5s forwards ease-in-out; /* Animación de desvanecimiento */
+}
+
+@keyframes fadeInAnimation {
+    to {
+        opacity: 1; /* Termina con opacidad completa */
+    }
+}
+
+/* Estilo general del cuerpo */
+body {
+    font-family: Arial, sans-serif; /* Tipo de fuente */
+    background-color: #1c1c1c; /* Fondo oscuro */
+    color: #ffffff; /* Texto blanco */
+    font-size: 16px; /* Tamaño de fuente */
+    margin: 0; /* Sin margen */
+    padding: 0; /* Sin relleno */
+}
+
+/* Contenedor principal */
+.container {
+    width: 90%; /* Ancho del 90% */
+    margin: 0 auto; /* Centrado horizontal */
+    padding-top: 20px; /* Espacio superior de 20px */
+    background-color: #333333; /* Fondo gris oscuro */
+    padding: 20px; /* Relleno de 20px */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+}
+
+/* Estilos para encabezados */
+h1, h2 {
+    text-align: center; /* Centrado del texto */
+    color: #ffffff; /* Texto blanco */
+    margin-bottom: 15px; /* Espaciado inferior */
+    margin-top: 15px; /* Espaciado superior */
+}
+
+/* Estilos generales para los botones */
+button {
+    background-color: #E573FE; /* Fondo rosado */
+    color: white; /* Texto blanco */
+    border: none; /* Sin borde */
+    padding: 12px 24px; /* Relleno interno */
+    cursor: pointer; /* Cambia el cursor a mano */
+    margin-right: 10px; /* Espacio derecho */
+    margin-bottom: 10px; /* Espacio inferior */
+    border-radius: 10px; /* Bordes redondeados */
+    font-size: 16px; /* Tamaño de fuente */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+    transition: transform 0.3s ease, background-color 0.3s ease; /* Transición suave */
+}
+
+/* Efecto al pasar el cursor sobre el botón */
+button:hover {
+    background-color: #7C3E8A; /* Cambio de color al pasar el cursor */
+    transform: scale(1.05); /* Aumenta el tamaño */
+}
+
+/* Efecto al hacer clic en el botón */
+button:active {
+    transform: scale(0.95); /* Disminuye el tamaño al hacer clic */
+}
+
+/* Estilos para inputs y selects */
+input, select {
+    padding: 12px; /* Relleno interno */
+    margin-bottom: 10px; /* Espaciado inferior */
+    border: 1px solid #ccc; /* Borde gris claro */
+    border-radius: 4px; /* Bordes redondeados */
+    background-color: #444444; /* Fondo gris oscuro */
+    color: white; /* Texto blanco */
+    font-size: 16px; /* Tamaño de fuente */
+}
+
+/* Estilos para los campos al enfocarse */
+input:focus, select:focus {
+    outline: none; /* Sin contorno exterior */
+    border-color: #e573fe; /* Borde rosado */
+}
+
+/* Estilos para las acciones */
+.actions, .search {
+    text-align: center; /* Alineación centrada */
+    margin-bottom: 20px; /* Espaciado inferior */
+}
+
+/* Estilo para la sección de búsqueda */
+.search {
+    display: flex; /* Uso de flexbox */
+    flex-direction: column; /* Elementos en columna */
+    align-items: center; /* Alineación centrada */
+}
+
+/* Estilo para el input dentro de la búsqueda */
+.search input {
+    flex: 1; /* Ocupa todo el espacio disponible */
+    margin-right: 10px; /* Espacio derecho */
+    background-color: #444444; /* Fondo gris oscuro */
+    color: white; /* Texto blanco */
+}
+
+/* Estilo para los botones de búsqueda */
+.search-buttons {
+    display: flex; /* Uso de flexbox */
+    justify-content: center; /* Centrado */
+    width: 100%; /* Ocupa todo el ancho disponible */
+    max-width: 100px; /* Ancho máximo de 100px */
+    margin-top: 10px; /* Espaciado superior */
+    flex-direction: row; /* Elementos en fila */
+    gap: 10px; /* Espacio entre botones */
+}
+
+/* Estilo del contenedor de enlace generado */
+.link-container {
+    display: none; /* Oculta el contenedor */
+    flex-direction: column; /* Coloca los elementos en columna */
+    align-items: center; /* Alinea al centro */
+    margin-top: 10px; /* Espaciado superior */
+    width: 100%; /* Ancho completo */
+}
+
+.link-container.show {
+    display: flex; /* Muestra el contenedor con flexbox */
+}
+
+.generated-link {
+    background-color: #444444; /* Fondo gris oscuro */
+    color: white; /* Texto blanco */
+    padding: 10px; /* Relleno interno */
+    border-radius: 8px; /* Bordes redondeados */
+    margin-bottom: 10px; /* Espaciado inferior */
+    word-wrap: break-word; /* Ajusta el texto largo */
+    text-align: center; /* Texto centrado */
+    max-width: 100%; /* Ocupa todo el ancho disponible */
+}
+
+.copy-button {
+    display: none; /* Oculta el botón */
+    background-color: #7C3E8A; /* Fondo morado */
+    color: white; /* Texto blanco */
+    border: none; /* Sin borde */
+    padding: 10px 20px; /* Relleno interno */
+    cursor: pointer; /* Cambia el cursor a mano */
+    border-radius: 4px; /* Bordes redondeados */
+    font-size: 14px; /* Tamaño de fuente */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+    transition: background-color 0.3s ease; /* Transición suave */
+}
+
+.copy-button.show {
+    display: inline-block; /* Muestra el botón en línea */
+}
+
+.copy-button:hover {
+    background-color: #E573FE; /* Fondo rosado al pasar el cursor */
+}
+
+/* Estilos de la tabla */
+.results {
+    max-height: 70vh; /* Altura máxima del 70% */
+    overflow-y: auto; /* Desplazamiento vertical si es necesario */
+    background-color: #333333; /* Fondo gris oscuro */
+    padding: 15px; /* Relleno interno */
+    border-radius: 8px; /* Bordes redondeados */
+    margin-top: 20px; /* Espaciado superior */
+}
+
+/* Estilos para la tabla */
+table {
+    width: 100%; /* Ocupa todo el ancho disponible */
+    border-collapse: collapse; /* Colapsa los bordes */
+    background-color: #2c2c2c; /* Fondo gris oscuro */
+    border-radius: 8px; /* Bordes redondeados */
+    overflow: hidden; /* Ocultar desbordes */
+}
+
+/* Estilos para los encabezados de la tabla */
+thead th {
+    background-color: #e573fe; /* Fondo rosado */
+    color: white; /* Texto blanco */
+    padding: 12px; /* Relleno de 12px */
+    font-size: 16px; /* Tamaño de fuente */
+    text-align: left; /* Texto alineado a la izquierda */
+}
+
+/* Estilos de botones */
+.icon-button {
+    background-color: #E573FE; /* Fondo rosado */
+    color: white; /* Texto blanco */
+    border: none; /* Sin borde */
+    padding: 8px; /* Relleno interno */
+    cursor: pointer; /* Cambia el cursor a mano */
+    border-radius: 5px; /* Bordes redondeados */
+    font-size: 16px; /* Tamaño de fuente */
+    display: inline-flex; /* Elementos en línea con flexbox */
+    align-items: center; /* Alineación centrada verticalmente */
+    justify-content: center; /* Alineación centrada horizontalmente */
+    width: 40px; /* Ancho fijo de 40px */
+    height: 40px; /* Altura fija de 40px */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Transición suave */
+    margin-right: 5px; /* Espaciado derecho */
+}
+
+.icon-button i {
+    font-size: 18px; /* Tamaño del icono */
+}
+
+.icon-button:hover {
+    background-color: #7C3E8A; /* Cambio de fondo al pasar el cursor */
+    transform: scale(1.1); /* Aumenta el tamaño */
+}
+
+.icon-button:active {
+    transform: scale(0.95); /* Reduce el tamaño al hacer clic */
+}
+
+.action-buttons {
+    display: flex; /* Uso de flexbox */
+    justify-content: flex-end; /* Alinea a la derecha */
+    gap: 5px; /* Espaciado entre botones */
+}
+
+/* Ajustes responsivos para pantallas pequeñas */
+@media (max-width: 1280px) {
+    /* Asegurarse de que los botones se apilen en dispositivos móviles */
+    .action-buttons {
+        justify-content: flex-end; /* Alineación a la derecha */
+        gap: 5px; /* Espacio entre botones */
+        width: 48%; /* Ancho reducido al 48% */
+        margin: 0; /* Sin margen */
+    }
+
+    .icon-button {
+            width: 30px; /* Ancho reducido a 30px */
+            height: 30px; /* Altura reducida a 30px */
+            font-size: 12px; /* Tamaño de fuente reducido */
+        }
+
+    .container {
+        width: auto; /* Ancho automático */
+        padding: 20px; /* Relleno interno */
+    }
+
+    .results {
+        max-height: 50vh; /* Altura máxima del 50% */
+        overflow-y: auto; /* Desplazamiento vertical si es necesario */
+        background-color: #333333; /* Fondo gris oscuro */
+        padding: 10px; /* Relleno interno */
+        border-radius: 8px; /* Bordes redondeados */
+        margin-top: 20px; /* Espaciado superior */
+    }
+
+    table {
+        width: 100%; /* Ancho completo */
+        border-collapse: collapse; /* Colapsa los bordes */
+    }
+
+    thead {
+        display: none; /* Oculta el encabezado en móviles */
+    }
+
+    tbody tr {
+        border-bottom: 1px solid #333; /* Línea inferior de las filas */
+        margin-bottom: 10px; /* Espaciado inferior */
+    }
+
+    tbody td {
+        display: block; /* Muestra las celdas como bloques */
+        text-align: end; /* Texto alineado a la derecha */
+        padding: 10px; /* Relleno interno */
+        border-bottom: 1px solid #444; /* Línea inferior */
+        position: relative; /* Posiciona de manera relativa */
+        padding-left: 50%; /* Relleno a la izquierda */
+        white-space: normal; /* Permite que el texto ocupe varias líneas si es necesario */
+        overflow: visible; /* Evita el desbordamiento del texto */
+        text-overflow: clip; /* Evitar truncamiento con puntos suspensivos */
+    }
+
+    tbody td::before {
+        content: attr(data-label); /* Muestra el atributo data-label */
+        position: absolute; /* Posiciona el contenido absolutamente */
+        left: 10px; /* Posición izquierda */
+        width: 45%; /* Ancho del 45% */
+        padding-right: 10px; /* Relleno derecho */
+        white-space: nowrap; /* Evita que el texto se desborde */
+        text-align: left; /* Alineación a la izquierda */
+        font-weight: bold; /* Negrita */
+    }
+
+    tbody td .action-buttons {
+        justify-content: flex-end; /* Alinea los botones a la derecha */
+    }
+
+    tbody td button {
+        padding: 5px 10px; /* Relleno interno */
+        cursor: pointer; /* Cambia el cursor a mano */
+    }
+
+    tbody td button:hover {
+        background-color: #7C3E8A; /* Cambio de fondo al pasar el cursor */
+    }
+
+    /* Ajustar tamaño del botón "Ver registros de usuarios" y centrar */
+    #viewLogsButton {
+        width: 80%; /* Ancho reducido al 80% */
+        margin: 10px auto; /* Centrado automático */
+    }
+}
+
+/* Estilos para el modal */
+.modal {
+    display: none; /* Oculta el modal por defecto */
+    position: fixed; /* Posición fija */
+    z-index: 1; /* Capas encima de otros elementos */
+    left: 0; /* Alineado a la izquierda */
+    top: 0; /* Alineado en la parte superior */
+    width: 100%; /* Ancho completo */
+    height: 100%; /* Altura completa */
+    overflow: auto; /* Permite desplazamiento */
+    background-color: rgba(0,0,0,0.4); /* Fondo oscuro semi-transparente */
+    padding-top: 60px; /* Espaciado superior */
+}
+
+.modal-content {
+    background-color: #45224D; /* Fondo morado oscuro */
+    margin: 18% auto; /* Centrado automático */
+    padding: 1px; /* Relleno mínimo */
+    border: 1px solid #888; /* Borde gris */
+    width: 90%; /* Ancho del 90% */
+    max-width: 500px; /* Ancho máximo de 500px */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+.close {
+    color: #aaa; /* Texto gris claro */
+    float: right; /* Alineación a la derecha */
+    font-size: 40px; /* Tamaño grande de fuente */
+    font-weight: bold; /* Negrita */
+    margin-right: 15px; /* Espaciado derecho */
+    margin-top: 0px; /* Sin espaciado superior */
+}
+
+.close:hover,
+.close:focus {
+    color: black; /* Texto negro al pasar el cursor */
+    text-decoration: none; /* Sin subrayado */
+    cursor: pointer; /* Cambia el cursor a mano */
+}
+
+#noteText {
+    width: 98%; /* Ancho del 98% */
+    height: 100px; /* Altura de 100px */
+    margin-bottom: 10px; /* Espaciado inferior */
+}
+
+#saveNoteButton {
+    background-color: #e573fe; /* Fondo rosado */
+    color: white; /* Texto blanco */
+    border: none; /* Sin borde */
+    padding: 10px 20px; /* Relleno interno */
+    cursor: pointer; /* Cambia el cursor a mano */
+    border-radius: 4px; /* Bordes redondeados */
+    margin-bottom: 10px; /* Espaciado inferior */
+}
+
+/* Efecto al pasar el cursor sobre el botón de guardar */
+#saveNoteButton:hover {
+    background-color: #7C3E8A; /* Cambio de fondo al pasar el cursor */
+}
+
+/* Estilo de las notas */
+.note {
+    background-color: #444; /* Fondo gris oscuro */
+    padding: 10px; /* Relleno interno */
+    margin-bottom: 10px; /* Espaciado inferior */
+    border-radius: 4px; /* Bordes redondeados */
+}
+
+.note span {
+    display: block; /* Muestra los span como bloques */
+    color: #ccc; /* Texto gris claro */
+    font-size: 0.9em; /* Tamaño de fuente pequeño */
+    margin-top: 5px; /* Espaciado superior */
+    text-align: right; /* Alineación del texto a la derecha */
+}
+
+/* Estilos del pie de página */
+footer {
+    background-color: #222; /* Fondo gris oscuro */
+    color: #bbb; /* Texto gris claro */
+    padding: 20px 0; /* Espaciado vertical */
+    text-align: center; /* Alineación centrada */
+    margin-top: 20px; /* Espaciado superior */
+    font-size: 14px; /* Tamaño de fuente pequeño */
+    display: flex; /* Uso de flexbox */
+    flex-direction: column; /* Colocar los elementos en columna */
+    align-items: center; /* Alineación centrada */
+    gap: 10px; /* Espaciado entre elementos */
+}
+
+footer a {
+    color: #e573fe; /* Enlaces rosados */
+    text-decoration: none; /* Sin subrayado por defecto */
+    margin: 0 10px; /* Espaciado lateral */
+}
+
+footer a:hover {
+    text-decoration: underline; /* Subrayado al pasar el cursor */
+    color: #7C3E8A; /* Cambio de color al pasar el cursor */
+}
+
+/* Estilos del encabezado */
+header {
+    position: fixed; /* Posición fija */
+    top: 0; /* Parte superior de la página */
+    width: 100%; /* Ancho completo */
+    background-color: #1c1c1c; /* Fondo oscuro */
+    display: flex; /* Uso de flexbox */
+    align-items: center; /* Alineación vertical */
+    justify-content: center; /* Alineación centrada */
+    padding: 10px 0; /* Espaciado vertical */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* Sombra inferior */
+    z-index: 1000; /* Encima de otros elementos */
+    text-align: left; /* Alineación a la izquierda */
+}
+
+/* Estilo para el logo en la cabecera */
+header .logo {
+    height: 100px; /* Altura del logo */
+    width: auto; /* Ajuste proporcional del ancho */
+    max-width: 100%; /* Ancho máximo del 100% */
+    object-fit: contain; /* Ajuste del contenido */
+    margin: 0 auto; /* Centrado automático */
+    display: block; /* Muestra el logo como bloque */
+}
+
+/* Estilo para el título en la cabecera */
+header h1 {
+    color: #ffffff; /* Texto blanco */
+    margin: 0; /* Sin margen */
+    font-size: 24px; /* Tamaño de fuente */
+}
+
+/* Ajustes del contenedor para evitar superposición con el encabezado */
+.container {
+    padding-top: 110px; /* Espaciado superior para evitar superposición */
+}
+
+/* Estilo del logo en el pie de página */
+.footer-logo {
+    height: 60px; /* Altura del logo */
+    width: auto; /* Ancho proporcional */
+    display: block; /* Muestra el logo como bloque */
+    margin: 0 auto; /* Centrado */
+    padding-bottom: 10px; /* Espaciado inferior */
+}
+
+
+styles-departamentos.css
+
+/* Establezco el fondo oscuro y el color del texto */
+body {
+    background-color: #2e2e2e;
+    color: white;
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Estilo para el título principal */
+h1 {
+    color: #fff;
+    margin-bottom: 20px;
+    font-size: 2rem;
+    text-transform: uppercase;
+}
+
+/* Estilos generales para los botones */
+button {
+    background-color: #E573FE; /* Color de fondo púrpura */
+    color: white; /* Color del texto blanco */
+    border: none; /* Eliminar bordes */
+    padding: 12px 24px; /* Espaciado interior del botón */
+    cursor: pointer; /* Mostrar el puntero de clic */
+    margin-right: 10px; /* Espaciado a la derecha */
+    margin-bottom: 10px; /* Espaciado inferior */
+    border-radius: 8px; /* Bordes redondeados de 8px */
+    font-size: 16px; /* Tamaño de la fuente del botón */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave en el botón */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Transiciones suaves */
+}
+
+/* Estilos del header */
+header {
+    display: flex; /* Usar flexbox para centrar elementos */
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Centrar verticalmente */
+    width: 100%; /* Ocupa todo el ancho disponible */
+    background-color: #1c1c1c; /* Fondo oscuro */
+    padding: 10px 0; /* Relleno superior e inferior */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* Sombra en el header */
+    z-index: 1000; /* Colocación superior */
+}
+
+/* Estilo para el logo */
+header .logo {
+    height: 100px; /* Altura del logo */
+    width: auto; /* Ajustar el ancho automáticamente */
+    max-width: 100%; /* No exceder el 100% del contenedor */
+    object-fit: contain; /* Mantener las proporciones del logo */
+    margin: 0 auto; /* Centrar el logo */
+    display: block; /* Mostrar como bloque */
+}
+
+/* Espacio entre el formulario y los elementos siguientes */
+form {
+    margin-bottom: 20px;
+}
+
+/* Estilo para el contenedor del input y el botón */
+.input-container {
+    display: flex; /* Mantener el input y el botón en una línea horizontal */
+    flex-direction: column; /* Para móviles, pon los elementos uno debajo del otro */
+    gap: 15px; /* Espaciado entre el campo de texto y el botón */
+    align-items: center; /* Centrar ambos elementos */
+}
+
+/* Estilo del campo de texto */
+input[type="text"] {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #6445d1;
+    background-color: #2e2e2e;
+    color: white;
+    margin-bottom: 15px; /* Ajusto margen inferior para separar del botón */
+}
+
+/* Estilo del botón de enviar y de los botones de eliminar */
+button[type="submit"], .eliminar-btn {
+    background-color: #d160d1;
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+/* Efecto hover en los botones */
+button[type="submit"]:hover, .eliminar-btn:hover {
+    background-color: #be50c1;
+}
+
+/* Defino el ancho de la tabla y alineación */
+table {
+    width: 80%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    border-radius: 3px;
+}
+
+/* Espacio entre las celdas de la tabla */
+th, td {
+    padding: 10px;
+    border: 1px solid #E573FE;
+    color: white;
+}
+
+/* Estilo de las cabeceras de la tabla */
+th {
+    background-color: #E573FE;
+    text-transform: uppercase;
+}
+
+/* Color de fondo de las celdas */
+td {
+    background-color: #444444;
+}
+
+/* Estilo para el botón de eliminar */
+.eliminar-btn {
+    background-color: #d160d1;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+/* Efecto hover en el botón de eliminar */
+.eliminar-btn:hover {
+    background-color: #be50c1;
+}
+
+/* Estilos para el pie de página */
+footer {
+    background-color: #222; /* Fondo gris oscuro */
+    color: #bbb; /* Texto gris claro */
+    padding: 20px 0; /* Espaciado superior e inferior */
+    text-align: center; /* Centrar texto */
+    margin-top: 20px; /* Espaciado superior */
+    font-size: 14px; /* Tamaño de la fuente */
+    display: flex; /* Flexbox para organizar el contenido */
+    flex-direction: column; /* Disposición en columna */
+    align-items: center; /* Centrar horizontalmente */
+    gap: 10px; /* Espaciado entre elementos */
+}
+
+footer a {
+    color: #e573fe; /* Texto púrpura */
+    text-decoration: none; /* Eliminar subrayado */
+    margin: 0 10px; /* Espaciado horizontal */
+}
+
+footer a:hover {
+    text-decoration: underline; /* Subrayar al pasar el ratón */
+    color: #7C3E8A; /* Cambiar el color del texto */
+}
+
+/* Animación de aparición suave en la carga de la página */
+.fade-in {
+    opacity: 0; /* Comenzar con opacidad 0 */
+    animation: fadeInAnimation 1.5s forwards ease-in-out; /* Animación de entrada */
+}
+
+@keyframes fadeInAnimation {
+    to {
+        opacity: 1; /* Llegar a opacidad 1 */
+    }
+}
+
+/* Estilo para el logo en el footer */
+.footer-logo {
+    height: 60px; /* Altura del logo */
+    width: auto; /* Ajustar el ancho automáticamente */
+    display: block; /* Mostrar como bloque */
+    margin: 0 auto; /* Centrar el logo */
+    padding-bottom: 10px; /* Espaciado inferior */
+}
+
+/* Ajustes específicos para dispositivos móviles */
+@media (max-width: 767px) {
+
+    input[type="text"] {
+        margin-bottom: 15px; /* Ajusta la separación según prefieras */
+        width: 100%; /* Asegura que el campo de texto ocupe todo el ancho */
+        box-sizing: border-box; /* Evita que el padding o border afecte el ancho total */
+    }
+
+    button {
+        width: 100%; /* Botones más grandes en móviles */
+        margin-bottom: 20px; /* Mantén el espacio inferior en móviles */
+    }
+
+    form {
+        padding: 0 10px; /* Añade un poco de relleno lateral para evitar que los elementos se peguen a los bordes */
+    }
+}
+
+
+

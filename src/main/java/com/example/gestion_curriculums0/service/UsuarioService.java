@@ -64,6 +64,12 @@ public class UsuarioService {
         return usuarioRepository.findByNombreUsuario(nombreUsuario);
     }
 
+    // Método para buscar un usuario por su ID
+    public Optional<Usuario> findById(Long id) {
+        return usuarioRepository.findById(id);
+    }
+
+
     // Este método programado se ejecuta cada 10 minutos para eliminar usuarios inactivos.
     @Scheduled(fixedRate = 600000) // 600000 ms = 10 minutos
     @Transactional

@@ -55,7 +55,7 @@ public class DepartamentoController {
 
         // Creo una nueva entidad Departamento a partir del DTO y asigno el usuario
         Departamento departamento = new Departamento();
-        departamento.setNombre(departamentoDTO.getNombre());
+        departamento.setNombre(departamentoDTO.getNombre().toLowerCase());
         departamento.setUsuario(usuario.get());
 
         // Guardo el nuevo departamento y devuelvo el DTO correspondiente

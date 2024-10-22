@@ -53,13 +53,12 @@
         <input type="text" id="telefono" placeholder="Teléfono" required pattern="^\+?[0-9]{9,15}$" title="El teléfono solo puede contener números y opcionalmente el signo + al inicio.">
         <input type="email" id="email" placeholder="Email" required>
 
-        <!-- Nuevo checkbox para la aceptación de términos -->
-        <div class="checkbox-container">
-            <input type="checkbox" id="aceptarTerminos" required>
-            <label for="aceptarTerminos">
-                Acepto <a href="terminos.html" target="_blank">Términos de Uso</a> y el <a href="privacidad.html" target="_blank">Aviso de Privacidad</a>.
-            </label>
+        <!-- Asegura que el checkbox esté alineado correctamente debajo del texto -->
+        <p style="color: #ffffff;">Acepto los <a href="terminos.html" class="link-blanco">Términos de Uso</a> y el <a href="privacidad.html" class="link-blanco">Aviso de Privacidad</a>.</p>
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="aceptarTerminos" required>
         </div>
+
 
         <button type="submit">Subir</button>
     </form>

@@ -180,6 +180,13 @@
             <artifactId>itextpdf</artifactId>
             <version>5.5.13.2</version>
         </dependency>
+
+        <!-- Esta dependencia integra Thymeleaf con Spring Boot, permitiendo usar plantillas HTML para generar vistas dinámicas en la aplicación -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
     </dependencies>
 
     <!-- Repositorios donde Maven busca las dependencias -->

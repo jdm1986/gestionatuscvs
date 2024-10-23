@@ -43,8 +43,11 @@
         const email = document.getElementById('email').value;
         const message = document.getElementById('message').value;
 
+        // Construyo la URL completa usando el valor correcto de la base URL
+        const appBaseUrl = window.location.origin; // Esto tomará la base de la URL actual
+
         // Realizo una solicitud POST al backend con los datos del formulario en formato JSON
-        const response = await fetch('${app.baseUrl}/contact', {
+        const response = await fetch(`${appBaseUrl}/contact`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -1,7 +1,11 @@
-/* Esta clase gestiona la lógica relacionada con los registros de actividad (logs) de los usuarios.
-   Permite guardar nuevas entradas de logs y consultar todos los logs registrados.*/
-
+// UserLogService.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.service;
+
+/*
+   Esta clase gestiona la lógica relacionada con los registros de actividad (logs) de los usuarios.
+   Me encargo de guardar nuevas entradas de logs y de consultar todos los logs registrados en la base de datos.
+*/
 
 import com.example.gestion_curriculums0.model.UserLog;
 import com.example.gestion_curriculums0.repository.UserLogRepository;
@@ -16,7 +20,7 @@ import java.util.List;
 public class UserLogService {
 
     @Autowired
-    private UserLogRepository userLogRepository;
+    private UserLogRepository userLogRepository; // Inyecto el repositorio para gestionar los logs en la base de datos
 
     // Guardo una nueva entrada de log con el nombre de usuario y la acción realizada
     public void saveUserLog(String username, String action) {
@@ -29,7 +33,7 @@ public class UserLogService {
 
     // Obtengo todos los logs, ordenados de manera descendente por la marca de tiempo (timestamp)
     public List<UserLog> getAllLogs() {
-        return userLogRepository.findAll(Sort.by(Sort.Direction.DESC, "timestamp"));
         // Retorno los logs más recientes primero
+        return userLogRepository.findAll(Sort.by(Sort.Direction.DESC, "timestamp"));
     }
 }

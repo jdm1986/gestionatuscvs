@@ -1,18 +1,18 @@
 /* Establezco el fondo oscuro y el color del texto */
 body {
-    background-color: #2e2e2e;
-    color: white;
-    font-family: 'Arial', sans-serif;
-    text-align: center;
-    padding: 20px;
+    background-color: #2e2e2e; /* Color de fondo oscuro */
+    color: white; /* Texto en blanco */
+    font-family: 'Arial', sans-serif; /* Fuente principal */
+    text-align: center; /* Centrar el texto */
+    padding: 20px; /* Relleno de 20px */
 }
 
 /* Estilo para el título principal */
 h1 {
-    color: #fff;
-    margin-bottom: 20px;
-    font-size: 2rem;
-    text-transform: uppercase;
+    color: #fff; /* Texto en blanco */
+    margin-bottom: 20px; /* Espaciado inferior de 20px */
+    font-size: 2rem; /* Tamaño de la fuente del título */
+    text-transform: uppercase; /* Convertir el texto a mayúsculas */
 }
 
 /* Estilos generales para los botones */
@@ -54,81 +54,81 @@ header .logo {
 
 /* Espacio entre el formulario y los elementos siguientes */
 form {
-    margin-bottom: 20px;
+    margin-bottom: 20px; /* Espaciado inferior de 20px */
 }
 
 /* Estilo para el contenedor del input y el botón */
 .input-container {
     display: flex; /* Mantener el input y el botón en una línea horizontal */
-    flex-direction: column; /* Para móviles, pon los elementos uno debajo del otro */
+    flex-direction: column; /* Para móviles, poner los elementos uno debajo del otro */
     gap: 15px; /* Espaciado entre el campo de texto y el botón */
     align-items: center; /* Centrar ambos elementos */
 }
 
 /* Estilo del campo de texto */
 input[type="text"] {
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #6445d1;
-    background-color: #2e2e2e;
-    color: white;
-    margin-bottom: 15px; /* Ajusto margen inferior para separar del botón */
+    padding: 10px; /* Espaciado interior de 10px */
+    border-radius: 5px; /* Bordes redondeados de 5px */
+    border: 1px solid #6445d1; /* Borde púrpura oscuro */
+    background-color: #2e2e2e; /* Fondo oscuro */
+    color: white; /* Texto en blanco */
+    margin-bottom: 15px; /* Espaciado inferior de 15px */
 }
 
 /* Estilo del botón de enviar y de los botones de eliminar */
 button[type="submit"], .eliminar-btn {
-    background-color: #d160d1;
-    border: none;
-    padding: 10px 20px;
-    color: white;
-    cursor: pointer;
-    font-weight: bold;
-    border-radius: 5px;
+    background-color: #d160d1; /* Fondo púrpura oscuro */
+    border: none; /* Sin borde */
+    padding: 10px 20px; /* Relleno interior */
+    color: white; /* Texto blanco */
+    cursor: pointer; /* Mostrar el cursor de clic */
+    font-weight: bold; /* Texto en negrita */
+    border-radius: 5px; /* Bordes redondeados */
 }
 
 /* Efecto hover en los botones */
 button[type="submit"]:hover, .eliminar-btn:hover {
-    background-color: #be50c1;
+    background-color: #be50c1; /* Cambiar a un tono más oscuro al pasar el cursor */
 }
 
 /* Defino el ancho de la tabla y alineación */
 table {
-    width: 80%;
-    margin: 0 auto;
-    border-collapse: collapse;
-    border-radius: 3px;
+    width: 80%; /* Ancho de la tabla al 80% del contenedor */
+    margin: 0 auto; /* Centrar la tabla horizontalmente */
+    border-collapse: collapse; /* Colapsar bordes */
+    border-radius: 3px; /* Bordes redondeados */
 }
 
 /* Espacio entre las celdas de la tabla */
 th, td {
-    padding: 10px;
-    border: 1px solid #E573FE;
-    color: white;
+    padding: 10px; /* Espaciado interior */
+    border: 1px solid #E573FE; /* Borde púrpura */
+    color: white; /* Texto en blanco */
 }
 
 /* Estilo de las cabeceras de la tabla */
 th {
-    background-color: #E573FE;
-    text-transform: uppercase;
+    background-color: #E573FE; /* Fondo púrpura */
+    text-transform: uppercase; /* Convertir el texto a mayúsculas */
 }
 
 /* Color de fondo de las celdas */
 td {
-    background-color: #444444;
+    background-color: #444444; /* Fondo gris oscuro */
 }
 
 /* Estilo para el botón de eliminar */
 .eliminar-btn {
-    background-color: #d160d1;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
+    background-color: #d160d1; /* Fondo púrpura oscuro */
+    padding: 5px 10px; /* Espaciado interior */
+    border: none; /* Sin borde */
+    border-radius: 3px; /* Bordes redondeados */
+    cursor: pointer; /* Mostrar el cursor de clic */
 }
 
 /* Efecto hover en el botón de eliminar */
 .eliminar-btn:hover {
-    background-color: #be50c1;
+    background-color: #be50c1; /* Fondo púrpura más oscuro al pasar el cursor */
 }
 
 /* Estilos para el pie de página */
@@ -179,20 +179,18 @@ footer a:hover {
 
 /* Ajustes específicos para dispositivos móviles */
 @media (max-width: 767px) {
-
     input[type="text"] {
-        margin-bottom: 15px; /* Ajusta la separación según prefieras */
-        width: 100%; /* Asegura que el campo de texto ocupe todo el ancho */
-        box-sizing: border-box; /* Evita que el padding o border afecte el ancho total */
+        margin-bottom: 15px; /* Ajustar el espaciado inferior */
+        width: 100%; /* Ancho completo del input */
+        box-sizing: border-box; /* Asegurar que el padding no afecte el ancho */
     }
 
     button {
-        width: 100%; /* Botones más grandes en móviles */
-        margin-bottom: 20px; /* Mantén el espacio inferior en móviles */
+        width: 100%; /* Botones con ancho completo en móviles */
+        margin-bottom: 20px; /* Espaciado inferior adicional */
     }
 
     form {
-        padding: 0 10px; /* Añade un poco de relleno lateral para evitar que los elementos se peguen a los bordes */
+        padding: 0 10px; /* Añadir padding lateral para evitar bordes pegados */
     }
 }
-

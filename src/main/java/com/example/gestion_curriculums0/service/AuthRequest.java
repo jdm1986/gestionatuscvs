@@ -1,3 +1,5 @@
+// AuthRequest.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.service;
 
 /*
@@ -14,34 +16,42 @@ public class AuthRequest {
     // Getters y setters para acceder y modificar los valores
 
     public String getUsername() {
+        // Obtengo el nombre de usuario
         return username;
     }
 
     public void setUsername(String username) {
+        // Establezco el nombre de usuario
         this.username = username;
     }
 
     public String getPassword() {
+        // Obtengo la contraseña del usuario
         return password;
     }
 
     public void setPassword(String password) {
+        // Establezco la contraseña del usuario
         this.password = password;
     }
 
     public String getEmail() {
+        // Obtengo el correo electrónico del usuario
         return email;
     }
 
     public void setEmail(String email) {
+        // Establezco el correo electrónico del usuario
         this.email = email;
     }
 
     public String getRoles() {
+        // Obtengo los roles del usuario
         return roles;
     }
 
     public void setRoles(String roles) {
+        // Establezco los roles del usuario
         this.roles = roles;
     }
 }

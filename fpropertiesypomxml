@@ -1,151 +1,3 @@
-application.properties
-
-# Configuración de la base de datos
-# URL de la base de datos que se carga desde una variable de entorno
-spring.datasource.url=${DB_URL}
-
-# Nombre de usuario de la base de datos, cargado desde una variable de entorno
-spring.datasource.username=${DB_USERNAME}
-
-# Contraseña de la base de datos, también cargada desde una variable de entorno
-spring.datasource.password=${DB_PASSWORD}
-
-# Hibernate actualizará el esquema de la base de datos automáticamente en base a las entidades
-spring.jpa.hibernate.ddl-auto=update
-
-# Muestra las consultas SQL en la consola para propósitos de depuración
-spring.jpa.show-sql=true
-
-# Especifica el dialecto de Hibernate que corresponde a MySQL
-spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
-
-# Configuración para manejar archivos
-# Habilita el soporte de subida de archivos en la aplicación
-spring.servlet.multipart.enabled=true
-
-# Tamaño máximo permitido para un archivo subido: 50 MB
-spring.servlet.multipart.max-file-size=50MB
-
-# Tamaño máximo permitido para una solicitud que incluya varios archivos: 50 MB
-spring.servlet.multipart.max-request-size=50MB
-
-# Configuración de Hibernate
-# Deshabilita la visualización de las consultas SQL generadas por Hibernate
-spring.jpa.properties.hibernate.show_sql=false
-
-# Deshabilita el formateo de las consultas SQL en la consola
-spring.jpa.properties.hibernate.format_sql=false
-
-# Reducir la verbosidad del logging de Hibernate
-# Establece el nivel de registro de Hibernate en INFO, lo que significa que se mostrarán solo mensajes importantes
-logging.level.org.hibernate=INFO
-logging.level.org.hibernate.SQL=INFO
-logging.level.org.hibernate.type=INFO
-
-# Deshabilitar Open-in-view
-# Mejora el rendimiento al deshabilitar la técnica Open-in-view, que mantiene abierta la sesión de Hibernate durante toda la solicitud
-spring.jpa.open-in-view=false
-
-# Swagger
-# Habilita la documentación de la API con Swagger y la interfaz Swagger UI
-springdoc.api-docs.enabled=true
-springdoc.swagger-ui.enabled=true
-
-# Exponer todos los endpoints de gestión
-management.endpoints.web.exposure.include=*
-
-# Configuración de JWT (JSON Web Token)
-# La clave secreta utilizada para firmar y verificar los tokens JWT se carga desde una variable de entorno
-jwt.secret=${JWT_SECRET}
-
-# Logging
-# Configuración del nivel de registro de los componentes web de Spring para mostrar mensajes de depuración
-logging.level.org.springframework.web=DEBUG
-logging.level.org.springframework.security=DEBUG
-
-# Puerto del servidor
-# Puerto en el que se ejecuta la aplicación, cargado desde una variable de entorno o por defecto en el 8080
-server.port=${PORT:8080}
-
-# Permitir referencias circulares entre beans
-# Esto permite que los beans dependan unos de otros en una referencia circular si es necesario
-spring.main.allow-circular-references=true
-
-# Configuración del nivel de logging por defecto en la aplicación
-logging.level.root=INFO
-logging.level.com.example.gestion_curriculums0=DEBUG
-
-# Archivo de registro donde se guardarán los logs de la aplicación
-logging.file.name=gestion_curriculums0.log
-
-# Configuración de correo electrónico
-# Configura los detalles del servidor SMTP para enviar correos electrónicos
-spring.mail.host=smtp.gmail.com
-spring.mail.port=587
-spring.mail.username=gestionatuscv@gmail.com
-
-# La contraseña del correo electrónico es cargada desde una variable de entorno por seguridad
-spring.mail.password=${SPRING_MAIL_PASSWORD}
-
-# Autenticación SMTP habilitada
-spring.mail.properties.mail.smtp.auth=true
-
-# Habilita el uso de STARTTLS para conexiones seguras
-spring.mail.properties.mail.smtp.starttls.enable=true
-spring.mail.properties.mail.smtp.starttls.required=true
-
-# Configura tiempos de espera para la conexión y el envío de correos electrónicos
-spring.mail.properties.mail.smtp.connectiontimeout=5000
-spring.mail.properties.mail.smtp.timeout=5000
-spring.mail.properties.mail.smtp.writetimeout=5000
-
-# Nivel de registro para la funcionalidad de correo de Spring
-logging.level.org.springframework.mail=DEBUG
-
-# Configuración de HikariCP (pool de conexiones)
-# Número máximo de conexiones en el pool
-spring.datasource.hikari.maximum-pool-size=5
-
-# Número mínimo de conexiones inactivas en el pool
-spring.datasource.hikari.minimum-idle=2
-
-# Tiempo de inactividad máximo para las conexiones inactivas antes de que se cierren (en milisegundos)
-spring.datasource.hikari.idle-timeout=30000
-
-# Tiempo máximo de vida de una conexión en el pool antes de ser eliminada (en milisegundos)
-spring.datasource.hikari.max-lifetime=120000
-
-# Tiempo de espera máximo para obtener una conexión del pool (en milisegundos)
-spring.datasource.hikari.connection-timeout=30000
-
-# application.properties
-# Establece el perfil activo de la aplicación, cargado desde una variable de entorno
-spring.profiles.active=@spring.profiles.active@,default
-
-application-dev.properties
-
-# Configuración específica para el perfil "deb" (desarrollo)
-# URL base de la aplicación cuando se ejecuta en un entorno de desarrollo local
-app.baseUrl=http://localhost:8080
-
-# app.baseUrl: Define la URL base para la aplicación cuando se está ejecutando en un entorno de desarrollo.
-# En este caso, la URL apunta al servidor local en el puerto 8080, que es típico para entornos de desarrollo y el
-# que tengo por defecto con xampp.
-# Esto permite que solicitudes de la aplicación se hagan al servidor local mientras desarrollo y pruebo funcionalidades
-
-
-application-prod.properties
-
-# Configuración específica para el perfil "prod" (producción)
-# URL base de la aplicación cuando se ejecuta en un entorno de producción
-app.baseUrl=https://gestionatuscv.es
-
-# app.baseUrl: Define la URL base para la aplicación cuando se está ejecutando en un entorno de producción.
-# En este caso, la URL apunta al dominio público de la aplicación (https://gestionatuscv.es).
-# Esto asegura que las solicitudes se realicen a la versión en vivo de la aplicación cuando está desplegada en producción.
-
-pom.xml
-
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -328,6 +180,13 @@ pom.xml
             <artifactId>itextpdf</artifactId>
             <version>5.5.13.2</version>
         </dependency>
+
+        <!-- Esta dependencia integra Thymeleaf con Spring Boot, permitiendo usar plantillas HTML para generar vistas dinámicas en la aplicación -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
     </dependencies>
 
     <!-- Repositorios donde Maven busca las dependencias -->
@@ -377,3 +236,158 @@ pom.xml
     </profiles>
 
 </project>
+
+application.properties
+
+# Configuración de la base de datos
+# URL de la base de datos que se carga desde una variable de entorno
+spring.datasource.url=${DB_URL}
+
+# Nombre de usuario de la base de datos, cargado desde una variable de entorno
+spring.datasource.username=${DB_USERNAME}
+
+# Contraseña de la base de datos, también cargada desde una variable de entorno
+spring.datasource.password=${DB_PASSWORD}
+
+# Hibernate actualizará el esquema de la base de datos automáticamente en base a las entidades
+spring.jpa.hibernate.ddl-auto=update
+
+# Muestra las consultas SQL en la consola para propósitos de depuración
+spring.jpa.show-sql=true
+
+# Especifica el dialecto de Hibernate que corresponde a MySQL
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
+
+# Configuración para manejar archivos
+# Habilita el soporte de subida de archivos en la aplicación
+spring.servlet.multipart.enabled=true
+
+# Tamaño máximo permitido para un archivo subido: 50 MB
+spring.servlet.multipart.max-file-size=50MB
+
+# Tamaño máximo permitido para una solicitud que incluya varios archivos: 50 MB
+spring.servlet.multipart.max-request-size=50MB
+
+# Configuración de Hibernate
+# Deshabilita la visualización de las consultas SQL generadas por Hibernate
+spring.jpa.properties.hibernate.show_sql=false
+
+# Deshabilita el formateo de las consultas SQL en la consola
+spring.jpa.properties.hibernate.format_sql=false
+
+# Reducir la verbosidad del logging de Hibernate
+# Establece el nivel de registro de Hibernate en INFO, lo que significa que se mostrarán solo mensajes importantes
+logging.level.org.hibernate=INFO
+logging.level.org.hibernate.SQL=INFO
+logging.level.org.hibernate.type=INFO
+
+# Deshabilitar Open-in-view
+# Mejora el rendimiento al deshabilitar la técnica Open-in-view, que mantiene abierta la sesión de Hibernate durante toda la solicitud
+spring.jpa.open-in-view=false
+
+# Swagger
+# Habilita la documentación de la API con Swagger y la interfaz Swagger UI
+springdoc.api-docs.enabled=true
+springdoc.swagger-ui.enabled=true
+
+# Exponer todos los endpoints de gestión
+management.endpoints.web.exposure.include=*
+
+# Configuración de JWT (JSON Web Token)
+# La clave secreta utilizada para firmar y verificar los tokens JWT se carga desde una variable de entorno
+jwt.secret=${JWT_SECRET}
+
+# Logging
+# Configuración del nivel de registro de los componentes web de Spring para mostrar mensajes de depuración
+logging.level.org.springframework.web=DEBUG
+logging.level.org.springframework.security=DEBUG
+
+# Puerto del servidor
+# Puerto en el que se ejecuta la aplicación, cargado desde una variable de entorno o por defecto en el 8080
+server.port=${PORT:8080}
+
+# Permitir referencias circulares entre beans
+# Esto permite que los beans dependan unos de otros en una referencia circular si es necesario
+spring.main.allow-circular-references=true
+
+# Configuración del nivel de logging por defecto en la aplicación
+logging.level.root=INFO
+logging.level.com.example.gestion_curriculums0=DEBUG
+
+# Archivo de registro donde se guardarán los logs de la aplicación
+logging.file.name=gestion_curriculums0.log
+
+# Configuración de correo electrónico
+# Configura los detalles del servidor SMTP para enviar correos electrónicos
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=gestionatuscv@gmail.com
+
+# La contraseña del correo electrónico es cargada desde una variable de entorno por seguridad
+spring.mail.password=${SPRING_MAIL_PASSWORD}
+
+# Autenticación SMTP habilitada
+spring.mail.properties.mail.smtp.auth=true
+
+# Habilita el uso de STARTTLS para conexiones seguras
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.properties.mail.smtp.starttls.required=true
+
+# Configura tiempos de espera para la conexión y el envío de correos electrónicos
+spring.mail.properties.mail.smtp.connectiontimeout=5000
+spring.mail.properties.mail.smtp.timeout=5000
+spring.mail.properties.mail.smtp.writetimeout=5000
+
+# Nivel de registro para la funcionalidad de correo de Spring
+logging.level.org.springframework.mail=DEBUG
+
+# Configuración de HikariCP (pool de conexiones)
+# Número máximo de conexiones en el pool
+spring.datasource.hikari.maximum-pool-size=5
+
+# Número mínimo de conexiones inactivas en el pool
+spring.datasource.hikari.minimum-idle=2
+
+# Tiempo de inactividad máximo para las conexiones inactivas antes de que se cierren (en milisegundos)
+spring.datasource.hikari.idle-timeout=30000
+
+# Tiempo máximo de vida de una conexión en el pool antes de ser eliminada (en milisegundos)
+spring.datasource.hikari.max-lifetime=120000
+
+# Tiempo de espera máximo para obtener una conexión del pool (en milisegundos)
+spring.datasource.hikari.connection-timeout=30000
+
+# Establece el perfil activo de la aplicación, cargado desde una variable de entorno
+spring.profiles.active=@spring.profiles.active@,default
+
+# Deshabilita la página Whitelabel
+server.error.whitelabel.enabled=false
+
+# Ruta de error predeterminada
+server.error.path=/error
+
+# Configura Thymeleaf para buscar las vistas en /templates/
+spring.thymeleaf.prefix=classpath:/templates/
+spring.thymeleaf.suffix=.html
+spring.thymeleaf.enabled=true
+
+application-dev.properties
+
+# Configuración específica para el perfil "deb" (desarrollo)
+# URL base de la aplicación cuando se ejecuta en un entorno de desarrollo local
+app.baseUrl=http://localhost:8080
+
+# app.baseUrl: Define la URL base para la aplicación cuando se está ejecutando en un entorno de desarrollo.
+# En este caso, la URL apunta al servidor local en el puerto 8080, que es típico para entornos de desarrollo y el
+# que tengo por defecto con xampp.
+# Esto permite que solicitudes de la aplicación se hagan al servidor local mientras desarrollo y pruebo funcionalidades
+
+application-prod.properties
+
+# Configuración específica para el perfil "prod" (producción)
+# URL base de la aplicación cuando se ejecuta en un entorno de producción
+app.baseUrl=https://gestionatuscv.es
+
+# app.baseUrl: Define la URL base para la aplicación cuando se está ejecutando en un entorno de producción.
+# En este caso, la URL apunta al dominio público de la aplicación (https://gestionatuscv.es).
+# Esto asegura que las solicitudes se realicen a la versión en vivo de la aplicación cuando está desplegada en producción.

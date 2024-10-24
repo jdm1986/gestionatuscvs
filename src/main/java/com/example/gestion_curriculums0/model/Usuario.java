@@ -1,11 +1,14 @@
+// Usuario.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.model;
+
+// Defino la entidad Usuario para almacenar los datos de los usuarios registrados
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
-// Defino la entidad Usuario para almacenar los datos de los usuarios registrados
 @Entity
 @Table(name = "usuarios")
 public class Usuario {
@@ -42,7 +45,6 @@ public class Usuario {
     // Relación uno-a-muchos con la entidad Departamento, un usuario puede tener varios departamentos
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Departamento> departamentos;
-
 
     // Token para restablecimiento de contraseña
     @Column(name = "reset_token")

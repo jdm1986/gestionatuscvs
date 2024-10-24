@@ -1,4 +1,12 @@
+// CustomUserDetailsService.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.service;
+
+/*
+  Clase CustomUserDetailsService: Responsable de cargar los detalles del usuario desde la base de datos
+  según su nombre de usuario o email, e interactuar con el sistema de autenticación de Spring Security.
+  También proporciono métodos adicionales para verificar si un usuario existe y guardar nuevos usuarios.
+ */
 
 import com.example.gestion_curriculums0.model.Usuario;
 import com.example.gestion_curriculums0.repository.UsuarioRepository;
@@ -12,11 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-/*
-  Clase CustomUserDetailsService: Responsable de cargar los detalles del usuario desde la base de datos
-  según su nombre de usuario o email, e interactuar con el sistema de autenticación de Spring Security.
-  También proporciono métodos adicionales para verificar si un usuario existe y guardar nuevos usuarios.
- */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
@@ -39,8 +42,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new CustomUserDetails(usuario.get()); // Devuelvo los detalles del usuario encontrado
     }
 
-    //Devuelvo el ID del usuario a partir de su nombre de usuario o email.
-
+    // Devuelvo el ID del usuario a partir de su nombre de usuario o email
     public Long getUserIdByUsername(String usernameOrEmail) {
         Optional<Usuario> usuario = usuarioRepository.findByNombreUsuarioOrEmail(usernameOrEmail, usernameOrEmail);
         if (usuario.isEmpty()) {
@@ -49,8 +51,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         return usuario.get().getId();
     }
 
-    //Guardo un nuevo usuario en la base de datos con los detalles proporcionados.
-
+    // Guardo un nuevo usuario en la base de datos con los detalles proporcionados
     public void saveUser(AuthRequest authRequest) {
         Usuario usuario = new Usuario();
         usuario.setNombreUsuario(authRequest.getUsername()); // Establezco el nombre de usuario
@@ -60,14 +61,12 @@ public class CustomUserDetailsService implements UserDetailsService {
         usuarioRepository.save(usuario); // Guardo el usuario en la base de datos
     }
 
-    //Verifico si un usuario existe en la base de datos por su nombre de usuario o email.
-
+    // Verifico si un usuario existe en la base de datos por su nombre de usuario o email
     public boolean userExists(String usernameOrEmail) {
         return usuarioRepository.findByNombreUsuarioOrEmail(usernameOrEmail, usernameOrEmail).isPresent();
     }
 
-    //Verifico si un email ya está registrado en la base de datos.
-
+    // Verifico si un email ya está registrado en la base de datos
     public boolean userExistsByEmail(String email) {
         return usuarioRepository.existsByEmail(email);
     }

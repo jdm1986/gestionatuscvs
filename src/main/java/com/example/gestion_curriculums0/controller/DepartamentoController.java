@@ -1,5 +1,8 @@
-// Este controlador me permite gestionar las peticiones HTTP relacionadas con los departamentos
+// DepartamentoController.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.controller;
+
+// Este controlador me permite gestionar las peticiones HTTP relacionadas con los departamentos
 
 import com.example.gestion_curriculums0.model.DepartamentoDTO;
 import com.example.gestion_curriculums0.model.Departamento;
@@ -14,34 +17,35 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+// Anoto la clase como un controlador REST y defino la ruta base "/departamentos", permitiendo solicitudes cross-origin desde localhost
 @RestController
 @RequestMapping("/departamentos")
 @CrossOrigin(origins = "http://localhost:8000")
 public class DepartamentoController {
 
+    // Inyecto los servicios necesarios para gestionar departamentos y usuarios
     @Autowired
-    private DepartamentoService departamentoService; // Servicio para gestionar los departamentos
-
+    private DepartamentoService departamentoService;
     @Autowired
-    private UsuarioService usuarioService; // Servicio para gestionar los usuarios
+    private UsuarioService usuarioService;
 
-    // Endpoint para obtener los departamentos de un usuario específico
+    // Configuro un endpoint para obtener los departamentos asociados a un usuario específico
     @GetMapping
     public List<DepartamentoDTO> getDepartamentosByUserId(@RequestParam Long userId) {
-        // Filtra los departamentos por userId y los convierte a DepartamentoDTO
+        // Filtro los departamentos por userId y los convierto a DTO
         return departamentoService.getDepartamentosByUserId(userId)
                 .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    // Endpoint para agregar un nuevo departamento
+    // Configuro un endpoint para agregar un nuevo departamento
     @PostMapping
     public ResponseEntity<?> createDepartamento(@RequestBody DepartamentoDTO departamentoDTO) {
         // Obtengo el userId del DTO
         Long userId = departamentoDTO.getUserId();
 
-        // Verificar si el usuario existe
+        // Verifico si el usuario existe
         Optional<Usuario> usuario = usuarioService.findById(userId);
         if (usuario.isEmpty()) {
             return ResponseEntity.badRequest().body("El usuario no existe.");
@@ -63,14 +67,14 @@ public class DepartamentoController {
         return ResponseEntity.ok(convertToDTO(savedDepartamento));
     }
 
-    // Endpoint para eliminar un departamento por su ID
+    // Configuro un endpoint para eliminar un departamento por su ID
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteDepartamento(@PathVariable Long id) {
         departamentoService.deleteDepartamento(id);
         return ResponseEntity.ok().build();
     }
 
-    // Método privado para convertir una entidad Departamento a DepartamentoDTO
+    // Método privado para convertir una entidad Departamento en un DepartamentoDTO
     private DepartamentoDTO convertToDTO(Departamento departamento) {
         DepartamentoDTO dto = new DepartamentoDTO();
         dto.setId(departamento.getId());

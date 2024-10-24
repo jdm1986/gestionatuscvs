@@ -1,7 +1,5 @@
-//Esta clase es un filtro que se encarga de verificar si una solicitud HTTP
-// contiene un token JWT (JSON Web Token) válido. Este filtro se ejecuta en cada solicitud
-// que pase por él, y su principal función es autenticar al usuario basado en ese token.
-
+// JwtAuthenticationFilter.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.security;
 
 import com.example.gestion_curriculums0.service.CustomUserDetailsService;
@@ -16,8 +14,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
+
+/* El JwtAuthenticationFilter es un filtro que se ejecuta en cada solicitud HTTP para verificar si
+la misma contiene un token JWT válido. Extrae el token desde las cookies de la solicitud y, si es válido,
+autentica al usuario correspondiente, estableciendo el contexto de seguridad para la solicitud. De esta manera,
+garantiza que solo los usuarios con un token válido puedan acceder a los endpoints protegidos. Este filtro es
+esencial para la seguridad de la aplicación, proporcionando una capa adicional de protección para cada solicitud. */
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {

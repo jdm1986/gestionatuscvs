@@ -1,8 +1,11 @@
+// CurriculumDTO.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.model;
+
+// Defino este DTO (Data Transfer Object) para transferir los datos del curriculum de forma sencilla
 
 import java.time.LocalDateTime;
 
-// Defino este DTO (Data Transfer Object) para transferir los datos del curriculum de forma sencilla
 public class CurriculumDTO {
     private Long id;
     private String nombre;
@@ -16,7 +19,7 @@ public class CurriculumDTO {
     private LocalDateTime fechaInsercion;
 
     // Constructor para inicializar los atributos del DTO
-    public CurriculumDTO(Long id, String nombre, String apellido, String pdfPath, String cvBruto,
+    public CurriculumDTO(Long id, String nombre, String apellido, String pdfPath, String resumenCv,
                          String sexo, String telefono, String email, String departamento, LocalDateTime fechaInsercion) {
         this.id = id;
         this.nombre = nombre;
@@ -113,10 +116,12 @@ public class CurriculumDTO {
     }
 
     public String getDepartamento() {
+        // Obtengo el departamento del usuario
         return departamento;
     }
 
     public void setDepartamento(String departamento) {
+        // Establezco el departamento del usuario
         this.departamento = departamento;
     }
 

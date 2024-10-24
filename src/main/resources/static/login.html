@@ -1,3 +1,5 @@
+<!-- Archivo: login.html -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,40 +9,78 @@
     <link rel="stylesheet" href="styles-common.css">
 </head>
 <body>
+<!--
+    Encabezado con el logo y breve descripción:
+    Página dedicada al inicio de sesión, donde los usuarios deben proporcionar sus credenciales (usuario/email y contraseña)
+    para acceder a la plataforma GestionaTusCV.
+-->
 <header>
-    <!-- Página de inicio de sesión donde los usuarios pueden ingresar su nombre de usuario o email
-         y contraseña para acceder a la plataforma GestionaTusCV -->
     <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
 </header>
+
 <div class="container">
+    <!-- Título principal de la página de inicio de sesión -->
     <h1>INICIO DE SESIÓN</h1>
+
+    <!--
+        Formulario de inicio de sesión:
+        Incluye campos para el nombre de usuario o correo electrónico y la contraseña.
+        Además, cuenta con botones para iniciar sesión o volver a la página de inicio.
+    -->
     <form id="loginForm">
+        <!-- Campo para el nombre de usuario o email -->
         <input type="text" id="login" placeholder="Nombre de Usuario o Email" required>
+
+        <!-- Campo para la contraseña -->
         <input type="password" id="password" placeholder="Contraseña" required>
+
+        <!-- Botón para enviar el formulario e iniciar sesión -->
         <button type="submit">Iniciar Sesión</button>
+
+        <!-- Botón para volver a la página de inicio (index.html) -->
         <button type="button" onclick="location.href='index.html'">Volver</button>
     </form>
 
-    <!-- Aquí añadimos el contenedor para el mensaje -->
+    <!--
+        Contenedor para mostrar mensajes de error o información durante el inicio de sesión.
+        Está oculto por defecto y se muestra solo si hay un mensaje que mostrar.
+    -->
     <div id="loginMessage" style="color: #FF6F61; text-align: center; margin-top: 10px; display: none;"></div>
+
+    <!--
+        Enlace para recuperar la contraseña:
+        Redirige al usuario a la página de recuperación de contraseña en caso de que la haya olvidado.
+    -->
     <p>
         <a href="forgot-password.html" class="link-blanco" style="color: white;">¿Olvidaste tu contraseña? Haz clic aquí</a>
     </p>
 </div>
+
+<!--
+    Archivo JavaScript donde se gestionan las acciones del formulario, como la validación de datos
+    y la comunicación con el backend para autenticar al usuario.
+-->
 <script src="scripts.js"></script>
+
 </body>
+
+<!-- Pie de página con enlaces y créditos -->
 <footer>
     <div class="footer-content">
-        <a href="https://www.jesusdiazmartincv.es" target="_blank"> <!-- Enlace alrededor del logo -->
+        <!-- Enlace al sitio del desarrollador con el logo correspondiente -->
+        <a href="https://www.jesusdiazmartincv.es" target="_blank">
             <img src="images/logodeveloper.png" alt="Logo JDM" class="footer-logo">
         </a>
+        <!-- Enlaces a las políticas de privacidad, términos y condiciones, y contacto -->
         <div class="footer-links">
             <a href="privacidad.html">Política de Privacidad</a> |
             <a href="terminos.html">Términos y Condiciones</a> |
             <a href="contacto.html">Contacto</a>
         </div>
+        <!-- Información de derechos de autor y créditos -->
         <p>&copy; 2024 GESTIONATUSCV. Todos los derechos reservados.</p>
         <p> || Aplicación Web creada por Jesús Díaz Martín || </p>
     </div>
 </footer>
+
 </html>

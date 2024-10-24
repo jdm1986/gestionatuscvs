@@ -1,9 +1,12 @@
+// UserLog.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.model;
+
+// Defino la entidad UserLog que me permite registrar las acciones realizadas por los usuarios
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-// Defino la entidad UserLog que me permite registrar las acciones realizadas por los usuarios
 @Entity
 @Table(name = "user_logs")
 public class UserLog {

@@ -1,3 +1,5 @@
+// ContactFormDTO.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.model;
 
 // Defino esta clase como un Data Transfer Object (DTO) para el formulario de contacto

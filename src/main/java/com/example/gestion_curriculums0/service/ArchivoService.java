@@ -1,4 +1,11 @@
+// ArchivoService.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.service;
+
+/*
+  Clase ArchivoService: Me encargo de gestionar la subida y descarga de archivos.
+  Guardo los archivos subidos en un directorio local y también puedo cargar un archivo cuando es solicitado.
+ */
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -10,10 +17,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
-/*
-  Clase ArchivoService: Me encargo de gestionar la subida y descarga de archivos.
-  Guardo los archivos subidos en un directorio local y también puedo cargar un archivo cuando es solicitado.
- */
 @Service
 public class ArchivoService {
 

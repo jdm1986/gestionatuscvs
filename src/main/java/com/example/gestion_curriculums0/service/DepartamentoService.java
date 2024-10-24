@@ -1,5 +1,12 @@
-// Este servicio me permite gestionar las operaciones con los departamentos
+// DepartamentoService.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.service;
+
+/*
+  Este servicio me permite gestionar las operaciones con los departamentos,
+  como la búsqueda, guardado, y eliminación, actuando como intermediario
+  entre los controladores y el repositorio de departamentos.
+ */
 
 import com.example.gestion_curriculums0.model.Departamento;
 import com.example.gestion_curriculums0.repository.DepartamentoRepository;
@@ -13,7 +20,7 @@ import java.util.Optional;
 public class DepartamentoService {
 
     @Autowired
-    private DepartamentoRepository departamentoRepository;
+    private DepartamentoRepository departamentoRepository; // Inyecto el repositorio de departamentos
 
     // Método para obtener los departamentos filtrados por userId
     public List<Departamento> getDepartamentosByUserId(Long userId) {

@@ -1,3 +1,5 @@
+<!-- Archivo: privacidad.html -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,71 +9,104 @@
     <link rel="stylesheet" href="styles-common.css">
 </head>
 <body>
+<!--
+    Encabezado:
+    Página que proporciona el aviso de privacidad de la plataforma GestionaTusCV, explicando cómo se manejan los datos personales de los usuarios.
+    Incluye el logotipo para mantener la consistencia con la apariencia general de la plataforma.
+-->
 <header>
-    <!-- Página de aviso de privacidad que explica cómo se recopila, utiliza y protege la información personal de los usuarios de la aplicación GestionaTusCV -->
     <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
 </header>
+
+<!-- Contenedor principal con el contenido del aviso de privacidad -->
 <div class="container">
     <h1>AVISO DE PRIVACIDAD</h1>
     <div class="content">
+        <!-- Introducción sobre el compromiso de la plataforma con la privacidad -->
         <p>[GESTIONATUSCV] se compromete a proteger su privacidad. Este Aviso de Privacidad describe cómo recopilamos, usamos y protegemos su información personal cuando interactúa con la plataforma.</p>
+
+        <!-- Detalle sobre la información recopilada de usuarios registrados -->
         <p><strong>Información que recopilamos de usuarios registrados:</strong></p>
         <ul>
             <li>Nombre de usuario/a</li>
             <li>Dirección de correo electrónico</li>
             <li>Fecha de registro</li>
-            <li>Role</li>
-            <li>Fecha de token generado (para link de carga de curriculum)</li>
+            <li>Rol</li>
+            <li>Fecha de token generado (para enlace de carga de currículum)</li>
         </ul>
+
+        <!-- Información específica sobre los datos de los candidatos -->
         <p><strong>Información que recopilamos de registros de candidatos:</strong></p>
         <ul>
             <li>Nombre y Apellidos</li>
-            <li>Archivo del CV en formato pdf y datos</li>
+            <li>Archivo del CV en formato PDF y datos asociados</li>
             <li>Dirección de correo electrónico</li>
             <li>Fecha de inserción en la base de datos</li>
             <li>Sexo</li>
             <li>Teléfono</li>
         </ul>
+
+        <!-- Explicación del uso que se le da a la información recopilada -->
         <p><strong>Uso de la información:</strong></p>
         <ul>
-            <li>La información recopilada se utilizará únicamente para propósitos de prueba de la aplicación salvo
-                usuarios que tengan rol de administración.</li>
-            <li>Los datos proporcionados a nivel usuario serán eliminados automáticamente después de 30 minutos
-                (Datos de registro y cualquier dato asociado a este usuario). Solo los datos de registro de un usuario que
-                tenga rol de administración y sus datos asociados quedarán persistidos en la base de datos.</li>
+            <li>La información recopilada se utilizará únicamente para propósitos de prueba de la aplicación salvo usuarios que tengan rol de administración.</li>
+            <li>Los datos proporcionados a nivel usuario serán eliminados automáticamente después de 30 minutos. Solo los datos de registro de un usuario con rol de administración y sus datos asociados permanecerán en la base de datos.</li>
         </ul>
+
+        <!-- Descripción de las medidas de seguridad implementadas -->
         <p><strong>Seguridad de la información:</strong></p>
         <ul>
-            <li><Strong>Enlace seguro:</strong> Los enlaces generados para la subida de CV contienen un token único que garantiza que solo aquellos con acceso al enlace puedan realizar la subida del archivo.</li>
-            <li><Strong>Encriptación de la conexión:</strong> La plataforma utiliza el protocolo HTTPS para asegurar que todos los datos transmitidos estén cifrados y protegidos durante su envío.</li>
-            <li><Strong>Roles y permisos:</strong> La aplicación cuenta con un sistema de autenticación y gestión de roles para asegurar que los datos solo sean accesibles por usuarios autorizados. Los usuarios con rol de usuario tienen limitaciones de tiempo en la gestión de los datos (30 minutos), mientras que los administradores tienen acceso a la gestión extendida.</li>
-            <li><Strong>Medidas de seguridad adicionales:</strong> implementamos validaciones de archivos y restricciones para garantizar que solo se puedan subir archivos válidos y evitar la manipulación maliciosa.</li>
+            <li><strong>Enlace seguro:</strong> Los enlaces generados para la subida de CV contienen un token único que garantiza que solo aquellos con acceso al enlace puedan realizar la subida del archivo.</li>
+            <li><strong>Encriptación de la conexión:</strong> La plataforma utiliza el protocolo HTTPS para asegurar que todos los datos transmitidos estén cifrados y protegidos durante su envío.</li>
+            <li><strong>Roles y permisos:</strong> La aplicación cuenta con un sistema de autenticación y gestión de roles para asegurar que los datos solo sean accesibles por usuarios autorizados.</li>
+            <li><strong>Medidas de seguridad adicionales:</strong> Se implementan validaciones de archivos y restricciones para garantizar que solo se puedan subir archivos válidos y evitar la manipulación maliciosa.</li>
         </ul>
+
+        <!-- Información sobre el uso de cookies -->
         <p><strong>Uso de Cookies:</strong> No utilizamos cookies en esta aplicación para el seguimiento de sesiones o almacenamiento de datos personales.</p>
+
+        <!-- Derechos de los usuarios respecto a sus datos personales -->
         <p><strong>Consentimiento y derechos de los usuarios/as:</strong></p>
         <ul>
-            <li> Al subir su CV mediante el enlace proporcionado con token, usted acepta la recopilación y el uso de su información de acuerdo con este Aviso de Privacidad.</li>
-            <li> Usted (Usuario y candidato que sube su CV voluntariamente a la plataforma a través de enlace con token) tiene derecho a acceder, rectificar y suprimir sus datos personales en cualquier momento. Para ejercer estos derechos, póngase en contacto con nosotros en info@gestionatuscv.es.</li>
+            <li>Al subir su CV mediante el enlace proporcionado con token, usted acepta la recopilación y el uso de su información de acuerdo con este Aviso de Privacidad.</li>
+            <li>Usted tiene derecho a acceder, rectificar y suprimir sus datos personales en cualquier momento. Para ejercer estos derechos, póngase en contacto con nosotros en info@gestionatuscv.es.</li>
         </ul>
+
+        <!-- Información sobre posibles actualizaciones del aviso de privacidad -->
         <p><strong>Actualizaciones y cambios:</strong> Este aviso de privacidad puede ser actualizado para reflejar mejoras en nuestras políticas de seguridad y prácticas de gestión de datos. Cualquier cambio será comunicado en esta página.</p>
+
+        <!-- Información de contacto -->
         <p>Para más información, por favor contáctenos en <a href="mailto:info@gestionatuscv.es" class="footer-email" style="color: white;">info@gestionatuscv.es</a>.</p>
     </div>
+
+    <!-- Botón para volver a la página de inicio -->
     <div class="buttons">
         <button onclick="location.href='index.html'">Volver al inicio</button>
     </div>
 </div>
+
+<!--
+    Archivo JavaScript adicional para funcionalidades generales de la página.
+    Puede incluir scripts para mejorar la interactividad o el manejo de eventos.
+-->
 <script src="scripts.js"></script>
+
 </body>
+
+<!-- Pie de página con enlaces adicionales y créditos -->
 <footer>
     <div class="footer-content">
-        <a href="https://www.jesusdiazmartincv.es" target="_blank"> <!-- Enlace alrededor del logo -->
+        <!-- Enlace al sitio del desarrollador con el logo correspondiente -->
+        <a href="https://www.jesusdiazmartincv.es" target="_blank">
             <img src="images/logodeveloper.png" alt="Logo JDM" class="footer-logo">
         </a>
+        <!-- Enlaces a las políticas de privacidad, términos y condiciones, y contacto -->
         <div class="footer-links">
             <a href="privacidad.html">Política de Privacidad</a> |
             <a href="terminos.html">Términos y Condiciones</a> |
             <a href="contacto.html">Contacto</a>
         </div>
+        <!-- Información de derechos de autor y créditos -->
         <p>&copy; 2024 GESTIONATUSCV. Todos los derechos reservados.</p>
         <p> || Aplicación Web creada por Jesús Díaz Martín || </p>
     </div>

@@ -1,9 +1,12 @@
+// UploadLink.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.model;
+
+// Defino la entidad UploadLink que me permite crear enlaces únicos para la subida de archivos
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-// Defino la entidad UploadLink que me permite crear enlaces únicos para la subida de archivos
 @Entity
 public class UploadLink {
 

@@ -1,64 +1,53 @@
+// CurriculumController.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.controller;
 
-import com.example.gestion_curriculums0.model.Curriculum;
-import com.example.gestion_curriculums0.model.CurriculumDTO;
-import com.example.gestion_curriculums0.model.UploadLink;
-import com.example.gestion_curriculums0.model.Usuario;
-import com.example.gestion_curriculums0.repository.UploadLinkRepository;
-import com.example.gestion_curriculums0.repository.UsuarioRepository;
-import com.example.gestion_curriculums0.service.CurriculumService;
-import com.example.gestion_curriculums0.service.PdfService;
-import com.example.gestion_curriculums0.service.OcrService;
-import com.example.gestion_curriculums0.service.EmailService;
+import com.example.gestion_curriculums0.model.*;
+import com.example.gestion_curriculums0.repository.*;
+import com.example.gestion_curriculums0.service.*;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.*;
+import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.Map;
 
+/* Este controlador maneja la funcionalidad relacionada con la gestión de currículums, incluyendo la subida,
+descarga, actualización, eliminación y búsqueda de currículums en la base de datos. Permite tanto a usuarios
+normales como a administradores acceder a los currículums según sus permisos. Además, ofrece una integración
+con un servicio de OCR para extraer texto de archivos PDF, facilitando la búsqueda por palabras clave.
+El controlador también proporciona métodos para generar enlaces de subida de currículums, permitiendo a los
+usuarios externos enviar sus currículums directamente al sistema de forma segura. */
 
-// Defino este controlador para manejar las operaciones relacionadas con los curriculums
 @RestController
 @RequestMapping("/curriculums")
 @CrossOrigin(origins = "http://localhost:8000")
+
 public class CurriculumController {
 
+    // Inyecto los servicios y repositorios necesarios para la gestión de curriculums
     @Autowired
     private CurriculumService curriculumService;
-
     @Autowired
     private UsuarioRepository usuarioRepository;
-
     @Autowired
     private PdfService pdfService;
-
     @Autowired
     private OcrService ocrService;
-
     @Autowired
     private UploadLinkRepository uploadLinkRepository;
-
     @Autowired
     private EmailService emailService;
 
-    // Este endpoint devuelve una lista de curriculums en formato DTO
+    // Configuro un endpoint para devolver una lista de curriculums en formato DTO
     @ApiOperation(value = "Ver una lista de curriculums disponibles", response = List.class)
     @GetMapping
     @Transactional(readOnly = true)
@@ -67,7 +56,7 @@ public class CurriculumController {
         return curriculumService.getAllCurriculums().stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    // Este endpoint obtiene un curriculum específico por su ID
+    // Configuro un endpoint para obtener un curriculum específico por su ID
     @GetMapping("/{id}")
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
@@ -77,7 +66,7 @@ public class CurriculumController {
         return convertToDTO(curriculum);
     }
 
-    // Obtengo los curriculums asociados al usuario autenticado
+    // Configuro un endpoint para obtener los curriculums asociados al usuario autenticado
     @GetMapping("/usuario")
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
@@ -89,7 +78,7 @@ public class CurriculumController {
                 .collect(Collectors.toList());
     }
 
-    // Obtengo los curriculums de un usuario específico por su ID
+    // Configuro un endpoint para obtener los curriculums de un usuario específico por su ID
     @GetMapping("/usuario/{usuarioId}")
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
@@ -97,7 +86,7 @@ public class CurriculumController {
         return curriculumService.getCurriculumsByUsuarioId(usuarioId).stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    // Busco curriculums por nombre
+    // Configuro un endpoint para buscar curriculums por nombre
     @GetMapping("/buscar/nombre")
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
@@ -105,7 +94,7 @@ public class CurriculumController {
         return curriculumService.buscarPorNombre(nombre).stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    // Busco curriculums por apellido
+    // Configuro un endpoint para buscar curriculums por apellido
     @GetMapping("/buscar/apellido")
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
@@ -113,7 +102,7 @@ public class CurriculumController {
         return curriculumService.buscarPorApellido(apellido).stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    // Busco curriculums por palabra clave y usuario autenticado
+    // Configuro un endpoint para buscar curriculums por palabra clave y usuario autenticado
     @GetMapping("/buscar/clave")
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
@@ -124,7 +113,7 @@ public class CurriculumController {
         return curriculumService.buscarPorClaveYUsuario(clave, usuario.getId()).stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    // Subo un curriculum en formato PDF y guardo el departamento
+    // Configuro un endpoint para subir un curriculum en formato PDF y guardar el departamento
     @PostMapping("/upload")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public ResponseEntity<?> uploadCurriculum(@RequestParam("file") MultipartFile file,
@@ -132,7 +121,7 @@ public class CurriculumController {
                                               @RequestParam String nombre,
                                               @RequestParam String apellido,
                                               @RequestParam String sexo,
-                                              @RequestParam String departamento, // Nuevo campo departamento
+                                              @RequestParam String departamento,
                                               @RequestParam String telefono,
                                               @RequestParam String email) {
         // Verifico que el archivo sea un PDF
@@ -160,7 +149,7 @@ public class CurriculumController {
             throw new RuntimeException("Error procesando el archivo", e);
         }
 
-        // Creo un objeto Curriculum con los datos extraídos
+        // Creo un objeto Curriculum con los datos extraídos y el usuario relacionado
         Curriculum curriculum = new Curriculum();
         curriculum.setNombre(nombre);
         curriculum.setApellido(apellido);
@@ -169,14 +158,14 @@ public class CurriculumController {
         curriculum.setSexo(sexo);
         curriculum.setTelefono(telefono);
         curriculum.setEmail(email);
-        curriculum.setDepartamento(departamento); // Guardo el departamento
+        curriculum.setDepartamento(departamento);
         curriculum.setUsuario(usuario);
 
-        // Devuelvo una respuesta exitosa con el curriculum guardado
+        // Guardo el curriculum y retorno una respuesta exitosa con el DTO del curriculum guardado
         return ResponseEntity.ok(convertToDTO(curriculumService.saveCurriculum(curriculum)));
     }
 
-    // Actualizo un curriculum existente
+    // Configuro un endpoint para actualizar un curriculum existente
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public CurriculumDTO updateCurriculum(@PathVariable Long id,
@@ -197,8 +186,7 @@ public class CurriculumController {
         return convertToDTO(curriculumService.saveCurriculum(curriculum));
     }
 
-    // Actualización de departamento
-
+    // Configuro un endpoint para actualizar el departamento de un curriculum específico
     @PutMapping("/{idCurriculum}/departamento")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> actualizarDepartamento(
@@ -225,8 +213,7 @@ public class CurriculumController {
         return ResponseEntity.ok("Departamento actualizado exitosamente");
     }
 
-
-    // Elimino un curriculum por su ID
+    // Configuro un endpoint para eliminar un curriculum por su ID
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> deleteCurriculum(@PathVariable Long id) {
@@ -234,7 +221,7 @@ public class CurriculumController {
         return ResponseEntity.ok().build();
     }
 
-    // Descargo el archivo PDF de un curriculum por su ID
+    // Configuro un endpoint para descargar el archivo PDF de un curriculum por su ID
     @GetMapping("/pdf/{id}")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public ResponseEntity<Resource> descargarArchivo(@PathVariable Long id) {
@@ -272,7 +259,7 @@ public class CurriculumController {
                 curriculum.getCvBruto(), curriculum.getSexo(), curriculum.getTelefono(), curriculum.getEmail(), curriculum.getDepartamento(), curriculum.getFechaInsercion());
     }
 
-    // Genero un enlace único para que un usuario pueda subir su curriculum
+    // Configuro un endpoint para generar un enlace único para que un usuario pueda subir su curriculum
     @PostMapping("/generate-upload-link")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> generateUploadLink(Principal principal) {
@@ -297,8 +284,7 @@ public class CurriculumController {
         return ResponseEntity.ok(link);
     }
 
-
-    // Subo un curriculum usando un token de acceso
+    // Configuro un endpoint para subir un curriculum usando un token de acceso
     @PostMapping("/upload_with_token")
     public ResponseEntity<?> uploadCurriculumWithToken(
             @RequestParam("token") String token,
@@ -306,7 +292,7 @@ public class CurriculumController {
             @RequestParam String nombre,
             @RequestParam String apellido,
             @RequestParam String sexo,
-            @RequestParam String departamento, // Nuevo campo departamento
+            @RequestParam String departamento,
             @RequestParam String telefono,
             @RequestParam String email) {
 
@@ -340,7 +326,7 @@ public class CurriculumController {
             throw new RuntimeException("Error procesando el archivo", e);
         }
 
-        // Creo un objeto Curriculum con los datos extraídos
+        // Creo un objeto Curriculum con los datos extraídos y el usuario relacionado
         Curriculum curriculum = new Curriculum();
         curriculum.setNombre(nombre);
         curriculum.setApellido(apellido);
@@ -349,7 +335,7 @@ public class CurriculumController {
         curriculum.setSexo(sexo);
         curriculum.setTelefono(telefono);
         curriculum.setEmail(email);
-        curriculum.setDepartamento(departamento); // Guardo el departamento
+        curriculum.setDepartamento(departamento);
         curriculum.setUsuario(uploadLink.getUsuario());
 
         // Guardo el curriculum en la base de datos

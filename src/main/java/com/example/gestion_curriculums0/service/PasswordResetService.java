@@ -1,8 +1,5 @@
-/* Esta clase gestiona el proceso de restablecimiento de contraseñas de los usuarios.
-    Genera un token temporal para el restablecimiento de la contraseña, envía un correo
-    con el enlace para que el usuario pueda restablecer su contraseña y permite al usuario
-    actualizarla con el nuevo token.*/
-
+// PasswordResetService.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.service;
 
 import com.example.gestion_curriculums0.model.Usuario;
@@ -19,17 +16,24 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+/* Esta clase gestiona el proceso completo para restablecer contraseñas de los usuarios.
+Genera un token único y temporal que se envía al correo del usuario, permitiéndole restablecer
+su contraseña de manera segura. Verifica la validez del token antes de permitir el cambio de contraseña,
+evitando que un token usado previamente pueda ser reutilizado. Además, establece límites para evitar el
+abuso del sistema de restablecimiento de contraseñas (por ejemplo, un solo token cada 15 minutos),
+contribuyendo a la seguridad general de la aplicación. */
+
 @Service
 public class PasswordResetService {
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private UsuarioRepository usuarioRepository; // Inyecto el repositorio de usuarios
 
     @Autowired
-    private JavaMailSender mailSender;
+    private JavaMailSender mailSender; // Inyecto el servicio de envío de correos
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder; // Inyecto el codificador de contraseñas
 
     // Uso esta propiedad para construir la URL base para el enlace de restablecimiento de contraseña
     @Value("${app.baseUrl}")

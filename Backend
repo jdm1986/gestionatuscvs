@@ -1,17 +1,37 @@
-Te voy a proporcionar el código completo de mi proyecto para que me ayudes con una tarea (Te lo voy a pasar en varias partes).
-
-Backend Parte1
-
+// ErrorControllerConfig
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.config;
 
-// Esta clase configura el scheduler para ejecutar tareas programadas en mi aplicación.
+import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+// Con la anotación @Controller, indico que esta clase se comporta como un controlador en Spring MVC
+@Controller
+public class ErrorControllerConfig implements ErrorController {
+
+    // Manejo las solicitudes que se realizan a la URL "/error"
+    @RequestMapping("/error")
+    public String handleError() {
+        // Devuelvo el nombre de la plantilla de Thymeleaf "error-404"
+        // que se encuentra en "src/main/resources/templates/error-404.html"
+        // para mostrar una página personalizada de error 404
+        return "error-404";
+    }
+}
+
+// SchedulerConfig.java
+// Indico el paquete al que pertenece esta clase
+package com.example.gestion_curriculums0.config;
+
+// Esta clase configura el scheduler para ejecutar tareas programadas en mi aplicación
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
-// Indico que esta clase es una configuración para la parte de tareas programadas
+// Con la anotación @Configuration, indico que esta clase es una configuración para la parte de tareas programadas
 @Configuration
 public class SchedulerConfig {
 
@@ -26,9 +46,11 @@ public class SchedulerConfig {
     }
 }
 
+// WebConfig.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.config;
 
-// Esta clase define configuraciones adicionales para mi aplicación web, especialmente CORS y el manejo de recursos estáticos.
+// Esta clase define configuraciones adicionales para mi aplicación web, especialmente CORS y el manejo de recursos estáticos
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,18 +58,18 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-// Indico que esta clase es una configuración de Spring Boot
+// Con la anotación @Configuration, indico que esta clase es una configuración de Spring Boot
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    // Aquí configuro los ajustes de CORS (Cross-Origin Resource Sharing) para permitir peticiones desde mi frontend
+    // Configuro los ajustes de CORS (Cross-Origin Resource Sharing) para permitir peticiones desde mi frontend
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        // Permitimos solicitudes desde mi entorno de desarrollo y desde el dominio de producción
+        // Permito solicitudes desde mi entorno de desarrollo y el dominio de producción
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:8080", "https://gestionatuscv.es")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")  // Permitimos todos los métodos necesarios
-                .allowedHeaders("*")  // Permitimos todos los encabezados necesarios
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")  // Permito todos los métodos necesarios
+                .allowedHeaders("*")  // Permito todos los encabezados necesarios
                 .exposedHeaders("Authorization")  // Aseguro que el encabezado Authorization esté expuesto para manejar los tokens JWT
                 .allowCredentials(true);  // Permito el uso de credenciales (cookies, cabeceras)
     }
@@ -55,35 +77,41 @@ public class WebConfig implements WebMvcConfigurer {
     // Configuro el manejo de los recursos estáticos en mi aplicación, en este caso los recursos de frontend
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Defino que todos los recursos que están en la ruta /frontend/ deben buscarse en la carpeta classpath:/frontend/
+        // Defino que todos los recursos en la ruta /frontend/ se deben buscar en la carpeta classpath:/frontend/
         registry.addResourceHandler("/frontend/**")
                 .addResourceLocations("classpath:/frontend/");
     }
 }
+
+// WebMvcConfig.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.config;
 
-// Esta clase configura los controladores de vistas para mi aplicación.
-// Aquí defino cómo manejar ciertas rutas sin necesidad de un controlador explícito.
+// Esta clase configura los controladores de vistas para mi aplicación
+// Aquí defino cómo manejar ciertas rutas sin necesidad de un controlador explícito
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-// Indico que esta es una clase de configuración para la parte MVC de mi aplicación
+// Con la anotación @Configuration, indico que esta es una clase de configuración para la parte MVC de mi aplicación
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    // Defino un controlador de vista para redirigir la raíz de mi aplicación hacia el archivo index.html
+    // Configuro un controlador de vista para redirigir la raíz de mi aplicación hacia el archivo index.html
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         // Cuando los usuarios accedan a "/", les redirijo al archivo index.html
         registry.addViewController("/").setViewName("forward:/index.html");
     }
 }
+
+// WebSecurityConfig.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.config;
 
-// Esta clase es la encargada de configurar la seguridad de mi aplicación utilizando Spring Security.
-// Aquí defino las reglas de autorización, la política de sesiones y la integración con JWT para la autenticación.
+// Esta clase es la encargada de configurar la seguridad de mi aplicación utilizando Spring Security
+// Aquí defino las reglas de autorización, la política de sesiones y la integración con JWT para la autenticación
 
 import com.example.gestion_curriculums0.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,9 +134,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
-// Indico que esta clase es una configuración de Spring Boot que he definido para gestionar la seguridad
+// Con la anotación @Configuration, indico que esta clase es una configuración de Spring Boot para gestionar la seguridad
 @Configuration
-// Habilito la seguridad web en mi aplicación
+// Habilito la seguridad web en mi aplicación con @EnableWebSecurity
 @EnableWebSecurity
 public class WebSecurityConfig {
 
@@ -120,17 +148,17 @@ public class WebSecurityConfig {
     @Autowired
     private Environment environment;
 
-    // Este bean configura la cadena de filtros de seguridad que yo he diseñado para las peticiones HTTP
+    // Configuro la cadena de filtros de seguridad que he diseñado para las peticiones HTTP
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        // Deshabilito la protección CSRF (Cross-Site Request Forgery) porque he decidido utilizar JWT para gestionar la seguridad de las peticiones
+        // Deshabilito la protección CSRF porque utilizo JWT para la seguridad de las peticiones
         http.csrf(csrf -> csrf.disable());
 
-        // Habilito CORS (Cross-Origin Resource Sharing) para que mi frontend pueda hacer peticiones a la API
+        // Habilito CORS para que mi frontend pueda hacer peticiones a la API
         http.cors(withDefaults());
 
-        // Aquí defino las reglas de autorización: las rutas que yo permito que sean accedidas sin autenticación y las que requieren autenticación
+        // Defino las reglas de autorización: las rutas permitidas sin autenticación y las que requieren autenticación
         http
                 .authorizeHttpRequests(auth -> auth
                         // Permito el acceso sin autenticación a las rutas que he definido para autenticación y documentación
@@ -138,54 +166,57 @@ public class WebSecurityConfig {
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers(HttpMethod.POST, "/curriculums/generate-link").permitAll()
                         .requestMatchers("/**").permitAll()  // En desarrollo, permito todas las rutas para facilitar las pruebas
-                        .anyRequest().authenticated()  // Todas las demás rutas requieren autenticación según mi configuración
+                        .anyRequest().authenticated()  // Requiero autenticación para cualquier otra ruta
                 )
-                // Establezco que no se deben crear sesiones (stateless), ya que utilizo JWT para gestionar las autenticaciones de los usuarios
+                // Establezco la política de sesiones como "stateless" ya que utilizo JWT para la autenticación
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );
 
-        // Añado mi filtro JWT personalizado antes del filtro estándar de autenticación de usuario y contraseña
+        // Añado mi filtro JWT personalizado antes del filtro estándar de autenticación
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-        // Devuelvo la configuración completa que he definido
+        // Devuelvo la configuración completa
         return http.build();
     }
 
-    // Configuro CORS para permitir que mi frontend (https://gestionatuscv.es) pueda hacer peticiones a la API
+    // Configuro CORS para permitir que mi frontend pueda hacer peticiones a la API
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Permito las solicitudes desde mi dominio de producción
+        // Permito solicitudes desde mi dominio de producción
         configuration.addAllowedOrigin("https://gestionatuscv.es");
-        // Permito todos los métodos HTTP (GET, POST, etc.) para interactuar con mi API
+        // Permito todos los métodos HTTP
         configuration.addAllowedMethod("*");
-        // Permito todos los encabezados de las solicitudes, ya que los necesito para la autenticación y el funcionamiento del sistema
+        // Permito todos los encabezados de las solicitudes
         configuration.addAllowedHeader("*");
-        // Habilito el uso de cookies en las solicitudes si es necesario para mi proyecto
+        // Habilito el uso de cookies en las solicitudes si es necesario
         configuration.setAllowCredentials(true);
 
-        // Aplico esta configuración de CORS a todas las rutas de mi aplicación
+        // Aplico esta configuración de CORS a todas las rutas
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 
-    // Defino el gestor de autenticación, utilizando la configuración que yo he implementado para autenticar a los usuarios
+    // Defino el gestor de autenticación utilizando mi configuración para autenticar usuarios
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    // Defino el bean para la codificación de contraseñas, usando BCrypt, para mejorar la seguridad de las contraseñas de mis usuarios
+    // Configuro el bean para la codificación de contraseñas usando BCrypt
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }
-// Este controlador gestiona las acciones del administrador para ver los registros de usuarios.
 
+// AdminController.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.controller;
+
+// Este controlador gestiona las acciones del administrador para ver los registros de usuarios
 
 import com.example.gestion_curriculums0.model.UserLog;
 import com.example.gestion_curriculums0.repository.UserLogRepository;
@@ -199,28 +230,32 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-// Indico que este controlador está asociado a la ruta "/admin" y que acepto solicitudes cross-origin desde localhost
+// Con la anotación @RestController, indico que este controlador está asociado a la ruta "/admin"
+// y acepto solicitudes cross-origin desde localhost
 @RestController
 @RequestMapping("/admin")
 @CrossOrigin(origins = "http://localhost:8000")
 public class AdminController {
 
-    // Inyecto el repositorio de logs de usuario para poder acceder a los registros
+    // Inyecto el repositorio de logs de usuario para acceder a los registros de usuarios
     @Autowired
     private UserLogRepository userLogRepository;
 
-    // Defino un endpoint protegido para ver los registros de usuarios, que solo puede ser accedido por administradores
+    // Configuro un endpoint protegido para ver los registros de usuarios, accesible solo para administradores
     @GetMapping("/registro-usuarios")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<UserLog>> viewUserRegistrations() {
-        // Obtengo todos los logs de usuario y los devuelvo en la respuesta
+        // Obtengo todos los logs de usuario y los devuelvo en la respuesta HTTP
         List<UserLog> logs = userLogRepository.findAll();
         return ResponseEntity.ok(logs);
     }
 }
-// Este controlador gestiona la subida y descarga de archivos en mi aplicación.
 
+// ArchivoController.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.controller;
+
+// Este controlador gestiona la subida y descarga de archivos en mi aplicación
 
 import com.example.gestion_curriculums0.service.ArchivoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -231,7 +266,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.security.Principal;
 
-// Indico que este controlador está asociado a la ruta "/api/files" y maneja las operaciones de archivos
+// Con la anotación @RestController, indico que este controlador está asociado a la ruta "/api/files"
+// y maneja las operaciones relacionadas con archivos
 @RestController
 @RequestMapping("/api/files")
 public class ArchivoController {
@@ -240,23 +276,23 @@ public class ArchivoController {
     @Autowired
     private ArchivoService archivoService;
 
-    // Endpoint para subir un archivo, que recibe el archivo y la información del usuario (Principal)
+    // Configuro un endpoint para subir un archivo, que recibe el archivo y la información del usuario (Principal)
     @PostMapping("/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, Principal principal) {
         try {
-            // Guardo el archivo usando el servicio y devuelvo un mensaje de éxito
+            // Guardo el archivo utilizando el servicio y devuelvo un mensaje de éxito
             String fileName = archivoService.saveFile(file, principal.getName());
             return ResponseEntity.ok().body("Archivo subido exitosamente: " + fileName);
         } catch (Exception e) {
-            // En caso de error, devuelvo un mensaje con el error
+            // En caso de error, devuelvo un mensaje detallando el problema
             return ResponseEntity.status(500).body("Error al subir archivo: " + e.getMessage());
         }
     }
 
-    // Endpoint para descargar un archivo por su nombre
+    // Configuro un endpoint para descargar un archivo especificado por su nombre
     @GetMapping("/download/{filename}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String filename) {
-        // Cargamos el archivo y lo devolvemos como un recurso descargable
+        // Cargo el archivo y lo devuelvo como un recurso descargable
         Resource file = archivoService.loadFile(filename);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
@@ -264,10 +300,11 @@ public class ArchivoController {
     }
 }
 
-// Este controlador gestiona la autenticación de usuarios, incluyendo el login, registro, manejo de tokens
-// y restablecimiento de contraseñas.
-
+// AuthController.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.controller;
+
+// Este controlador gestiona la autenticación de usuarios, incluyendo el login, registro, manejo de tokens y restablecimiento de contraseñas
 
 import com.example.gestion_curriculums0.service.*;
 import com.example.gestion_curriculums0.security.JwtUtil;
@@ -297,7 +334,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @CrossOrigin(origins = "http://localhost:8000")
 public class AuthController {
 
-    // Defino las constantes de tiempo para los tokens y bloqueo de cuenta
+    // Defino las constantes de tiempo para los tokens y el bloqueo de cuenta
     private static final int ACCESS_TOKEN_EXPIRATION = 15 * 60; // 15 minutos
     private static final int REFRESH_TOKEN_EXPIRATION = 7 * 24 * 60 * 60; // 7 días
     private static final int MAX_FAILED_ATTEMPTS = 3;
@@ -305,7 +342,7 @@ public class AuthController {
     private static final int MAX_RECOVERY_ATTEMPTS = 5;
     private static final long IP_LOCK_TIME_DURATION = 60 * 60 * 1000; // 1 hora
 
-    // Uso mapas concurrentes para gestionar los intentos de login, registros y recuperación de contraseñas
+    // Uso mapas concurrentes para gestionar los intentos fallidos de login, registro y recuperación de contraseñas
     private Map<String, AtomicInteger> loginAttempts = new ConcurrentHashMap<>();
     private Map<String, Long> lockTime = new ConcurrentHashMap<>();
     private Map<String, AtomicInteger> registrationAttempts = new ConcurrentHashMap<>();
@@ -313,28 +350,23 @@ public class AuthController {
     private Map<String, AtomicInteger> recoveryAttemptsByIp = new ConcurrentHashMap<>();
     private Map<String, Long> ipLockTime = new ConcurrentHashMap<>();
 
+    // Inyecto los servicios necesarios para la autenticación y el manejo de usuarios
     @Autowired
     private AuthenticationManager authenticationManager;
-
     @Autowired
     private CustomUserDetailsService userDetailsService;
-
     @Autowired
     private JwtUtil jwtUtil;
-
     @Autowired
     private PasswordResetService passwordResetService;
-
     @Autowired
     private EmailService emailService;
-
     @Autowired
     private UserLogService userLogService;
-
     @Autowired
     private UsuarioService usuarioService;
 
-    // Endpoint para manejar el login de usuarios y la generación de tokens de acceso y refresco
+    // Configuro un endpoint para manejar el login de usuarios y generar los tokens de acceso y refresco
     @PostMapping("/login")
     public ResponseEntity<?> login(HttpServletResponse response, @RequestBody AuthRequest authRequest) throws AuthenticationException {
         String username = authRequest.getUsername();
@@ -359,7 +391,6 @@ public class AuthController {
             // Creo cookies para los tokens y las añado a la respuesta
             Cookie accessTokenCookie = createCookie("accessToken", jwt, ACCESS_TOKEN_EXPIRATION);
             Cookie refreshTokenCookie = createCookie("refreshToken", refreshToken, REFRESH_TOKEN_EXPIRATION);
-
             response.addCookie(accessTokenCookie);
             response.addCookie(refreshTokenCookie);
 
@@ -371,7 +402,6 @@ public class AuthController {
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("username", userDetails.getUsername());
             responseBody.put("userId", userId);
-
             return ResponseEntity.ok(responseBody);
         } catch (BadCredentialsException e) {
             // Manejo los intentos fallidos de login incrementando el contador
@@ -384,7 +414,7 @@ public class AuthController {
         }
     }
 
-    // Endpoint para manejar la renovación del token de acceso usando el token de refresco
+    // Configuro un endpoint para renovar el token de acceso usando el token de refresco
     @PostMapping("/refresh-token")
     public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
         // Extraigo el token de refresco de las cookies
@@ -399,7 +429,6 @@ public class AuthController {
                 String newAccessToken = jwtUtil.generateToken(userDetails, ACCESS_TOKEN_EXPIRATION);
                 Cookie newAccessTokenCookie = createCookie("accessToken", newAccessToken, ACCESS_TOKEN_EXPIRATION);
                 response.addCookie(newAccessTokenCookie);
-
                 return ResponseEntity.ok(Collections.singletonMap("message", "Token renovado con éxito"));
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token inválido o expirado.");
@@ -409,7 +438,7 @@ public class AuthController {
         }
     }
 
-    // Endpoint para manejar el registro de nuevos usuarios
+    // Configuro un endpoint para manejar el registro de nuevos usuarios
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody AuthRequest authRequest) {
         String email = authRequest.getEmail();
@@ -449,7 +478,6 @@ public class AuthController {
 
             Map<String, String> response = new HashMap<>();
             response.put("message", "Registro exitoso");
-
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error en el registro: " + e.getMessage());
@@ -460,13 +488,13 @@ public class AuthController {
         }
     }
 
-    // Endpoint para manejar la recuperación de contraseñas
+    // Configuro un endpoint para la recuperación de contraseñas
     @PostMapping("/forgot-password")
     public ResponseEntity<Map<String, String>> forgotPassword(@RequestBody Map<String, String> request, HttpServletRequest httpRequest) {
         String email = request.get("email");
         String clientIp = httpRequest.getRemoteAddr();
 
-        // Verifico si la IP del cliente está bloqueada por demasiados intentos de recuperación
+        // Verifico si la IP del cliente está bloqueada por demasiados intentos fallidos
         if (isIpBlocked(clientIp)) {
             return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
                     .body(Collections.singletonMap("message", "Demasiados intentos fallidos desde esta IP. Inténtalo más tarde."));
@@ -487,7 +515,6 @@ public class AuthController {
             // Envío el token de recuperación de contraseña
             passwordResetService.sendPasswordResetToken(email);
             resetRecoveryAttempts(clientIp);
-
             return ResponseEntity.ok(Collections.singletonMap("message", "Se ha enviado un enlace de restablecimiento de contraseña a tu email."));
         } catch (Exception e) {
             incrementRecoveryAttempts(clientIp);
@@ -495,17 +522,15 @@ public class AuthController {
             String responseMessage = (attemptsLeft > 0)
                     ? "Error al enviar el email de restablecimiento. Te quedan " + attemptsLeft + " intentos."
                     : "Tu IP ha sido bloqueada debido a múltiples intentos fallidos.";
-
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Collections.singletonMap("message", responseMessage));
         }
     }
 
-    // Endpoint para manejar el restablecimiento de contraseñas con un token de recuperación
+    // Configuro un endpoint para el restablecimiento de contraseñas con un token de recuperación
     @PostMapping("/reset-password")
     public ResponseEntity<Map<String, String>> resetPassword(@RequestParam String token, @RequestParam String newPassword) {
         boolean result = passwordResetService.resetPassword(token, newPassword);
-
         if (result) {
             Map<String, String> response = new HashMap<>();
             response.put("message", "Contraseña restablecida correctamente.");
@@ -604,9 +629,11 @@ public class AuthController {
     }
 }
 
-// Este controlador gestiona el envío de formularios de contacto en mi aplicación.
-
+// ContactController.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.controller;
+
+// Este controlador gestiona el envío de formularios de contacto en mi aplicación
 
 import com.example.gestion_curriculums0.model.ContactFormDTO;
 import com.example.gestion_curriculums0.service.EmailService;
@@ -615,91 +642,77 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-// Indico que este controlador está asociado a la ruta "/contact"
+// Defino que este controlador está asociado a la ruta "/contact" y acepto solicitudes cross-origin desde localhost
 @RestController
 @RequestMapping("/contact")
 @CrossOrigin(origins = "http://localhost:8000")
 public class ContactController {
 
-    // Inyecto el servicio de correo electrónico para manejar el envío de mensajes
+    // Inyecto el servicio de correo electrónico para manejar el envío de los mensajes del formulario de contacto
     @Autowired
     private EmailService emailService;
 
-    // Endpoint para enviar un formulario de contacto, donde recibo el cuerpo del formulario como un DTO
+    // Configuro un endpoint para enviar un formulario de contacto, recibiendo los datos como un DTO
     @PostMapping
     public ResponseEntity<String> sendContactForm(@RequestBody ContactFormDTO contactForm) {
         try {
-            // Uso el servicio de correo para enviar el formulario de contacto
+            // Envío el formulario de contacto usando el servicio de correo electrónico
             emailService.sendContactEmail(contactForm);
             return ResponseEntity.ok("Mensaje enviado exitosamente");
         } catch (Exception e) {
-            // Manejo cualquier error durante el proceso de envío
+            // Si ocurre algún error durante el envío, devuelvo un mensaje de error
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Ocurrió un error al enviar el mensaje: " + e.getMessage());
         }
     }
 }
+
+// CurriculumController.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.controller;
 
-import com.example.gestion_curriculums0.model.Curriculum;
-import com.example.gestion_curriculums0.model.CurriculumDTO;
-import com.example.gestion_curriculums0.model.UploadLink;
-import com.example.gestion_curriculums0.model.Usuario;
-import com.example.gestion_curriculums0.repository.UploadLinkRepository;
-import com.example.gestion_curriculums0.repository.UsuarioRepository;
-import com.example.gestion_curriculums0.service.CurriculumService;
-import com.example.gestion_curriculums0.service.PdfService;
-import com.example.gestion_curriculums0.service.OcrService;
-import com.example.gestion_curriculums0.service.EmailService;
+// Defino este controlador para manejar las operaciones relacionadas con los curriculums
+
+import com.example.gestion_curriculums0.model.*;
+import com.example.gestion_curriculums0.repository.*;
+import com.example.gestion_curriculums0.service.*;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.*;
+import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.validation.Valid;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.Map;
 
-
-// Defino este controlador para manejar las operaciones relacionadas con los curriculums
+// Defino que este controlador está asociado a la ruta "/curriculums" y permito solicitudes cross-origin desde localhost
 @RestController
 @RequestMapping("/curriculums")
 @CrossOrigin(origins = "http://localhost:8000")
 public class CurriculumController {
 
+    // Inyecto los servicios y repositorios necesarios para la gestión de curriculums
     @Autowired
     private CurriculumService curriculumService;
-
     @Autowired
     private UsuarioRepository usuarioRepository;
-
     @Autowired
     private PdfService pdfService;
-
     @Autowired
     private OcrService ocrService;
-
     @Autowired
     private UploadLinkRepository uploadLinkRepository;
-
     @Autowired
     private EmailService emailService;
 
-    // Este endpoint devuelve una lista de curriculums en formato DTO
+    // Configuro un endpoint para devolver una lista de curriculums en formato DTO
     @ApiOperation(value = "Ver una lista de curriculums disponibles", response = List.class)
     @GetMapping
     @Transactional(readOnly = true)
@@ -708,7 +721,7 @@ public class CurriculumController {
         return curriculumService.getAllCurriculums().stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    // Este endpoint obtiene un curriculum específico por su ID
+    // Configuro un endpoint para obtener un curriculum específico por su ID
     @GetMapping("/{id}")
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
@@ -718,7 +731,7 @@ public class CurriculumController {
         return convertToDTO(curriculum);
     }
 
-    // Obtengo los curriculums asociados al usuario autenticado
+    // Configuro un endpoint para obtener los curriculums asociados al usuario autenticado
     @GetMapping("/usuario")
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
@@ -730,7 +743,7 @@ public class CurriculumController {
                 .collect(Collectors.toList());
     }
 
-    // Obtengo los curriculums de un usuario específico por su ID
+    // Configuro un endpoint para obtener los curriculums de un usuario específico por su ID
     @GetMapping("/usuario/{usuarioId}")
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
@@ -738,7 +751,7 @@ public class CurriculumController {
         return curriculumService.getCurriculumsByUsuarioId(usuarioId).stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    // Busco curriculums por nombre
+    // Configuro un endpoint para buscar curriculums por nombre
     @GetMapping("/buscar/nombre")
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
@@ -746,7 +759,7 @@ public class CurriculumController {
         return curriculumService.buscarPorNombre(nombre).stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    // Busco curriculums por apellido
+    // Configuro un endpoint para buscar curriculums por apellido
     @GetMapping("/buscar/apellido")
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
@@ -754,7 +767,7 @@ public class CurriculumController {
         return curriculumService.buscarPorApellido(apellido).stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    // Busco curriculums por palabra clave y usuario autenticado
+    // Configuro un endpoint para buscar curriculums por palabra clave y usuario autenticado
     @GetMapping("/buscar/clave")
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
@@ -765,7 +778,7 @@ public class CurriculumController {
         return curriculumService.buscarPorClaveYUsuario(clave, usuario.getId()).stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    // Subo un curriculum en formato PDF y guardo el departamento
+    // Configuro un endpoint para subir un curriculum en formato PDF y guardar el departamento
     @PostMapping("/upload")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public ResponseEntity<?> uploadCurriculum(@RequestParam("file") MultipartFile file,
@@ -773,7 +786,7 @@ public class CurriculumController {
                                               @RequestParam String nombre,
                                               @RequestParam String apellido,
                                               @RequestParam String sexo,
-                                              @RequestParam String departamento, // Nuevo campo departamento
+                                              @RequestParam String departamento,
                                               @RequestParam String telefono,
                                               @RequestParam String email) {
         // Verifico que el archivo sea un PDF
@@ -801,7 +814,7 @@ public class CurriculumController {
             throw new RuntimeException("Error procesando el archivo", e);
         }
 
-        // Creo un objeto Curriculum con los datos extraídos
+        // Creo un objeto Curriculum con los datos extraídos y el usuario relacionado
         Curriculum curriculum = new Curriculum();
         curriculum.setNombre(nombre);
         curriculum.setApellido(apellido);
@@ -810,14 +823,14 @@ public class CurriculumController {
         curriculum.setSexo(sexo);
         curriculum.setTelefono(telefono);
         curriculum.setEmail(email);
-        curriculum.setDepartamento(departamento); // Guardo el departamento
+        curriculum.setDepartamento(departamento);
         curriculum.setUsuario(usuario);
 
-        // Devuelvo una respuesta exitosa con el curriculum guardado
+        // Guardo el curriculum y retorno una respuesta exitosa con el DTO del curriculum guardado
         return ResponseEntity.ok(convertToDTO(curriculumService.saveCurriculum(curriculum)));
     }
 
-    // Actualizo un curriculum existente
+    // Configuro un endpoint para actualizar un curriculum existente
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public CurriculumDTO updateCurriculum(@PathVariable Long id,
@@ -838,8 +851,7 @@ public class CurriculumController {
         return convertToDTO(curriculumService.saveCurriculum(curriculum));
     }
 
-    // Actualización de departamento
-
+    // Configuro un endpoint para actualizar el departamento de un curriculum específico
     @PutMapping("/{idCurriculum}/departamento")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> actualizarDepartamento(
@@ -866,8 +878,7 @@ public class CurriculumController {
         return ResponseEntity.ok("Departamento actualizado exitosamente");
     }
 
-
-    // Elimino un curriculum por su ID
+    // Configuro un endpoint para eliminar un curriculum por su ID
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> deleteCurriculum(@PathVariable Long id) {
@@ -875,7 +886,7 @@ public class CurriculumController {
         return ResponseEntity.ok().build();
     }
 
-    // Descargo el archivo PDF de un curriculum por su ID
+    // Configuro un endpoint para descargar el archivo PDF de un curriculum por su ID
     @GetMapping("/pdf/{id}")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public ResponseEntity<Resource> descargarArchivo(@PathVariable Long id) {
@@ -913,7 +924,7 @@ public class CurriculumController {
                 curriculum.getCvBruto(), curriculum.getSexo(), curriculum.getTelefono(), curriculum.getEmail(), curriculum.getDepartamento(), curriculum.getFechaInsercion());
     }
 
-    // Genero un enlace único para que un usuario pueda subir su curriculum
+    // Configuro un endpoint para generar un enlace único para que un usuario pueda subir su curriculum
     @PostMapping("/generate-upload-link")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> generateUploadLink(Principal principal) {
@@ -938,8 +949,7 @@ public class CurriculumController {
         return ResponseEntity.ok(link);
     }
 
-
-    // Subo un curriculum usando un token de acceso
+    // Configuro un endpoint para subir un curriculum usando un token de acceso
     @PostMapping("/upload_with_token")
     public ResponseEntity<?> uploadCurriculumWithToken(
             @RequestParam("token") String token,
@@ -947,7 +957,7 @@ public class CurriculumController {
             @RequestParam String nombre,
             @RequestParam String apellido,
             @RequestParam String sexo,
-            @RequestParam String departamento, // Nuevo campo departamento
+            @RequestParam String departamento,
             @RequestParam String telefono,
             @RequestParam String email) {
 
@@ -981,7 +991,7 @@ public class CurriculumController {
             throw new RuntimeException("Error procesando el archivo", e);
         }
 
-        // Creo un objeto Curriculum con los datos extraídos
+        // Creo un objeto Curriculum con los datos extraídos y el usuario relacionado
         Curriculum curriculum = new Curriculum();
         curriculum.setNombre(nombre);
         curriculum.setApellido(apellido);
@@ -990,7 +1000,7 @@ public class CurriculumController {
         curriculum.setSexo(sexo);
         curriculum.setTelefono(telefono);
         curriculum.setEmail(email);
-        curriculum.setDepartamento(departamento); // Guardo el departamento
+        curriculum.setDepartamento(departamento);
         curriculum.setUsuario(uploadLink.getUsuario());
 
         // Guardo el curriculum en la base de datos
@@ -1024,85 +1034,131 @@ public class CurriculumController {
         return ResponseEntity.ok("Currículum subido exitosamente");
     }
 }
+
+// DatabaseController.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.controller;
+
+// Defino este controlador para manejar operaciones relacionadas con la base de datos
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-// Defino este controlador para manejar operaciones relacionadas con la base de datos
+// Anoto la clase como un controlador REST para definir endpoints relacionados con la base de datos
 @RestController
 public class DatabaseController {
 
+    // Inyecto el JdbcTemplate para interactuar con la base de datos
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    // Endpoint para verificar la conexión a la base de datos
+    // Configuro un endpoint para verificar la conexión a la base de datos
     @GetMapping("/check-connection")
     public String checkConnection() {
         try {
-            // Ejecuto una simple consulta para comprobar si la conexión es exitosa
+            // Ejecuto una consulta simple para comprobar si la conexión es exitosa
             jdbcTemplate.execute("SELECT 1");
             return "Connection successful!";
         } catch (Exception e) {
-            // En caso de error, devuelvo el mensaje de fallo de conexión
+            // Si ocurre algún error, devuelvo el mensaje indicando el fallo de la conexión
             return "Connection failed: " + e.getMessage();
         }
     }
 }
-// Este controlador me permite gestionar las peticiones HTTP relacionadas con los departamentos
+
+// DepartamentoController.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.controller;
 
+// Este controlador me permite gestionar las peticiones HTTP relacionadas con los departamentos
+
+import com.example.gestion_curriculums0.model.DepartamentoDTO;
 import com.example.gestion_curriculums0.model.Departamento;
+import com.example.gestion_curriculums0.model.Usuario;
 import com.example.gestion_curriculums0.service.DepartamentoService;
+import com.example.gestion_curriculums0.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+// Anoto la clase como un controlador REST y defino la ruta base "/departamentos", permitiendo solicitudes cross-origin desde localhost
 @RestController
 @RequestMapping("/departamentos")
 @CrossOrigin(origins = "http://localhost:8000")
 public class DepartamentoController {
 
+    // Inyecto los servicios necesarios para gestionar departamentos y usuarios
     @Autowired
     private DepartamentoService departamentoService;
+    @Autowired
+    private UsuarioService usuarioService;
 
-    // Endpoint para obtener los departamentos de un usuario específico
+    // Configuro un endpoint para obtener los departamentos asociados a un usuario específico
     @GetMapping
-    public List<Departamento> getDepartamentosByUserId(@RequestParam Long userId) {
-        return departamentoService.getDepartamentosByUserId(userId); // Filtrar departamentos por userId
+    public List<DepartamentoDTO> getDepartamentosByUserId(@RequestParam Long userId) {
+        // Filtro los departamentos por userId y los convierto a DTO
+        return departamentoService.getDepartamentosByUserId(userId)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
-    // Endpoint para agregar un nuevo departamento
+    // Configuro un endpoint para agregar un nuevo departamento
     @PostMapping
-    public ResponseEntity<?> createDepartamento(@RequestBody Departamento departamento) {
-        // Aquí accedo al departamento.getUserId() directamente desde el cuerpo de la petición
-        Long userId = departamento.getUserId();
+    public ResponseEntity<?> createDepartamento(@RequestBody DepartamentoDTO departamentoDTO) {
+        // Obtengo el userId del DTO
+        Long userId = departamentoDTO.getUserId();
+
+        // Verifico si el usuario existe
+        Optional<Usuario> usuario = usuarioService.findById(userId);
+        if (usuario.isEmpty()) {
+            return ResponseEntity.badRequest().body("El usuario no existe.");
+        }
 
         // Verifico si el departamento ya existe para el usuario
-        Optional<Departamento> departamentoExistente = departamentoService.findByNombreAndUserId(departamento.getNombre(), userId);
+        Optional<Departamento> departamentoExistente = departamentoService.findByNombreAndUserId(departamentoDTO.getNombre(), userId);
         if (departamentoExistente.isPresent()) {
             return ResponseEntity.badRequest().body("El departamento ya existe para este usuario.");
         }
 
-        // Si no existe, lo guardo
-        return ResponseEntity.ok(departamentoService.saveDepartamento(departamento));
+        // Creo una nueva entidad Departamento a partir del DTO y asigno el usuario
+        Departamento departamento = new Departamento();
+        departamento.setNombre(departamentoDTO.getNombre().toLowerCase());
+        departamento.setUsuario(usuario.get());
+
+        // Guardo el nuevo departamento y devuelvo el DTO correspondiente
+        Departamento savedDepartamento = departamentoService.saveDepartamento(departamento);
+        return ResponseEntity.ok(convertToDTO(savedDepartamento));
     }
 
-
-    // Endpoint para eliminar un departamento por su ID
+    // Configuro un endpoint para eliminar un departamento por su ID
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteDepartamento(@PathVariable Long id) {
         departamentoService.deleteDepartamento(id);
         return ResponseEntity.ok().build();
     }
+
+    // Método privado para convertir una entidad Departamento en un DepartamentoDTO
+    private DepartamentoDTO convertToDTO(Departamento departamento) {
+        DepartamentoDTO dto = new DepartamentoDTO();
+        dto.setId(departamento.getId());
+        dto.setNombre(departamento.getNombre());
+        dto.setUserId(departamento.getUsuario().getId());
+        return dto;
+    }
 }
 
+// NotaController.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.controller;
+
+// Defino este controlador para gestionar las notas asociadas a los curriculums
 
 import com.example.gestion_curriculums0.model.Nota;
 import com.example.gestion_curriculums0.model.NotaDTO;
@@ -1116,29 +1172,30 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// Defino este controlador para gestionar las notas asociadas a los curriculums
+// Anoto la clase como un controlador REST y defino la ruta base "/curriculums", permitiendo solicitudes cross-origin desde localhost
 @RestController
 @RequestMapping("/curriculums")
 @CrossOrigin(origins = "http://localhost:8000")
 public class NotaController {
 
+    // Inyecto los servicios necesarios para gestionar las notas y los curriculums
     @Autowired
     private NotaService notaService;
-
     @Autowired
     private CurriculumService curriculumService;
 
-    // Obtengo una lista de notas asociadas a un curriculum específico
+    // Configuro un endpoint para obtener una lista de notas asociadas a un curriculum específico
     @GetMapping("/{curriculumId}/notas")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public List<NotaDTO> getNotasByCurriculumId(@PathVariable Long curriculumId) {
+        // Obtengo las notas asociadas al curriculum y las convierto a DTO
         return notaService.getNotasByCurriculumId(curriculumId)
                 .stream()
                 .map(nota -> new NotaDTO(nota.getId(), nota.getContenido(), nota.getFechaCreacion()))
                 .collect(Collectors.toList());
     }
 
-    // Agrego una nueva nota a un curriculum específico
+    // Configuro un endpoint para agregar una nueva nota a un curriculum específico
     @PostMapping("/{curriculumId}/notas")
     @PreAuthorize("hasAuthority('USER')")
     public NotaDTO addNota(@PathVariable Long curriculumId, @RequestBody NotaDTO notaDTO) {
@@ -1153,66 +1210,98 @@ public class NotaController {
         return new NotaDTO(savedNota.getId(), savedNota.getContenido(), savedNota.getFechaCreacion());
     }
 
-    // Elimino una nota específica por su ID
+    // Configuro un endpoint para eliminar una nota específica por su ID
     @DeleteMapping("/notas/{id}")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<?> deleteNota(@PathVariable Long id) {
+        // Elimino la nota indicada
         notaService.deleteNota(id);
         return ResponseEntity.ok().build();
     }
 }
+
+// PasswordResetController.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.controller;
+
+// Defino este controlador para manejar las operaciones relacionadas con el restablecimiento de contraseñas
 
 import com.example.gestion_curriculums0.service.PasswordResetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-// Defino este controlador para manejar las operaciones relacionadas con el restablecimiento de contraseñas
+// Anoto la clase como un controlador REST y la asocio a la ruta base "/auth", permitiendo solicitudes cross-origin desde localhost
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = "http://localhost:8000")
 public class PasswordResetController {
 
+    // Inyecto el servicio de restablecimiento de contraseñas para manejar la lógica relacionada
     @Autowired
     private PasswordResetService passwordResetService;
 
-    // He eliminado el método forgotPassword en este controlador, ya que decidí no implementarlo aquí.
+    // He eliminado el método forgotPassword en este controlador, ya que decidí no implementarlo aquí
 }
+
+// ProtectedController.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.controller;
+
+// Defino este controlador para manejar un endpoint protegido
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-// Defino este controlador para manejar un endpoint protegido
+// Anoto la clase como un controlador REST y la asocio a la ruta base "/protected"
 @RestController
 @RequestMapping("/protected")
 public class ProtectedController {
 
-    // Este endpoint es accesible solo si el usuario tiene autorización adecuada
+    // Configuro un endpoint accesible solo si el usuario tiene la autorización adecuada
     @GetMapping
     public String getProtected() {
+        // Devuelvo un mensaje indicando que este es un endpoint protegido
         return "This is a protected endpoint";
     }
 }
+
+// TestController.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.controller;
 
+// Defino este controlador para manejar endpoints de prueba que están protegidos por roles
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-// Defino este controlador para manejar un endpoint protegido
+// Anoto la clase como un controlador REST y la asocio a la ruta base "/api/test"
 @RestController
-@RequestMapping("/protected")
-public class ProtectedController {
+@RequestMapping("/api/test")
+public class TestController {
 
-    // Este endpoint es accesible solo si el usuario tiene autorización adecuada
-    @GetMapping
-    public String getProtected() {
-        return "This is a protected endpoint";
+    // Configuro un endpoint accesible solo para usuarios con el rol de USER
+    @GetMapping("/user")
+    public ResponseEntity<String> userEndpoint() {
+        // Devuelvo un mensaje indicando que el usuario ha accedido a un endpoint protegido para USER
+        return ResponseEntity.ok("You have accessed a USER protected endpoint!");
+    }
+
+    // Configuro un endpoint accesible solo para usuarios con el rol de ADMIN
+    @GetMapping("/admin")
+    public ResponseEntity<String> adminEndpoint() {
+        // Devuelvo un mensaje indicando que el usuario ha accedido a un endpoint protegido para ADMIN
+        return ResponseEntity.ok("You have accessed an ADMIN protected endpoint!");
     }
 }
+
+// UsuarioController.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.controller;
+
+// Defino este controlador para gestionar las operaciones relacionadas con los usuarios
 
 import com.example.gestion_curriculums0.model.CurriculumDTO;
 import com.example.gestion_curriculums0.model.Curriculum;
@@ -1233,24 +1322,22 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-// Defino este controlador para gestionar las operaciones relacionadas con los usuarios
+// Anoto la clase como un controlador REST y la asocio a la ruta base "/usuarios"
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
 
+    // Inyecto los servicios y el repositorio necesarios para gestionar los usuarios
     @Autowired
     private UsuarioRepository usuarioRepository;
-
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
-
     @Autowired
     private UsuarioService usuarioService;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // Método para registrar un nuevo usuario
+    // Configuro un método para registrar un nuevo usuario
     @PostMapping("/registrar")
     @Transactional
     public ResponseEntity<?> createUsuario(@RequestBody Usuario usuario) {
@@ -1304,20 +1391,20 @@ public class UsuarioController {
         );
     }
 
-    // Listado de todos los usuarios registrados
+    // Configuro un endpoint para listar todos los usuarios registrados
     @GetMapping("/listar")
     public List<Usuario> listarUsuarios() {
         return usuarioRepository.findAll();
     }
 
-    // Obtengo un usuario por su nombre de usuario
+    // Configuro un endpoint para obtener un usuario por su nombre de usuario
     @GetMapping("/listar/{username}")
     public UsuarioDTO getUsuario(@PathVariable String username) {
         Usuario usuario = usuarioRepository.findByNombreUsuario(username).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         return convertToDTO(usuario);
     }
 
-    // Elimino un usuario por su nombre de usuario
+    // Configuro un endpoint para eliminar un usuario por su nombre de usuario
     @DeleteMapping("/delete-user/{username}")
     public ResponseEntity<String> deleteUser(@PathVariable String username) {
         Optional<Usuario> usuarioOpt = usuarioService.findByNombreUsuario(username);
@@ -1329,7 +1416,12 @@ public class UsuarioController {
         }
     }
 }
+
+// GlobalExceptionHandler.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.exception;
+
+// Defino este controlador para manejar las excepciones globalmente en la aplicación
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -1337,18 +1429,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-// Defino este controlador para manejar las excepciones globalmente en la aplicación
+// Anoto la clase con @ControllerAdvice para que maneje excepciones de forma global en toda la aplicación
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Manejo las excepciones del tipo RuntimeException
+    // Configuro un manejador para las excepciones del tipo RuntimeException
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
         // Devuelvo un mensaje con el error y el estado HTTP 400 (BAD_REQUEST)
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    // Manejo las excepciones del tipo DataIntegrityViolationException
+    // Configuro un manejador para las excepciones del tipo DataIntegrityViolationException
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
         // Verifico si la causa de la excepción es una violación de restricciones de Hibernate
@@ -1365,6 +1457,9 @@ public class GlobalExceptionHandler {
 
     // Aquí puedo definir otros manejadores de excepciones según sea necesario
 }
+
+// ContactFormDTO.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.model;
 
 // Defino esta clase como un Data Transfer Object (DTO) para el formulario de contacto
@@ -1405,13 +1500,18 @@ public class ContactFormDTO {
         this.message = message;
     }
 }
+
+// Curriculum.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.model;
+
+// Defino la entidad Curriculum que representa el currículum de un usuario
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-// Defino la entidad Curriculum que representa el currículum de un usuario
+// Anoto la clase con @Entity para que se reconozca como una entidad en JPA
 @Entity
 @Table(name = "curriculums")
 public class Curriculum {
@@ -1420,11 +1520,11 @@ public class Curriculum {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Nombre del usuario, no puede ser nulo
+    // Defino el nombre del usuario, no puede ser nulo
     @Column(nullable = false)
     private String nombre;
 
-    // Apellido del usuario, no puede ser nulo
+    // Defino el apellido del usuario, no puede ser nulo
     @Column(nullable = false)
     private String apellido;
 
@@ -1432,7 +1532,7 @@ public class Curriculum {
     @Column(name = "pdf_path", nullable = false)
     private String pdfPath;
 
-    // Resumen del CV con una longitud máxima de 2000 caracteres (Descartado USO DE IA para resumir los CV).
+    // Resumen del CV con una longitud máxima de 2000 caracteres (Descarté el uso de IA para resumir los CV)
     @Column(name = "resumen_cv", length = 2000)
     private String resumenCv;
 
@@ -1514,12 +1614,14 @@ public class Curriculum {
         // Establezco la ruta del archivo PDF del curriculum
         this.pdfPath = pdfPath;
     }
-    //Descarto uso de ia para resumir C.V
+
+    // Descarto uso de IA para resumir C.V.
     public String getResumenCv() {
         // Obtengo el resumen del CV
         return resumenCv;
     }
-    //Descarto uso de ia para resumir C.V
+
+    // Descarto uso de IA para resumir C.V.
     public void setResumenCv(String resumenCv) {
         // Establezco el resumen del CV
         this.resumenCv = resumenCv;
@@ -1576,12 +1678,12 @@ public class Curriculum {
     }
 
     public String getDepartamento() {
-        // Obtengo departamento
+        // Obtengo el departamento
         return departamento;
     }
 
     public void setDepartamento(String departamento) {
-        // Establezco departamento manualmente si es necesario
+        // Establezco el departamento manualmente si es necesario
         this.departamento = departamento;
     }
 
@@ -1605,11 +1707,15 @@ public class Curriculum {
         this.notas = notas;
     }
 }
+
+// CurriculumDTO.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.model;
+
+// Defino este DTO (Data Transfer Object) para transferir los datos del curriculum de forma sencilla
 
 import java.time.LocalDateTime;
 
-// Defino este DTO (Data Transfer Object) para transferir los datos del curriculum de forma sencilla
 public class CurriculumDTO {
     private Long id;
     private String nombre;
@@ -1623,7 +1729,7 @@ public class CurriculumDTO {
     private LocalDateTime fechaInsercion;
 
     // Constructor para inicializar los atributos del DTO
-    public CurriculumDTO(Long id, String nombre, String apellido, String pdfPath, String cvBruto,
+    public CurriculumDTO(Long id, String nombre, String apellido, String pdfPath, String resumenCv,
                          String sexo, String telefono, String email, String departamento, LocalDateTime fechaInsercion) {
         this.id = id;
         this.nombre = nombre;
@@ -1720,10 +1826,12 @@ public class CurriculumDTO {
     }
 
     public String getDepartamento() {
+        // Obtengo el departamento del usuario
         return departamento;
     }
 
     public void setDepartamento(String departamento) {
+        // Establezco el departamento del usuario
         this.departamento = departamento;
     }
 
@@ -1737,8 +1845,12 @@ public class CurriculumDTO {
         this.fechaInsercion = fechaInsercion;
     }
 }
-// Defino la entidad Departamento para almacenar los diferentes departamentos
+
+// Departamento.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.model;
+
+// Defino la entidad Departamento para almacenar los diferentes departamentos
 
 import jakarta.persistence.*;
 
@@ -1750,43 +1862,112 @@ public class Departamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Defino el nombre del departamento, no puede ser nulo
     @Column(nullable = false)
     private String nombre;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId; // Relaciona el departamento con un usuario específico
+    // Relación muchos-a-uno con la entidad Usuario
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private Usuario usuario; // Asocia el departamento con un usuario específico
+
+    // Campo userId para facilitar el acceso, pero sin interferir con la relación JPA
+    @Column(name = "user_id", insertable = false, updatable = false)
+    private Long userId;
 
     // Getters y setters
+
     public Long getId() {
+        // Obtengo el ID del departamento
         return id;
     }
 
     public void setId(Long id) {
+        // Establezco el ID del departamento
         this.id = id;
     }
 
     public String getNombre() {
+        // Obtengo el nombre del departamento
         return nombre;
     }
 
     public void setNombre(String nombre) {
+        // Establezco el nombre del departamento
+        this.nombre = nombre;
+    }
+
+    public Usuario getUsuario() {
+        // Obtengo el usuario asociado al departamento
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        // Establezco el usuario asociado al departamento
+        this.usuario = usuario;
+    }
+
+    public Long getUserId() {
+        // Obtengo el userId asociado al departamento
+        return userId;
+    }
+
+    // No es necesario un setter para userId ya que se asigna automáticamente a través de la relación con el usuario
+}
+
+// DepartamentoDTO.java
+// Indico el paquete al que pertenece esta clase
+package com.example.gestion_curriculums0.model;
+
+// Defino este DTO (Data Transfer Object) para transferir los datos de departamentos de forma sencilla
+
+public class DepartamentoDTO {
+    private Long id;
+    private String nombre;
+    private Long userId;
+
+    // Getters y setters
+
+    public Long getId() {
+        // Obtengo el ID del departamento
+        return id;
+    }
+
+    public void setId(Long id) {
+        // Establezco el ID del departamento
+        this.id = id;
+    }
+
+    public String getNombre() {
+        // Obtengo el nombre del departamento
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        // Establezco el nombre del departamento
         this.nombre = nombre;
     }
 
     public Long getUserId() {
+        // Obtengo el userId asociado al departamento
         return userId;
     }
 
     public void setUserId(Long userId) {
+        // Establezco el userId asociado al departamento
         this.userId = userId;
     }
 }
+
+// Nota.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.model;
+
+// Defino la entidad Nota que estará relacionada con los curriculums
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-// Defino la entidad Nota que estará relacionada con los curriculums
 @Entity
 @Table(name = "notas")
 public class Nota {
@@ -1795,11 +1976,11 @@ public class Nota {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Contenido de la nota, es obligatorio
+    // Defino el contenido de la nota, que es obligatorio
     @Column(nullable = false)
     private String contenido;
 
-    // Fecha de creación de la nota, es obligatoria y se establece automáticamente al crearse
+    // Defino la fecha de creación de la nota, que es obligatoria y se establece automáticamente al crearse
     @Column(name = "fecha_creacion", nullable = false)
     private LocalDateTime fechaCreacion;
 
@@ -1842,7 +2023,7 @@ public class Nota {
     }
 
     public void setFechaCreacion(LocalDateTime fechaCreacion) {
-        // Establezco la fecha de creación de la nota
+        // Establezco manualmente la fecha de creación de la nota, si es necesario
         this.fechaCreacion = fechaCreacion;
     }
 
@@ -1856,12 +2037,15 @@ public class Nota {
         this.curriculum = curriculum;
     }
 }
+
 // NotaDTO.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.model;
+
+// Defino este DTO (Data Transfer Object) para transferir los datos de la entidad Nota
 
 import java.time.LocalDateTime;
 
-// Defino este DTO (Data Transfer Object) para transferir los datos de la entidad Nota
 public class NotaDTO {
     private Long id;
     private String contenido;
@@ -1906,12 +2090,16 @@ public class NotaDTO {
         this.fechaCreacion = fechaCreacion;
     }
 }
+
+// UploadLink.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.model;
+
+// Defino la entidad UploadLink que me permite crear enlaces únicos para la subida de archivos
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-// Defino la entidad UploadLink que me permite crear enlaces únicos para la subida de archivos
 @Entity
 public class UploadLink {
 
@@ -2002,12 +2190,16 @@ public class UploadLink {
         this.usuario = usuario;
     }
 }
+
+// UserLog.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.model;
+
+// Defino la entidad UserLog que me permite registrar las acciones realizadas por los usuarios
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-// Defino la entidad UserLog que me permite registrar las acciones realizadas por los usuarios
 @Entity
 @Table(name = "user_logs")
 public class UserLog {
@@ -2069,14 +2261,17 @@ public class UserLog {
     }
 }
 
+// Usuario.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.model;
+
+// Defino la entidad Usuario para almacenar los datos de los usuarios registrados
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
-// Defino la entidad Usuario para almacenar los datos de los usuarios registrados
 @Entity
 @Table(name = "usuarios")
 public class Usuario {
@@ -2109,6 +2304,10 @@ public class Usuario {
     // Relación uno-a-muchos con los curriculums, un usuario puede tener varios curriculums
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Curriculum> curriculums;
+
+    // Relación uno-a-muchos con la entidad Departamento, un usuario puede tener varios departamentos
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Departamento> departamentos;
 
     // Token para restablecimiento de contraseña
     @Column(name = "reset_token")
@@ -2218,11 +2417,15 @@ public class Usuario {
         }
     }
 }
+
+// UsuarioDTO.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.model;
+
+// Defino la clase DTO para el usuario, que me permitirá transferir datos entre capas
 
 import java.util.List;
 
-// Defino la clase DTO para el usuario, que me permitirá transferir datos entre capas
 public class UsuarioDTO {
 
     private Long id;
@@ -2292,13 +2495,17 @@ public class UsuarioDTO {
         this.curriculums = curriculums;
     }
 }
+
+// CurriculumRepository.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.repository;
+
+// Declaro la interfaz CurriculumRepository que extiende JpaRepository para manejar las operaciones CRUD de la entidad Curriculum
 
 import com.example.gestion_curriculums0.model.Curriculum;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
-// Declaro la interfaz CurriculumRepository que extiende JpaRepository para manejar las operaciones CRUD de la entidad Curriculum
 public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
 
     // Defino un método para buscar curriculums cuyo nombre contenga una cadena específica
@@ -2317,7 +2524,8 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
     void deleteByUsuarioId(Long usuarioId);
 }
 
-
+// DepartamentoRepository.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.repository;
 
 import com.example.gestion_curriculums0.model.Departamento;
@@ -2327,22 +2535,27 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+// Anoto la interfaz con @Repository para indicar que es un componente de acceso a datos
 @Repository
 public interface DepartamentoRepository extends JpaRepository<Departamento, Long> {
 
-    // Método para buscar departamentos por userId
+    // Defino un método para buscar departamentos por userId
     List<Departamento> findByUserId(Long userId);
 
-    // Método para buscar un departamento por su nombre y userId
+    // Defino un método para buscar un departamento por su nombre y userId
     Optional<Departamento> findByNombreAndUserId(String nombre, Long userId);
 }
+
+// NotaRepository.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.repository;
+
+// Declaro la interfaz NotaRepository que extiende JpaRepository para manejar las operaciones CRUD de la entidad Nota
 
 import com.example.gestion_curriculums0.model.Nota;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
-// Declaro la interfaz NotaRepository que extiende JpaRepository para manejar las operaciones CRUD de la entidad Nota
 public interface NotaRepository extends JpaRepository<Nota, Long> {
 
     // Defino un método para obtener todas las notas asociadas a un curriculum por su ID
@@ -2352,14 +2565,16 @@ public interface NotaRepository extends JpaRepository<Nota, Long> {
     void deleteByCurriculumId(Long curriculumId);
 }
 
+// UploadLinkRepository.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.repository;
+
+// Declaro la interfaz UploadLinkRepository que extiende JpaRepository para manejar las operaciones CRUD de la entidad UploadLink
 
 import com.example.gestion_curriculums0.model.UploadLink;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
-// Declaro la interfaz UploadLinkRepository que extiende JpaRepository para manejar las operaciones CRUD de la
-// entidad UploadLink
 public interface UploadLinkRepository extends JpaRepository<UploadLink, Long> {
 
     // Defino un método para buscar un enlace de subida (UploadLink) por su token
@@ -2369,26 +2584,34 @@ public interface UploadLinkRepository extends JpaRepository<UploadLink, Long> {
     void deleteByUsuarioId(Long usuarioId);
 }
 
+// UserLogRepository.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.repository;
+
+// Declaro la interfaz UserLogRepository que extiende JpaRepository para manejar las operaciones CRUD de la entidad UserLog
 
 import com.example.gestion_curriculums0.model.UserLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-// Declaro la interfaz UserLogRepository que extiende JpaRepository para manejar las operaciones CRUD de la entidad UserLog
+// Anoto la interfaz con @Repository para indicar que es un componente de acceso a datos
 @Repository
 public interface UserLogRepository extends JpaRepository<UserLog, Long> {
     // No necesito definir métodos adicionales aquí, JpaRepository ya proporciona los métodos básicos como save(), findAll(), delete(), etc.
 }
 
+// UsuarioRepository.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.repository;
+
+// Declaro la interfaz UsuarioRepository que extiende JpaRepository para manejar las operaciones CRUD de la entidad Usuario
 
 import com.example.gestion_curriculums0.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
-// Declaro la interfaz UsuarioRepository que extiende JpaRepository para manejar las operaciones CRUD de la entidad Usuario
+// Anoto la interfaz con @Repository para indicar que es un componente de acceso a datos
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
@@ -2407,7 +2630,12 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     // Defino un método para verificar si un usuario existe por su email
     boolean existsByEmail(String email);
 }
+
+// CustomUserDetails.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.security;
+
+// Esta clase implementa UserDetails, que es necesaria para la autenticación en Spring Security
 
 import com.example.gestion_curriculums0.model.Usuario;
 import org.springframework.security.core.GrantedAuthority;
@@ -2418,7 +2646,6 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.Arrays;
 
-// Esta clase implementa UserDetails, que es necesaria para la autenticación en Spring Security
 public class CustomUserDetails implements UserDetails {
 
     private Usuario usuario; // Guardo la referencia al usuario
@@ -2473,11 +2700,14 @@ public class CustomUserDetails implements UserDetails {
         return true;
     }
 }
-//Esta clase es un filtro que se encarga de verificar si una solicitud HTTP
+
+// JwtAuthenticationFilter.java
+// Indico el paquete al que pertenece esta clase
+package com.example.gestion_curriculums0.security;
+
+// Esta clase es un filtro que se encarga de verificar si una solicitud HTTP
 // contiene un token JWT (JSON Web Token) válido. Este filtro se ejecuta en cada solicitud
 // que pase por él, y su principal función es autenticar al usuario basado en ese token.
-
-package com.example.gestion_curriculums0.security;
 
 import com.example.gestion_curriculums0.service.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
@@ -2536,7 +2766,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
+
+// JwtUtil.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.security;
+
+/*
+  Clase JwtUtil: Me encargo de generar, validar y extraer información de los tokens JWT utilizados en la autenticación de usuarios.
+  También gestiono la extracción de tokens desde las cookies enviadas en las solicitudes HTTP.
+ */
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -2553,10 +2791,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-/*
-  Clase JwtUtil: Me encargo de generar, validar y extraer información de los tokens JWT utilizados en la autenticación de usuarios.
-  También gestiono la extracción de tokens desde las cookies enviadas en las solicitudes HTTP.
- */
 @Service
 public class JwtUtil {
 
@@ -2624,7 +2858,15 @@ public class JwtUtil {
         return null;  // Si no encuentro el token en las cookies, retorno null
     }
 }
+
+// ArchivoService.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.service;
+
+/*
+  Clase ArchivoService: Me encargo de gestionar la subida y descarga de archivos.
+  Guardo los archivos subidos en un directorio local y también puedo cargar un archivo cuando es solicitado.
+ */
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -2636,10 +2878,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
-/*
-  Clase ArchivoService: Me encargo de gestionar la subida y descarga de archivos.
-  Guardo los archivos subidos en un directorio local y también puedo cargar un archivo cuando es solicitado.
- */
 @Service
 public class ArchivoService {
 
@@ -2685,6 +2923,9 @@ public class ArchivoService {
         }
     }
 }
+
+// AuthRequest.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.service;
 
 /*
@@ -2701,37 +2942,48 @@ public class AuthRequest {
     // Getters y setters para acceder y modificar los valores
 
     public String getUsername() {
+        // Obtengo el nombre de usuario
         return username;
     }
 
     public void setUsername(String username) {
+        // Establezco el nombre de usuario
         this.username = username;
     }
 
     public String getPassword() {
+        // Obtengo la contraseña del usuario
         return password;
     }
 
     public void setPassword(String password) {
+        // Establezco la contraseña del usuario
         this.password = password;
     }
 
     public String getEmail() {
+        // Obtengo el correo electrónico del usuario
         return email;
     }
 
     public void setEmail(String email) {
+        // Establezco el correo electrónico del usuario
         this.email = email;
     }
 
     public String getRoles() {
+        // Obtengo los roles del usuario
         return roles;
     }
 
     public void setRoles(String roles) {
+        // Establezco los roles del usuario
         this.roles = roles;
     }
 }
+
+// AuthResponse.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.service;
 
 /*
@@ -2744,8 +2996,7 @@ public class AuthResponse {
     private String username;  // El nombre de usuario que se autenticó correctamente
     private Long userId;      // El ID del usuario autenticado
 
-    //Constructor: Inicializo la respuesta con el token JWT, el nombre de usuario y el ID del usuario.
-
+    // Constructor: Inicializo la respuesta con el token JWT, el nombre de usuario y el ID del usuario
     public AuthResponse(String jwt, String username, Long userId) {
         this.jwt = jwt;
         this.username = username;
@@ -2755,31 +3006,45 @@ public class AuthResponse {
     // Getters y setters para acceder y modificar los valores
 
     public String getJwt() {
+        // Obtengo el token JWT generado
         return jwt;
     }
 
     public void setJwt(String jwt) {
+        // Establezco el token JWT
         this.jwt = jwt;
     }
 
     public String getUsername() {
+        // Obtengo el nombre de usuario autenticado
         return username;
     }
 
     public void setUsername(String username) {
+        // Establezco el nombre de usuario autenticado
         this.username = username;
     }
 
     public Long getUserId() {
+        // Obtengo el ID del usuario autenticado
         return userId;
     }
 
     public void setUserId(Long userId) {
+        // Establezco el ID del usuario autenticado
         this.userId = userId;
     }
 }
 
+// CurriculumService.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.service;
+
+/*
+  Clase CurriculumService: Me encargo de gestionar las operaciones relacionadas con los curriculums,
+  como la búsqueda, guardado, eliminación y filtrado por criterios específicos. Actúo como intermediario
+  entre los controladores y el repositorio que accede a la base de datos.
+ */
 
 import com.example.gestion_curriculums0.model.Curriculum;
 import com.example.gestion_curriculums0.repository.CurriculumRepository;
@@ -2790,49 +3055,40 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/*
-  Clase CurriculumService: Me encargo de gestionar las operaciones relacionadas con los curriculums,
-  como la búsqueda, guardado, eliminación y filtrado por criterios específicos. Intermediario
-  entre los controladores y el repositorio que accede a la base de datos.
- */
 @Service
 public class CurriculumService {
 
     @Autowired
     private CurriculumRepository curriculumRepository; // Inyecto el repositorio para acceder a los curriculums en la base de datos
 
-    //Obtengo todos los curriculums almacenados en la base de datos.
-
+    // Obtengo todos los curriculums almacenados en la base de datos
     public List<Curriculum> getAllCurriculums() {
         return curriculumRepository.findAll();
     }
 
-    //Busco un curriculum específico por su ID.
-
+    // Busco un curriculum específico por su ID
     public Optional<Curriculum> getCurriculumById(Long id) {
         return curriculumRepository.findById(id);
     }
 
-    //Obtengo todos los curriculums asociados a un usuario por su ID.
-
+    // Obtengo todos los curriculums asociados a un usuario por su ID
     public List<Curriculum> getCurriculumsByUsuarioId(Long usuarioId) {
         return curriculumRepository.findByUsuarioId(usuarioId);
     }
 
-    //Busco curriculums que contengan el nombre proporcionado.
+    // Busco curriculums que contengan el nombre proporcionado
     public List<Curriculum> buscarPorNombre(String nombre) {
         return curriculumRepository.findByNombreContaining(nombre);
     }
 
-    //Busco curriculums que contengan el apellido proporcionado.
-
+    // Busco curriculums que contengan el apellido proporcionado
     public List<Curriculum> buscarPorApellido(String apellido) {
         return curriculumRepository.findByApellidoContaining(apellido);
     }
 
     /*
       Realizo una búsqueda de curriculums por palabras clave y el ID del usuario, buscando coincidencias
-      en el nombre, apellido, texto del CV, o sexo.
+      en el nombre, apellido, texto del CV, sexo, teléfono o departamento.
      */
     public List<Curriculum> buscarPorClaveYUsuario(String clave, Long usuarioId) {
         String[] keywords = clave.split(" "); // Divido las palabras clave para buscar una por una
@@ -2860,19 +3116,26 @@ public class CurriculumService {
         return matchingCurriculums;
     }
 
-
-    //Guardo un nuevo curriculum o actualizo uno existente en la base de datos.
-
+    // Guardo un nuevo curriculum o actualizo uno existente en la base de datos
     public Curriculum saveCurriculum(Curriculum curriculum) {
         return curriculumRepository.save(curriculum);
     }
 
-    //Elimino un curriculum por su ID
+    // Elimino un curriculum por su ID
     public void deleteCurriculum(Long id) {
         curriculumRepository.deleteById(id);
     }
 }
+
+// CustomUserDetailsService.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.service;
+
+/*
+  Clase CustomUserDetailsService: Responsable de cargar los detalles del usuario desde la base de datos
+  según su nombre de usuario o email, e interactuar con el sistema de autenticación de Spring Security.
+  También proporciono métodos adicionales para verificar si un usuario existe y guardar nuevos usuarios.
+ */
 
 import com.example.gestion_curriculums0.model.Usuario;
 import com.example.gestion_curriculums0.repository.UsuarioRepository;
@@ -2886,11 +3149,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-/*
-  Clase CustomUserDetailsService: Responsable de cargar los detalles del usuario desde la base de datos
-  según su nombre de usuario o email, e interactuar con el sistema de autenticación de Spring Security.
-  También proporciono métodos adicionales para verificar si un usuario existe y guardar nuevos usuarios.
- */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
@@ -2913,8 +3171,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new CustomUserDetails(usuario.get()); // Devuelvo los detalles del usuario encontrado
     }
 
-    //Devuelvo el ID del usuario a partir de su nombre de usuario o email.
-
+    // Devuelvo el ID del usuario a partir de su nombre de usuario o email
     public Long getUserIdByUsername(String usernameOrEmail) {
         Optional<Usuario> usuario = usuarioRepository.findByNombreUsuarioOrEmail(usernameOrEmail, usernameOrEmail);
         if (usuario.isEmpty()) {
@@ -2923,8 +3180,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         return usuario.get().getId();
     }
 
-    //Guardo un nuevo usuario en la base de datos con los detalles proporcionados.
-
+    // Guardo un nuevo usuario en la base de datos con los detalles proporcionados
     public void saveUser(AuthRequest authRequest) {
         Usuario usuario = new Usuario();
         usuario.setNombreUsuario(authRequest.getUsername()); // Establezco el nombre de usuario
@@ -2934,20 +3190,26 @@ public class CustomUserDetailsService implements UserDetailsService {
         usuarioRepository.save(usuario); // Guardo el usuario en la base de datos
     }
 
-    //Verifico si un usuario existe en la base de datos por su nombre de usuario o email.
-
+    // Verifico si un usuario existe en la base de datos por su nombre de usuario o email
     public boolean userExists(String usernameOrEmail) {
         return usuarioRepository.findByNombreUsuarioOrEmail(usernameOrEmail, usernameOrEmail).isPresent();
     }
 
-    //Verifico si un email ya está registrado en la base de datos.
-
+    // Verifico si un email ya está registrado en la base de datos
     public boolean userExistsByEmail(String email) {
         return usuarioRepository.existsByEmail(email);
     }
 }
-// Este servicio me permite gestionar las operaciones con los departamentos
+
+// DepartamentoService.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.service;
+
+/*
+  Este servicio me permite gestionar las operaciones con los departamentos,
+  como la búsqueda, guardado, y eliminación, actuando como intermediario
+  entre los controladores y el repositorio de departamentos.
+ */
 
 import com.example.gestion_curriculums0.model.Departamento;
 import com.example.gestion_curriculums0.repository.DepartamentoRepository;
@@ -2961,7 +3223,7 @@ import java.util.Optional;
 public class DepartamentoService {
 
     @Autowired
-    private DepartamentoRepository departamentoRepository;
+    private DepartamentoRepository departamentoRepository; // Inyecto el repositorio de departamentos
 
     // Método para obtener los departamentos filtrados por userId
     public List<Departamento> getDepartamentosByUserId(Long userId) {
@@ -2983,7 +3245,16 @@ public class DepartamentoService {
         return departamentoRepository.findByNombreAndUserId(nombre, userId);
     }
 }
+
+// EmailService.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.service;
+
+/*
+  Clase EmailService: Responsable de enviar correos electrónicos, como correos de bienvenida,
+  notificaciones a administradores y correos de contacto. También proporciono la funcionalidad
+  para enviar correos de manera asíncrona y directa.
+ */
 
 import com.example.gestion_curriculums0.model.ContactFormDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -2994,11 +3265,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
-/*
-  Clase EmailService: Responsable de enviar correos electrónicos, como correos de bienvenida,
-  notificaciones a administradores y correos de contacto. Además, proporciono la funcionalidad
-  para enviar correos de manera asíncrona y directa.
- */
 @Service
 public class EmailService {
 
@@ -3009,7 +3275,6 @@ public class EmailService {
       Envío un correo de bienvenida a un nuevo usuario de forma asíncrona. Esto asegura que la
       operación de envío de correo no bloquee otras tareas.
      */
-
     @Async
     public void sendWelcomeEmail(String to, String username) {
         // Configuro el mensaje de bienvenida
@@ -3028,8 +3293,7 @@ public class EmailService {
         }
     }
 
-    //Envío una notificación al administrador cada vez que un nuevo usuario se registra en el sistema.
-
+    // Envío una notificación al administrador cada vez que un nuevo usuario se registra en el sistema
     public void sendNotificationToAdmin(String username, String email) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo("gestionatuscv@gmail.com");
@@ -3043,8 +3307,7 @@ public class EmailService {
         mailSender.send(message);
     }
 
-    //Envío un correo con los detalles del formulario de contacto a la dirección del administrador.
-
+    // Envío un correo con los detalles del formulario de contacto a la dirección del administrador
     public void sendContactEmail(ContactFormDTO contactForm) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo("gestionatuscv@gmail.com");
@@ -3058,8 +3321,7 @@ public class EmailService {
         mailSender.send(message);
     }
 
-    //Método genérico para enviar un correo simple a cualquier destinatario con un asunto y un cuerpo de texto.
-
+    // Método genérico para enviar un correo simple a cualquier destinatario con un asunto y un cuerpo de texto
     public void sendSimpleEmail(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
@@ -3069,11 +3331,16 @@ public class EmailService {
         mailSender.send(message);
     }
 }
-/* Esta clase gestiona la lógica de negocio relacionada con las notas. Proporciona métodos
- para obtener notas asociadas a un currículum específico, guardar una nueva nota y eliminar
- notas de la base de datos.*/
 
+// NotaService.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.service;
+
+/*
+  Esta clase gestiona la lógica de negocio relacionada con las notas. Proporciona métodos
+  para obtener notas asociadas a un currículum específico, guardar una nueva nota y eliminar
+  notas de la base de datos.
+ */
 
 import com.example.gestion_curriculums0.model.Nota;
 import com.example.gestion_curriculums0.repository.NotaRepository;
@@ -3086,7 +3353,7 @@ import java.util.List;
 public class NotaService {
 
     @Autowired
-    private NotaRepository notaRepository;
+    private NotaRepository notaRepository; // Inyecto el repositorio de notas para acceder a la base de datos
 
     // En este método obtengo todas las notas asociadas a un currículum específico
     public List<Nota> getNotasByCurriculumId(Long curriculumId) {
@@ -3103,11 +3370,16 @@ public class NotaService {
         notaRepository.deleteById(id);
     }
 }
-/* Esta clase utiliza la librería Tesseract para realizar el reconocimiento óptico de caracteres (OCR)
- en imágenes. Permite extraer texto a partir de archivos de imagen, procesando las imágenes y
- devolviendo el texto contenido en ellas. Es útil para escanear CVs o documentos que no están en formato digital*/
 
+// OcrService.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.service;
+
+/*
+  Esta clase utiliza la librería Tesseract para realizar el reconocimiento óptico de caracteres (OCR)
+  en imágenes. Permite extraer texto a partir de archivos de imagen, procesando las imágenes y
+  devolviendo el texto contenido en ellas. Es útil para escanear CVs o documentos que no están en formato digital.
+ */
 
 import org.springframework.stereotype.Service;
 import net.sourceforge.tess4j.Tesseract;
@@ -3118,13 +3390,13 @@ import java.io.File;
 @Service
 public class OcrService {
 
-    private final Tesseract tesseract;
+    private final Tesseract tesseract; // Defino la instancia de Tesseract para realizar el OCR
 
     // En el constructor inicializo Tesseract y configuro su ruta de datos y el idioma (español en este caso)
     public OcrService() {
         tesseract = new Tesseract();
-        tesseract.setDatapath("tessdata"); // Ruta al directorio de los datos de Tesseract
-        tesseract.setLanguage("spa"); // Configurar el idioma a español
+        tesseract.setDatapath("tessdata"); // Configuro la ruta al directorio de los datos de Tesseract
+        tesseract.setLanguage("spa"); // Configuro el idioma a español
     }
 
     // Este método se encarga de extraer el texto de un archivo de imagen usando Tesseract
@@ -3137,13 +3409,16 @@ public class OcrService {
     }
 }
 
-
-/* Esta clase gestiona el proceso de restablecimiento de contraseñas de los usuarios.
-    Genera un token temporal para el restablecimiento de la contraseña, envía un correo
-    con el enlace para que el usuario pueda restablecer su contraseña y permite al usuario
-    actualizarla con el nuevo token.*/
-
+// PasswordResetService.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.service;
+
+/*
+  Esta clase gestiona el proceso de restablecimiento de contraseñas de los usuarios.
+  Genera un token temporal para el restablecimiento de la contraseña, envía un correo
+  con el enlace para que el usuario pueda restablecer su contraseña y permite al usuario
+  actualizarla con el nuevo token.
+ */
 
 import com.example.gestion_curriculums0.model.Usuario;
 import com.example.gestion_curriculums0.repository.UsuarioRepository;
@@ -3163,13 +3438,13 @@ import java.util.UUID;
 public class PasswordResetService {
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private UsuarioRepository usuarioRepository; // Inyecto el repositorio de usuarios
 
     @Autowired
-    private JavaMailSender mailSender;
+    private JavaMailSender mailSender; // Inyecto el servicio de envío de correos
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder; // Inyecto el codificador de contraseñas
 
     // Uso esta propiedad para construir la URL base para el enlace de restablecimiento de contraseña
     @Value("${app.baseUrl}")
@@ -3225,10 +3500,14 @@ public class PasswordResetService {
     }
 }
 
-/* Esta clase se encarga de procesar archivos PDF y extraer su contenido en formato de texto.
-   Utiliza la librería PDFBox para cargar y leer el contenido de los PDFs.*/
-
+// PdfService.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.service;
+
+/*
+   Esta clase se encarga de procesar archivos PDF y extraer su contenido en formato de texto.
+   Utilizo la librería PDFBox para cargar y leer el contenido de los PDFs.
+ */
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -3243,16 +3522,20 @@ public class PdfService {
     public String extractTextFromPdf(File file) throws IOException {
         // Abro el documento PDF, lo leo y extraigo su contenido usando PDFBox
         try (PDDocument document = PDDocument.load(file)) {
-            PDFTextStripper pdfStripper = new PDFTextStripper(); // PDFTextStripper extrae el texto del documento
-            return pdfStripper.getText(document); // Devuelvo el texto extraído
+            PDFTextStripper pdfStripper = new PDFTextStripper(); // Uso PDFTextStripper para extraer el texto del documento
+            return pdfStripper.getText(document); // Devuelvo el texto extraído del PDF
         }
     }
 }
 
-/* Esta clase gestiona la lógica relacionada con los enlaces de subida de archivos (UploadLink).
-   Se encarga de generar, validar y gestionar el contador de subidas asociado a cada enlace.*/
-
+// UploadLinkService.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.service;
+
+/*
+   Esta clase gestiona la lógica relacionada con los enlaces de subida de archivos (UploadLink).
+   Me encargo de generar, validar y gestionar el contador de subidas asociado a cada enlace.
+*/
 
 import com.example.gestion_curriculums0.model.UploadLink;
 import com.example.gestion_curriculums0.repository.UploadLinkRepository;
@@ -3267,11 +3550,12 @@ public class UploadLinkService {
 
     private final UploadLinkRepository uploadLinkRepository;
 
+    // Inyecto el repositorio de enlaces de subida en el constructor
     public UploadLinkService(UploadLinkRepository uploadLinkRepository) {
         this.uploadLinkRepository = uploadLinkRepository;
     }
 
-    // Genero un nuevo enlace de subida con un token único y fecha de expiración de 5 días
+    // Genero un nuevo enlace de subida con un token único y una fecha de expiración de 5 días
     public UploadLink generateUploadLink() {
         UploadLink uploadLink = new UploadLink();
         uploadLink.setToken(UUID.randomUUID().toString()); // Genero un token único para identificar el enlace
@@ -3281,7 +3565,8 @@ public class UploadLinkService {
 
     // Busco un enlace de subida a partir de su token
     public Optional<UploadLink> findByToken(String token) {
-        return uploadLinkRepository.findByToken(token); // Retorno el enlace correspondiente al token
+        // Retorno el enlace correspondiente al token proporcionado
+        return uploadLinkRepository.findByToken(token);
     }
 
     // Verifico si el enlace es válido: no ha caducado y no ha alcanzado el límite de subidas
@@ -3298,10 +3583,14 @@ public class UploadLinkService {
     }
 }
 
-/* Esta clase gestiona la lógica relacionada con los registros de actividad (logs) de los usuarios.
-   Permite guardar nuevas entradas de logs y consultar todos los logs registrados.*/
-
+// UserLogService.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.service;
+
+/*
+   Esta clase gestiona la lógica relacionada con los registros de actividad (logs) de los usuarios.
+   Me encargo de guardar nuevas entradas de logs y de consultar todos los logs registrados en la base de datos.
+*/
 
 import com.example.gestion_curriculums0.model.UserLog;
 import com.example.gestion_curriculums0.repository.UserLogRepository;
@@ -3316,7 +3605,7 @@ import java.util.List;
 public class UserLogService {
 
     @Autowired
-    private UserLogRepository userLogRepository;
+    private UserLogRepository userLogRepository; // Inyecto el repositorio para gestionar los logs en la base de datos
 
     // Guardo una nueva entrada de log con el nombre de usuario y la acción realizada
     public void saveUserLog(String username, String action) {
@@ -3329,16 +3618,20 @@ public class UserLogService {
 
     // Obtengo todos los logs, ordenados de manera descendente por la marca de tiempo (timestamp)
     public List<UserLog> getAllLogs() {
-        return userLogRepository.findAll(Sort.by(Sort.Direction.DESC, "timestamp"));
         // Retorno los logs más recientes primero
+        return userLogRepository.findAll(Sort.by(Sort.Direction.DESC, "timestamp"));
     }
 }
 
-/* Esta clase se encarga de la gestión de los usuarios, incluyendo su creación, validación de contraseñas,
-   eliminación automática de usuarios inactivos y envío de correos electrónicos de bienvenida y despedida.
-   Además, gestiona el registro de logs de actividad de usuarios.*/
-
+// UsuarioService.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.service;
+
+/*
+   Esta clase se encarga de la gestión de los usuarios, incluyendo su creación, validación de contraseñas,
+   eliminación automática de usuarios inactivos y envío de correos electrónicos de bienvenida y despedida.
+   Además, me encargo de gestionar el registro de logs de actividad de usuarios.
+*/
 
 import com.example.gestion_curriculums0.model.Usuario;
 import com.example.gestion_curriculums0.model.UserLog;
@@ -3398,6 +3691,11 @@ public class UsuarioService {
     // Busco un usuario por su nombre de usuario
     public Optional<Usuario> findByNombreUsuario(String nombreUsuario) {
         return usuarioRepository.findByNombreUsuario(nombreUsuario);
+    }
+
+    // Método para buscar un usuario por su ID
+    public Optional<Usuario> findById(Long id) {
+        return usuarioRepository.findById(id);
     }
 
     // Este método programado se ejecuta cada 10 minutos para eliminar usuarios inactivos.
@@ -3519,6 +3817,19 @@ public class UsuarioService {
         return false;
     }
 }
+
+// GestionCurriculums0Application.java
+// Indico el paquete al que pertenece esta clase
+package com.example.gestion_curriculums0;
+
+/*
+   Esta es la clase principal que arranca la aplicación Spring Boot.
+   Aquí configuro los paquetes a escanear, los repositorios JPA, y habilito funcionalidades como
+   la programación de tareas asíncronas y la carga de variables de entorno desde un archivo .env.
+*/
+
+import io.github.cdimascio.dotenv.Dotenv;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.context.annotation.ComponentScan;
@@ -3535,7 +3846,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class GestionCurriculums0Application {
 
     public static void main(String[] args) {
-        // Cargar las variables de entorno desde el archivo .env
+        // Cargo las variables de entorno desde el archivo .env
         Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
 
         // Configuro las variables de entorno del sistema solo si están definidas en el .env
@@ -3545,7 +3856,7 @@ public class GestionCurriculums0Application {
         setSystemProperty("SPRING_MAIL_PASSWORD", dotenv.get("SPRING_MAIL_PASSWORD"));
         setSystemProperty("JWT_SECRET", dotenv.get("JWT_SECRET"));
 
-        // Iniciar la aplicación Spring Boot
+        // Inicio la aplicación Spring Boot
         SpringApplication.run(GestionCurriculums0Application.class, args);
     }
 

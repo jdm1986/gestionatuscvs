@@ -1,9 +1,11 @@
 // NotaDTO.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.model;
+
+// Defino este DTO (Data Transfer Object) para transferir los datos de la entidad Nota
 
 import java.time.LocalDateTime;
 
-// Defino este DTO (Data Transfer Object) para transferir los datos de la entidad Nota
 public class NotaDTO {
     private Long id;
     private String contenido;

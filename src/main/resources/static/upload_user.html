@@ -1,3 +1,4 @@
+<!-- Archivo: upload_user.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -33,13 +34,15 @@
 </head>
 <body>
 <header>
+    <!-- Encabezado con el logo de la aplicación -->
     <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
 </header>
 <div class="container">
     <h1>Subir Currículum (Usuario)</h1>
+    <!-- Formulario para subir el currículum en formato PDF, con campos adicionales de información personal -->
     <form id="uploadForm">
         <input type="file" id="pdfFile" accept="application/pdf" required>
-        <!-- Validación: solo letras y espacios en nombre y apellido -->
+        <!-- Campos de entrada con validación para nombre y apellido -->
         <input type="text" id="nombre" placeholder="Nombre" required pattern="[A-Za-zÀ-ÿ\s]+" title="El nombre solo puede contener letras y espacios.">
         <input type="text" id="apellido" placeholder="Apellido" required pattern="[A-Za-zÀ-ÿ\s]+" title="El apellido solo puede contener letras y espacios.">
         <select id="sexo" required>
@@ -48,26 +51,26 @@
             <option value="Mujer">Mujer</option>
             <option value="Otro">Otro</option>
         </select>
-        <!-- Selector de Departamento -->
+        <!-- Selector de departamento cargado dinámicamente -->
         <select id="departamentoSelect" required>
             <option value="">Seleccionar Departamento</option>
         </select>
-        <!-- Validación: solo números y el signo + al inicio en el teléfono -->
+        <!-- Campo de entrada con validación para el teléfono -->
         <input type="text" id="telefono" placeholder="Teléfono" required pattern="^\+?[0-9]{9,15}$" title="El teléfono solo puede contener números y opcionalmente el signo + al inicio.">
         <input type="email" id="email" placeholder="Email" required>
-        <!-- Campo oculto para el userId -->
+        <!-- Campo oculto para almacenar el userId -->
         <input type="hidden" id="userId" value="">
 
-        <!-- Asegura que el checkbox esté alineado correctamente debajo del texto -->
+        <!-- Checkbox para aceptar los términos y condiciones -->
         <p style="color: #ffffff;">Acepto los <a href="terminos.html" class="link-blanco">Términos de Uso</a> y el <a href="privacidad.html" class="link-blanco">Aviso de Privacidad</a>.</p>
         <div class="form-check">
             <input type="checkbox" class="form-check-input" id="aceptarTerminos" required>
         </div>
 
-
         <button type="submit">Subir</button>
         <button type="button" id="volverBtn">Volver</button>
     </form>
+    <!-- Mensajes de éxito o error -->
     <div id="uploadMessage" class="hidden">Currículum subido exitosamente.</div>
     <div id="errorMessage" class="hidden">Error al subir el currículum.</div>
 </div>
@@ -94,7 +97,7 @@
             window.location.href = '/dashboard.html';
         });
 
-        // Añadir confirmación al hacer clic en el logo
+        // Añadir confirmación al hacer clic en el logo para cerrar sesión
         document.getElementById('logo').addEventListener('click', function(event) {
             event.preventDefault();
             if (confirm("Se va a cerrar la sesión, ¿estás seguro?")) {
@@ -127,6 +130,7 @@
                 console.error('Error al cargar departamentos:', error);
             });
 
+        // Manejo del formulario de subida de currículums
         document.getElementById('uploadForm').addEventListener('submit', function(event) {
             event.preventDefault();
 
@@ -161,7 +165,8 @@
             formData.append('email', email);
             formData.append('userId', userId); // Enviamos el userId
 
-            fetch(`${baseUrl}/curriculums/upload`, { // Endpoint para la subida manual de currículums
+            // Petición para subir el currículum
+            fetch(`${baseUrl}/curriculums/upload`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`  // Autenticación con el token del usuario

@@ -1,8 +1,12 @@
-/* Esta es la clase principal que arranca la aplicación Spring Boot.
-   Aquí se configuran los paquetes a escanear, los repositorios JPA, y se habilitan funcionalidades como
-   la programación de tareas asíncronas y la carga de variables de entorno desde un archivo .env.*/
-
+// GestionCurriculums0Application.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0;
+
+/*
+   Esta es la clase principal que arranca la aplicación Spring Boot.
+   Aquí configuro los paquetes a escanear, los repositorios JPA, y habilito funcionalidades como
+   la programación de tareas asíncronas y la carga de variables de entorno desde un archivo .env.
+*/
 
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;
@@ -22,7 +26,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class GestionCurriculums0Application {
 
     public static void main(String[] args) {
-        // Cargar las variables de entorno desde el archivo .env
+        // Cargo las variables de entorno desde el archivo .env
         Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
 
         // Configuro las variables de entorno del sistema solo si están definidas en el .env
@@ -32,7 +36,7 @@ public class GestionCurriculums0Application {
         setSystemProperty("SPRING_MAIL_PASSWORD", dotenv.get("SPRING_MAIL_PASSWORD"));
         setSystemProperty("JWT_SECRET", dotenv.get("JWT_SECRET"));
 
-        // Iniciar la aplicación Spring Boot
+        // Inicio la aplicación Spring Boot
         SpringApplication.run(GestionCurriculums0Application.class, args);
     }
 

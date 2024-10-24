@@ -1,10 +1,14 @@
+// Curriculum.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.model;
+
+// Defino la entidad Curriculum que representa el currículum de un usuario
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-// Defino la entidad Curriculum que representa el currículum de un usuario
+// Anoto la clase con @Entity para que se reconozca como una entidad en JPA
 @Entity
 @Table(name = "curriculums")
 public class Curriculum {
@@ -13,11 +17,11 @@ public class Curriculum {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Nombre del usuario, no puede ser nulo
+    // Defino el nombre del usuario, no puede ser nulo
     @Column(nullable = false)
     private String nombre;
 
-    // Apellido del usuario, no puede ser nulo
+    // Defino el apellido del usuario, no puede ser nulo
     @Column(nullable = false)
     private String apellido;
 
@@ -25,7 +29,7 @@ public class Curriculum {
     @Column(name = "pdf_path", nullable = false)
     private String pdfPath;
 
-    // Resumen del CV con una longitud máxima de 2000 caracteres (Descartado USO DE IA para resumir los CV).
+    // Resumen del CV con una longitud máxima de 2000 caracteres (Descarté el uso de IA para resumir los CV)
     @Column(name = "resumen_cv", length = 2000)
     private String resumenCv;
 
@@ -107,12 +111,14 @@ public class Curriculum {
         // Establezco la ruta del archivo PDF del curriculum
         this.pdfPath = pdfPath;
     }
-    //Descarto uso de ia para resumir C.V
+
+    // Descarto uso de IA para resumir C.V.
     public String getResumenCv() {
         // Obtengo el resumen del CV
         return resumenCv;
     }
-    //Descarto uso de ia para resumir C.V
+
+    // Descarto uso de IA para resumir C.V.
     public void setResumenCv(String resumenCv) {
         // Establezco el resumen del CV
         this.resumenCv = resumenCv;
@@ -169,12 +175,12 @@ public class Curriculum {
     }
 
     public String getDepartamento() {
-        // Obtengo departamento
+        // Obtengo el departamento
         return departamento;
     }
 
     public void setDepartamento(String departamento) {
-        // Establezco departamento manualmente si es necesario
+        // Establezco el departamento manualmente si es necesario
         this.departamento = departamento;
     }
 

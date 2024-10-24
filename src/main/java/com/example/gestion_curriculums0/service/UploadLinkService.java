@@ -1,7 +1,11 @@
-/* Esta clase gestiona la lógica relacionada con los enlaces de subida de archivos (UploadLink).
-   Se encarga de generar, validar y gestionar el contador de subidas asociado a cada enlace.*/
-
+// UploadLinkService.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.service;
+
+/*
+   Esta clase gestiona la lógica relacionada con los enlaces de subida de archivos (UploadLink).
+   Me encargo de generar, validar y gestionar el contador de subidas asociado a cada enlace.
+*/
 
 import com.example.gestion_curriculums0.model.UploadLink;
 import com.example.gestion_curriculums0.repository.UploadLinkRepository;
@@ -16,11 +20,12 @@ public class UploadLinkService {
 
     private final UploadLinkRepository uploadLinkRepository;
 
+    // Inyecto el repositorio de enlaces de subida en el constructor
     public UploadLinkService(UploadLinkRepository uploadLinkRepository) {
         this.uploadLinkRepository = uploadLinkRepository;
     }
 
-    // Genero un nuevo enlace de subida con un token único y fecha de expiración de 5 días
+    // Genero un nuevo enlace de subida con un token único y una fecha de expiración de 5 días
     public UploadLink generateUploadLink() {
         UploadLink uploadLink = new UploadLink();
         uploadLink.setToken(UUID.randomUUID().toString()); // Genero un token único para identificar el enlace
@@ -30,7 +35,8 @@ public class UploadLinkService {
 
     // Busco un enlace de subida a partir de su token
     public Optional<UploadLink> findByToken(String token) {
-        return uploadLinkRepository.findByToken(token); // Retorno el enlace correspondiente al token
+        // Retorno el enlace correspondiente al token proporcionado
+        return uploadLinkRepository.findByToken(token);
     }
 
     // Verifico si el enlace es válido: no ha caducado y no ha alcanzado el límite de subidas

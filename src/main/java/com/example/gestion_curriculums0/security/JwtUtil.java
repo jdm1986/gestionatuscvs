@@ -1,4 +1,11 @@
+// JwtUtil.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.security;
+
+/*
+  Clase JwtUtil: Me encargo de generar, validar y extraer información de los tokens JWT utilizados en la autenticación de usuarios.
+  También gestiono la extracción de tokens desde las cookies enviadas en las solicitudes HTTP.
+ */
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -15,10 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-/*
-  Clase JwtUtil: Me encargo de generar, validar y extraer información de los tokens JWT utilizados en la autenticación de usuarios.
-  También gestiono la extracción de tokens desde las cookies enviadas en las solicitudes HTTP.
- */
 @Service
 public class JwtUtil {
 

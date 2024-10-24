@@ -1,3 +1,5 @@
+<!-- Archivo: contacto.html -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,36 +9,52 @@
     <link rel="stylesheet" href="styles-common.css">
 </head>
 <body>
+<!--
+    Página de contacto que permite a los usuarios enviar un mensaje a través de un formulario.
+    Utiliza un script para hacer una petición POST al backend con los datos del formulario.
+-->
+
 <header>
-    <!-- Página de contacto que permite a los usuarios enviar un mensaje a través de un formulario.
-         Utiliza un script para hacer una petición POST al backend con los datos del formulario. -->
+    <!-- Cabecera de la página con el logo. El logo puede servir como enlace para volver a la página principal. -->
     <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
 </header>
+
 <div class="container">
-    <!-- Título de la página -->
+    <!-- Título principal de la página de contacto -->
     <h1>CONTACTO</h1>
 
-    <!-- Formulario para que los usuarios introduzcan su nombre, correo y mensaje -->
+    <!--
+        Formulario para que los usuarios introduzcan su nombre, correo electrónico y mensaje.
+        Todos los campos son obligatorios para garantizar que la información sea completa.
+    -->
     <form id="contactForm">
+        <!-- Campo de texto para el nombre del usuario -->
         <input type="text" id="name" placeholder="Tu nombre" required>
+        <!-- Campo de entrada para el correo electrónico del usuario -->
         <input type="email" id="email" placeholder="Tu correo electrónico" required>
+        <!-- Área de texto para el mensaje del usuario -->
         <textarea id="message" placeholder="Tu mensaje" required style="margin-bottom: 10px;"></textarea>
 
-        <!-- Botón de enviar -->
+        <!-- Botón para enviar el formulario con la información proporcionada -->
         <button type="submit">Enviar</button>
 
-        <!-- Botón para volver a la página de inicio -->
+        <!-- Botón para regresar a la página de inicio. Utiliza la función "location.href" para redirigir -->
         <button type="button" onclick="location.href='index.html'">Volver</button>
     </form>
 
-    <!-- Mensaje de confirmación de envío oculto inicialmente -->
-    <div id="confirmationMessage" class="hidden">Tu mensaje ha sido enviado. Nos pondremos en contacto contigo pronto.</div>
+    <!-- Mensaje de confirmación que se muestra cuando el envío del formulario es exitoso -->
+    <div id="confirmationMessage" class="hidden">
+        Tu mensaje ha sido enviado. Nos pondremos en contacto contigo pronto.
+    </div>
 </div>
 
-<!-- Script para manejar el evento de envío del formulario -->
+<!--
+    Script para manejar el evento de envío del formulario.
+    Se encarga de capturar los datos ingresados y enviar una solicitud al servidor.
+-->
 <script>
     document.getElementById('contactForm').addEventListener('submit', async function(event) {
-        event.preventDefault();
+        event.preventDefault(); // Evita el comportamiento por defecto del formulario
 
         // Capturo los valores de los campos del formulario
         const name = document.getElementById('name').value;
@@ -44,48 +62,54 @@
         const message = document.getElementById('message').value;
 
         // Construyo la URL completa usando el valor correcto de la base URL
-        const appBaseUrl = window.location.origin; // Esto tomará la base de la URL actual
+        const appBaseUrl = window.location.origin; // Obtiene la base de la URL actual
 
         // Realizo una solicitud POST al backend con los datos del formulario en formato JSON
         const response = await fetch(`${appBaseUrl}/contact`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json' // Indica que el cuerpo de la solicitud es JSON
             },
             body: JSON.stringify({
-                name: name,
-                email: email,
-                message: message
+                name: name, // Incluye el nombre proporcionado
+                email: email, // Incluye el correo proporcionado
+                message: message // Incluye el mensaje proporcionado
             })
         });
 
         if (response.ok) {
             // Si el mensaje se envía correctamente, muestro el mensaje de confirmación y limpio el formulario
             document.getElementById('confirmationMessage').classList.remove('hidden');
-            document.getElementById('contactForm').reset();
+            document.getElementById('contactForm').reset(); // Restablezco el formulario a su estado inicial
         } else {
-            alert('Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo.');
+            alert('Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo.'); // Mensaje de error si la solicitud falla
         }
     });
 </script>
 
-<!-- Script para otras funcionalidades generales -->
+<!--
+    Script adicional para funcionalidades generales que puedan ser necesarias en la página.
+    Por ejemplo, validaciones extra o manejo de eventos del DOM.
+-->
 <script src="scripts.js"></script>
-</body>
 
-<!-- Pie de página con enlaces a las políticas, términos y una referencia al desarrollador -->
+<!-- Pie de página con enlaces a políticas, términos y referencia al desarrollador -->
 <footer>
     <div class="footer-content">
-        <a href="https://www.jesusdiazmartincv.es" target="_blank"> <!-- Enlace alrededor del logo -->
+        <!-- Enlace al sitio del desarrollador, con una imagen como logo en el pie de página -->
+        <a href="https://www.jesusdiazmartincv.es" target="_blank">
             <img src="images/logodeveloper.png" alt="Logo JDM" class="footer-logo">
         </a>
+        <!-- Enlaces a las secciones de Política de Privacidad, Términos y la misma página de Contacto -->
         <div class="footer-links">
             <a href="privacidad.html">Política de Privacidad</a> |
             <a href="terminos.html">Términos y Condiciones</a> |
             <a href="contacto.html">Contacto</a>
         </div>
+        <!-- Información de copyright y referencia al desarrollador -->
         <p>&copy; 2024 GESTIONATUSCV. Todos los derechos reservados.</p>
         <p> || Aplicación Web creada por Jesús Díaz Martín || </p>
     </div>
 </footer>
+</body>
 </html>

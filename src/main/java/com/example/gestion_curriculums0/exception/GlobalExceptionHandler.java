@@ -1,4 +1,8 @@
+// GlobalExceptionHandler.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.exception;
+
+// Defino este controlador para manejar las excepciones globalmente en la aplicación
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -6,18 +10,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-// Defino este controlador para manejar las excepciones globalmente en la aplicación
+// Anoto la clase con @ControllerAdvice para que maneje excepciones de forma global en toda la aplicación
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Manejo las excepciones del tipo RuntimeException
+    // Configuro un manejador para las excepciones del tipo RuntimeException
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
         // Devuelvo un mensaje con el error y el estado HTTP 400 (BAD_REQUEST)
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    // Manejo las excepciones del tipo DataIntegrityViolationException
+    // Configuro un manejador para las excepciones del tipo DataIntegrityViolationException
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
         // Verifico si la causa de la excepción es una violación de restricciones de Hibernate

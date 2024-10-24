@@ -1,7 +1,8 @@
-// Este controlador gestiona la autenticación de usuarios, incluyendo el login, registro, manejo de tokens
-// y restablecimiento de contraseñas.
-
+// AuthController.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.controller;
+
+// Este controlador gestiona la autenticación de usuarios, incluyendo el login, registro, manejo de tokens y restablecimiento de contraseñas
 
 import com.example.gestion_curriculums0.service.*;
 import com.example.gestion_curriculums0.security.JwtUtil;
@@ -25,13 +26,18 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-// Defino que este controlador está asociado a la ruta "/auth" y maneja la autenticación
+/* Esta clase se encarga de manejar la autenticación y autorización de usuarios, incluyendo la lógica para
+iniciar sesión, registrarse, renovar tokens de acceso y restablecer contraseñas. Utiliza tokens JWT para
+autenticar a los usuarios y gestionar sus sesiones de manera segura. Además, implementa medidas de seguridad
+para evitar abusos, como el bloqueo temporal de cuentas después de múltiples intentos fallidos de inicio de sesión.
+La clase también se asegura de proporcionar una experiencia de usuario adecuada al enviar correos electrónicos de
+notificación y recuperación de contraseñas. */
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = "http://localhost:8000")
 public class AuthController {
 
-    // Defino las constantes de tiempo para los tokens y bloqueo de cuenta
+    // Defino las constantes de tiempo para los tokens y el bloqueo de cuenta
     private static final int ACCESS_TOKEN_EXPIRATION = 15 * 60; // 15 minutos
     private static final int REFRESH_TOKEN_EXPIRATION = 7 * 24 * 60 * 60; // 7 días
     private static final int MAX_FAILED_ATTEMPTS = 3;
@@ -39,7 +45,7 @@ public class AuthController {
     private static final int MAX_RECOVERY_ATTEMPTS = 5;
     private static final long IP_LOCK_TIME_DURATION = 60 * 60 * 1000; // 1 hora
 
-    // Uso mapas concurrentes para gestionar los intentos de login, registros y recuperación de contraseñas
+    // Uso mapas concurrentes para gestionar los intentos fallidos de login, registro y recuperación de contraseñas
     private Map<String, AtomicInteger> loginAttempts = new ConcurrentHashMap<>();
     private Map<String, Long> lockTime = new ConcurrentHashMap<>();
     private Map<String, AtomicInteger> registrationAttempts = new ConcurrentHashMap<>();
@@ -47,28 +53,23 @@ public class AuthController {
     private Map<String, AtomicInteger> recoveryAttemptsByIp = new ConcurrentHashMap<>();
     private Map<String, Long> ipLockTime = new ConcurrentHashMap<>();
 
+    // Inyecto los servicios necesarios para la autenticación y el manejo de usuarios
     @Autowired
     private AuthenticationManager authenticationManager;
-
     @Autowired
     private CustomUserDetailsService userDetailsService;
-
     @Autowired
     private JwtUtil jwtUtil;
-
     @Autowired
     private PasswordResetService passwordResetService;
-
     @Autowired
     private EmailService emailService;
-
     @Autowired
     private UserLogService userLogService;
-
     @Autowired
     private UsuarioService usuarioService;
 
-    // Endpoint para manejar el login de usuarios y la generación de tokens de acceso y refresco
+    // Configuro un endpoint para manejar el login de usuarios y generar los tokens de acceso y refresco
     @PostMapping("/login")
     public ResponseEntity<?> login(HttpServletResponse response, @RequestBody AuthRequest authRequest) throws AuthenticationException {
         String username = authRequest.getUsername();
@@ -93,7 +94,6 @@ public class AuthController {
             // Creo cookies para los tokens y las añado a la respuesta
             Cookie accessTokenCookie = createCookie("accessToken", jwt, ACCESS_TOKEN_EXPIRATION);
             Cookie refreshTokenCookie = createCookie("refreshToken", refreshToken, REFRESH_TOKEN_EXPIRATION);
-
             response.addCookie(accessTokenCookie);
             response.addCookie(refreshTokenCookie);
 
@@ -105,7 +105,6 @@ public class AuthController {
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("username", userDetails.getUsername());
             responseBody.put("userId", userId);
-
             return ResponseEntity.ok(responseBody);
         } catch (BadCredentialsException e) {
             // Manejo los intentos fallidos de login incrementando el contador
@@ -118,7 +117,7 @@ public class AuthController {
         }
     }
 
-    // Endpoint para manejar la renovación del token de acceso usando el token de refresco
+    // Configuro un endpoint para renovar el token de acceso usando el token de refresco
     @PostMapping("/refresh-token")
     public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
         // Extraigo el token de refresco de las cookies
@@ -133,7 +132,6 @@ public class AuthController {
                 String newAccessToken = jwtUtil.generateToken(userDetails, ACCESS_TOKEN_EXPIRATION);
                 Cookie newAccessTokenCookie = createCookie("accessToken", newAccessToken, ACCESS_TOKEN_EXPIRATION);
                 response.addCookie(newAccessTokenCookie);
-
                 return ResponseEntity.ok(Collections.singletonMap("message", "Token renovado con éxito"));
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token inválido o expirado.");
@@ -143,7 +141,7 @@ public class AuthController {
         }
     }
 
-    // Endpoint para manejar el registro de nuevos usuarios
+    // Configuro un endpoint para manejar el registro de nuevos usuarios
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody AuthRequest authRequest) {
         String email = authRequest.getEmail();
@@ -183,7 +181,6 @@ public class AuthController {
 
             Map<String, String> response = new HashMap<>();
             response.put("message", "Registro exitoso");
-
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error en el registro: " + e.getMessage());
@@ -194,13 +191,13 @@ public class AuthController {
         }
     }
 
-    // Endpoint para manejar la recuperación de contraseñas
+    // Configuro un endpoint para la recuperación de contraseñas
     @PostMapping("/forgot-password")
     public ResponseEntity<Map<String, String>> forgotPassword(@RequestBody Map<String, String> request, HttpServletRequest httpRequest) {
         String email = request.get("email");
         String clientIp = httpRequest.getRemoteAddr();
 
-        // Verifico si la IP del cliente está bloqueada por demasiados intentos de recuperación
+        // Verifico si la IP del cliente está bloqueada por demasiados intentos fallidos
         if (isIpBlocked(clientIp)) {
             return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
                     .body(Collections.singletonMap("message", "Demasiados intentos fallidos desde esta IP. Inténtalo más tarde."));
@@ -221,7 +218,6 @@ public class AuthController {
             // Envío el token de recuperación de contraseña
             passwordResetService.sendPasswordResetToken(email);
             resetRecoveryAttempts(clientIp);
-
             return ResponseEntity.ok(Collections.singletonMap("message", "Se ha enviado un enlace de restablecimiento de contraseña a tu email."));
         } catch (Exception e) {
             incrementRecoveryAttempts(clientIp);
@@ -229,17 +225,15 @@ public class AuthController {
             String responseMessage = (attemptsLeft > 0)
                     ? "Error al enviar el email de restablecimiento. Te quedan " + attemptsLeft + " intentos."
                     : "Tu IP ha sido bloqueada debido a múltiples intentos fallidos.";
-
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Collections.singletonMap("message", responseMessage));
         }
     }
 
-    // Endpoint para manejar el restablecimiento de contraseñas con un token de recuperación
+    // Configuro un endpoint para el restablecimiento de contraseñas con un token de recuperación
     @PostMapping("/reset-password")
     public ResponseEntity<Map<String, String>> resetPassword(@RequestParam String token, @RequestParam String newPassword) {
         boolean result = passwordResetService.resetPassword(token, newPassword);
-
         if (result) {
             Map<String, String> response = new HashMap<>();
             response.put("message", "Contraseña restablecida correctamente.");

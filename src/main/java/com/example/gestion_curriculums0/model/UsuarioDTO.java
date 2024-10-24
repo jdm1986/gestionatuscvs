@@ -1,8 +1,11 @@
+// UsuarioDTO.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.model;
+
+// Defino la clase DTO para el usuario, que me permitirá transferir datos entre capas
 
 import java.util.List;
 
-// Defino la clase DTO para el usuario, que me permitirá transferir datos entre capas
 public class UsuarioDTO {
 
     private Long id;

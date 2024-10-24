@@ -1,3 +1,5 @@
+<!-- Archivo: dashboard.html -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -8,39 +10,61 @@
     <link rel="stylesheet" href="styles-dashboard.css">
 </head>
 <body>
+<!--
+    Página principal del panel de gestión de currículums.
+    Aquí los usuarios pueden realizar funciones clave como subir CVs, buscar registros,
+    generar enlaces de subida, y los administradores pueden acceder a registros específicos.
+-->
+
 <header>
-    <!-- Página principal del panel de gestión de currículums, donde los usuarios pueden subir CVs,
-         realizar búsquedas y generar enlaces de subida. Los administradores también pueden ver los registros. -->
+    <!-- Logo principal de la página. El ID "logo" permite asociar funciones con este elemento (por ejemplo, redirigir a la página principal). -->
     <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
 </header>
+
 <div class="container">
-    <!-- Mensaje de bienvenida personalizado con el nombre del usuario -->
+    <!--
+        Saludo personalizado con el nombre del usuario.
+        El contenido del elemento <span> se rellenará dinámicamente con el nombre del usuario autenticado.
+    -->
     <h1>BIENVENIDO/A, <span id="username"></span></h1>
 
-    <!-- Botones de acción: subir currículum, cerrar sesión, ver registros (solo admin) -->
+    <!--
+        Sección de botones de acción.
+        Incluye funcionalidades para subir currículums, cerrar sesión, acceder a registros (solo para administradores),
+        y gestionar departamentos.
+    -->
     <div class="actions">
         <button onclick="location.href='upload_user.html'">Subir Currículum</button>
         <button id="logoutButton">Cerrar Sesión</button>
-        <button id="viewLogsButton" class="admin-only" style="display:none;">Ver Registros de Usuarios</button> <!-- Botón para ver registros resrvado a rol admin -->
-        <button id="departamentosButton">Departamentos</button> <!-- Botón para la gestión de departamentos -->
+        <button id="viewLogsButton" class="admin-only" style="display:none;">Ver Registros de Usuarios</button> <!-- Solo visible para administradores -->
+        <button id="departamentosButton">Departamentos</button> <!-- Gestión de departamentos -->
     </div>
 
-    <!-- Sección de búsqueda y filtros -->
+    <!--
+        Sección de búsqueda y filtros.
+        Los usuarios pueden buscar currículums por palabras clave y utilizar los botones para gestionar la búsqueda.
+    -->
     <div class="search">
         <input type="text" id="searchInput" placeholder="Buscar por palabras clave">
         <div class="search-buttons">
-            <button id="searchButton">Buscar</button>
-            <button id="clearButton">Limpiar Filtros</button>
-            <button id="generateLinkButton">Upload Link</button> <!-- Botón para generar un enlace de subida -->
+            <button id="searchButton">Buscar</button> <!-- Inicia la búsqueda -->
+            <button id="clearButton">Limpiar Filtros</button> <!-- Restablece los filtros de búsqueda -->
+            <button id="generateLinkButton">Upload Link</button> <!-- Genera un enlace de subida para compartir -->
         </div>
         <div class="link-container">
-            <!-- Espacio donde se mostrará el enlace generado -->
+            <!--
+                Espacio para mostrar el enlace de subida generado.
+                Se hace visible dinámicamente cuando se genera un nuevo enlace.
+            -->
             <p id="generatedLink" class="generated-link hidden"></p>
             <button id="copyButton" class="copy-button hidden">Copiar enlace</button>
         </div>
     </div>
 
-    <!-- Tabla donde se mostrarán los resultados de búsqueda de CVs -->
+    <!--
+        Tabla de resultados para mostrar los currículums encontrados en la búsqueda.
+        La información se agregará dinámicamente mediante scripts.
+    -->
     <div class="results">
         <table>
             <thead>
@@ -51,32 +75,38 @@
                 <th>Sexo</th>
                 <th>Teléfono</th>
                 <th>Email</th>
-                <th>Departamento</th> <!-- Nueva columna de departamento -->
-                <th>Acciones</th>
+                <th>Departamento</th> <!-- Columna añadida para mostrar el departamento -->
+                <th>Acciones</th> <!-- Columna de acciones para editar, ver y eliminar currículums -->
             </tr>
             </thead>
             <tbody id="resultsBody">
-            <!-- Aquí se agregarán los resultados dinámicamente -->
+            <!--
+                Los resultados de los currículums se insertarán aquí de forma dinámica.
+                Cada fila representará un currículum con su respectiva información y opciones de acción.
+            -->
             </tbody>
         </table>
     </div>
 </div>
 
-<!-- Modal para añadir y visualizar notas en los currículums -->
+<!--
+    Modal para añadir y visualizar notas en los currículums.
+    Permite a los usuarios agregar anotaciones relacionadas con un currículum específico.
+-->
 <div id="noteModal" class="modal">
     <div class="modal-content">
-        <span class="close">&times;</span>
+        <span class="close">&times;</span> <!-- Botón para cerrar el modal -->
         <h2>Notas</h2>
-        <textarea id="noteText" placeholder="Escribe tu nota aquí..."></textarea>
-        <button id="saveNoteButton">Guardar Nota</button>
-        <div id="notesList"></div>
+        <textarea id="noteText" placeholder="Escribe tu nota aquí..."></textarea> <!-- Campo de texto para la nota -->
+        <button id="saveNoteButton">Guardar Nota</button> <!-- Botón para guardar la nota -->
+        <div id="notesList"></div> <!-- Contenedor donde se mostrarán las notas existentes -->
     </div>
 </div>
 
-<!-- Archivo JavaScript donde están las funcionalidades -->
+<!-- Archivo JavaScript con las funcionalidades para el manejo de la página -->
 <script src="scripts.js"></script>
 <script>
-    // Redirige a la página de departamentos cuando se hace clic en el botón
+    // Redirige a la página de departamentos cuando se hace clic en el botón "Departamentos"
     document.getElementById('departamentosButton').addEventListener('click', function() {
         window.location.href = 'departamentos.html';
     });
@@ -84,17 +114,20 @@
 
 </body>
 
-<!-- Pie de página -->
+<!-- Pie de página con enlaces a otras secciones y créditos del desarrollador -->
 <footer>
     <div class="footer-content">
-        <a href="https://www.jesusdiazmartincv.es" target="_blank"> <!-- Enlace alrededor del logo -->
+        <!-- Enlace al sitio web del desarrollador, con un logo -->
+        <a href="https://www.jesusdiazmartincv.es" target="_blank">
             <img src="images/logodeveloper.png" alt="Logo JDM" class="footer-logo">
         </a>
+        <!-- Enlaces a la Política de Privacidad, Términos y la página de contacto -->
         <div class="footer-links">
             <a href="privacidad.html">Política de Privacidad</a> |
             <a href="terminos.html">Términos y Condiciones</a> |
             <a href="contacto.html">Contacto</a>
         </div>
+        <!-- Información de derechos de autor y créditos del desarrollador -->
         <p>&copy; 2024 GESTIONATUSCV. Todos los derechos reservados.</p>
         <p> || Aplicación Web creada por Jesús Díaz Martín || </p>
     </div>

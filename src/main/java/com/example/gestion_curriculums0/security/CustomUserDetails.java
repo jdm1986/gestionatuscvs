@@ -1,4 +1,8 @@
+// CustomUserDetails.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.security;
+
+// Esta clase implementa UserDetails, que es necesaria para la autenticación en Spring Security
 
 import com.example.gestion_curriculums0.model.Usuario;
 import org.springframework.security.core.GrantedAuthority;
@@ -9,7 +13,6 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.Arrays;
 
-// Esta clase implementa UserDetails, que es necesaria para la autenticación en Spring Security
 public class CustomUserDetails implements UserDetails {
 
     private Usuario usuario; // Guardo la referencia al usuario

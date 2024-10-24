@@ -1,7 +1,9 @@
+// WebSecurityConfig.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.config;
 
-// Esta clase es la encargada de configurar la seguridad de mi aplicación utilizando Spring Security.
-// Aquí defino las reglas de autorización, la política de sesiones y la integración con JWT para la autenticación.
+// Esta clase es la encargada de configurar la seguridad de mi aplicación utilizando Spring Security
+// Aquí defino las reglas de autorización, la política de sesiones y la integración con JWT para la autenticación
 
 import com.example.gestion_curriculums0.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +26,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
-// Indico que esta clase es una configuración de Spring Boot que he definido para gestionar la seguridad
+// Con la anotación @Configuration, indico que esta clase es una configuración de Spring Boot para gestionar la seguridad
 @Configuration
-// Habilito la seguridad web en mi aplicación
+// Habilito la seguridad web en mi aplicación con @EnableWebSecurity
 @EnableWebSecurity
 public class WebSecurityConfig {
 
@@ -38,17 +40,17 @@ public class WebSecurityConfig {
     @Autowired
     private Environment environment;
 
-    // Este bean configura la cadena de filtros de seguridad que yo he diseñado para las peticiones HTTP
+    // Configuro la cadena de filtros de seguridad que he diseñado para las peticiones HTTP
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        // Deshabilito la protección CSRF (Cross-Site Request Forgery) porque he decidido utilizar JWT para gestionar la seguridad de las peticiones
+        // Deshabilito la protección CSRF porque utilizo JWT para la seguridad de las peticiones
         http.csrf(csrf -> csrf.disable());
 
-        // Habilito CORS (Cross-Origin Resource Sharing) para que mi frontend pueda hacer peticiones a la API
+        // Habilito CORS para que mi frontend pueda hacer peticiones a la API
         http.cors(withDefaults());
 
-        // Aquí defino las reglas de autorización: las rutas que yo permito que sean accedidas sin autenticación y las que requieren autenticación
+        // Defino las reglas de autorización: las rutas permitidas sin autenticación y las que requieren autenticación
         http
                 .authorizeHttpRequests(auth -> auth
                         // Permito el acceso sin autenticación a las rutas que he definido para autenticación y documentación
@@ -56,46 +58,46 @@ public class WebSecurityConfig {
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers(HttpMethod.POST, "/curriculums/generate-link").permitAll()
                         .requestMatchers("/**").permitAll()  // En desarrollo, permito todas las rutas para facilitar las pruebas
-                        .anyRequest().authenticated()  // Todas las demás rutas requieren autenticación según mi configuración
+                        .anyRequest().authenticated()  // Requiero autenticación para cualquier otra ruta
                 )
-                // Establezco que no se deben crear sesiones (stateless), ya que utilizo JWT para gestionar las autenticaciones de los usuarios
+                // Establezco la política de sesiones como "stateless" ya que utilizo JWT para la autenticación
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );
 
-        // Añado mi filtro JWT personalizado antes del filtro estándar de autenticación de usuario y contraseña
+        // Añado mi filtro JWT personalizado antes del filtro estándar de autenticación
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-        // Devuelvo la configuración completa que he definido
+        // Devuelvo la configuración completa
         return http.build();
     }
 
-    // Configuro CORS para permitir que mi frontend (https://gestionatuscv.es) pueda hacer peticiones a la API
+    // Configuro CORS para permitir que mi frontend pueda hacer peticiones a la API
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Permito las solicitudes desde mi dominio de producción
+        // Permito solicitudes desde mi dominio de producción
         configuration.addAllowedOrigin("https://gestionatuscv.es");
-        // Permito todos los métodos HTTP (GET, POST, etc.) para interactuar con mi API
+        // Permito todos los métodos HTTP
         configuration.addAllowedMethod("*");
-        // Permito todos los encabezados de las solicitudes, ya que los necesito para la autenticación y el funcionamiento del sistema
+        // Permito todos los encabezados de las solicitudes
         configuration.addAllowedHeader("*");
-        // Habilito el uso de cookies en las solicitudes si es necesario para mi proyecto
+        // Habilito el uso de cookies en las solicitudes si es necesario
         configuration.setAllowCredentials(true);
 
-        // Aplico esta configuración de CORS a todas las rutas de mi aplicación
+        // Aplico esta configuración de CORS a todas las rutas
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 
-    // Defino el gestor de autenticación, utilizando la configuración que yo he implementado para autenticar a los usuarios
+    // Defino el gestor de autenticación utilizando mi configuración para autenticar usuarios
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    // Defino el bean para la codificación de contraseñas, usando BCrypt, para mejorar la seguridad de las contraseñas de mis usuarios
+    // Configuro el bean para la codificación de contraseñas usando BCrypt
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

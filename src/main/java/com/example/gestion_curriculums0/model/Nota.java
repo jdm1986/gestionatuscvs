@@ -1,9 +1,12 @@
+// Nota.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.model;
+
+// Defino la entidad Nota que estará relacionada con los curriculums
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-// Defino la entidad Nota que estará relacionada con los curriculums
 @Entity
 @Table(name = "notas")
 public class Nota {
@@ -12,11 +15,11 @@ public class Nota {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Contenido de la nota, es obligatorio
+    // Defino el contenido de la nota, que es obligatorio
     @Column(nullable = false)
     private String contenido;
 
-    // Fecha de creación de la nota, es obligatoria y se establece automáticamente al crearse
+    // Defino la fecha de creación de la nota, que es obligatoria y se establece automáticamente al crearse
     @Column(name = "fecha_creacion", nullable = false)
     private LocalDateTime fechaCreacion;
 
@@ -59,7 +62,7 @@ public class Nota {
     }
 
     public void setFechaCreacion(LocalDateTime fechaCreacion) {
-        // Establezco la fecha de creación de la nota
+        // Establezco manualmente la fecha de creación de la nota, si es necesario
         this.fechaCreacion = fechaCreacion;
     }
 

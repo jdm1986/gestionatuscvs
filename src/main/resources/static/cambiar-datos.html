@@ -1,3 +1,5 @@
+<!-- Archivo: cambiar-datos.html -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -8,12 +10,27 @@
     <link rel="stylesheet" href="styles-dashboard.css">
 </head>
 <body>
+<!--
+    Este archivo HTML permite a los usuarios editar los datos de su currículum,
+    proporcionando un formulario con campos para modificar el nombre, apellido, teléfono,
+    correo electrónico, sexo y departamento. Los datos son cargados y enviados a un servidor
+    utilizando JavaScript para interactuar con la API del backend.
+-->
+
 <header>
+    <!-- Cabecera de la página que contiene el logo, que también puede servir como enlace a la página principal -->
     <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
 </header>
 
+<!-- Contenedor principal de la página -->
 <div class="container">
+    <!-- Título principal que indica la funcionalidad de la página -->
     <h1>Cambiar Datos del Currículum</h1>
+
+    <!--
+        Formulario para editar los datos del currículum.
+        Incluye campos para nombre, apellido, teléfono, email, sexo y departamento.
+    -->
     <form id="editForm">
         <label for="nombre">Nombre:</label>
         <input type="text" id="nombre" name="nombre" required>
@@ -25,8 +42,7 @@
         <input type="text" id="telefono" name="telefono" required>
 
         <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required="">
-
+        <input type="email" id="email" name="email" required>
 
         <label for="sexo">Sexo:</label>
         <select id="sexo" name="sexo">
@@ -38,14 +54,22 @@
         <label for="departamento">Departamento:</label>
         <select id="departamento" name="departamento" required>
             <option value="">Seleccione un departamento</option>
+            <!-- Las opciones de departamento se cargarán dinámicamente desde el backend -->
         </select>
 
+        <!-- Botón para enviar el formulario y guardar los cambios -->
         <button type="submit">Guardar</button>
     </form>
 
+    <!-- Mensaje de éxito que se muestra cuando los datos se guardan correctamente -->
     <p id="successMessage" style="display: none; color: green;">Los datos se han guardado con éxito.</p>
 </div>
 
+<!--
+    Script para cargar los datos del currículum y manejar la actualización de los datos.
+    El script se encarga de obtener los departamentos y los datos del currículum desde el servidor,
+    y de enviar los cambios al backend cuando se envía el formulario.
+-->
 <script>
     // URL base que se ajusta dependiendo de si estamos en entorno local o producción
     const baseUrl = window.location.hostname.includes('localhost')
@@ -54,134 +78,140 @@
             ? 'https://www.gestionatuscv.es' // Si está en www
             : 'https://gestionatuscv.es'; // Si no está en www
 
+    // Obtener ID del currículum desde la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const curriculumId = urlParams.get('id');
 
-// Obtener ID del currículum desde la URL
-const urlParams = new URLSearchParams(window.location.search);
-const curriculumId = urlParams.get('id');
+    // Obtener el token de autenticación desde localStorage
+    const token = localStorage.getItem('token');
 
-// Obtener el token de autenticación desde localStorage
-const token = localStorage.getItem('token');
-
-if (!token) {
-    // Si no hay token, redirigir al usuario al login
-    alert('Por favor, inicia sesión para continuar.');
-    window.location.href = 'login.html';
-}
-
-// Función para cargar los datos del currículum
-async function loadCurriculumData() {
-    try {
-        const response = await fetch(`${baseUrl}/curriculums/${curriculumId}`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-
-        if (response.ok) {
-            const curriculum = await response.json();
-            console.log('Curriculum data:', curriculum);  // Agrega un log para ver si los datos llegan correctamente
-            document.getElementById('nombre').value = curriculum.nombre;
-            document.getElementById('apellido').value = curriculum.apellido;
-            document.getElementById('telefono').value = curriculum.telefono;
-            document.getElementById('email').value = curriculum.email;
-            document.getElementById('sexo').value = curriculum.sexo;
-
-            // Asignar el valor al campo de departamento (luego de cargar opciones)
-            const departamentoSelect = document.getElementById('departamento');
-            console.log('Curriculum departamento:', curriculum.departamento); // Mover aquí el log
-
-            // Verificamos que se seleccione el departamento correcto
-            if (curriculum.departamento) {
-                for (let i = 0; i < departamentoSelect.options.length; i++) {
-                    if (departamentoSelect.options[i].value === curriculum.departamento) {
-                        departamentoSelect.selectedIndex = i;
-                        break;
-                    }
-                }
-            } else {
-                console.warn('El currículum no tiene un departamento asignado.');
-            }
-
-        } else {
-            console.error('Error al cargar el currículum:', response.statusText);
-            alert('Error al cargar los datos del currículum.');
-        }
-    } catch (error) {
-        console.error('Error al obtener los datos del currículum:', error);
-        alert('Error al conectar con el servidor.');
+    if (!token) {
+        // Si no hay token, redirigir al usuario al login
+        alert('Por favor, inicia sesión para continuar.');
+        window.location.href = 'login.html';
     }
-}
 
-async function loadDepartamentos() {
-    try {
-        // Suponiendo que tienes el userId disponible en el frontend
-        const userId = localStorage.getItem('userId'); // Obtén el userId desde localStorage o donde lo tengas guardado
-
-        const response = await fetch(`${baseUrl}/departamentos?userId=${userId}`, {  // Añadimos el userId a la URL
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-
-        if (response.ok) {
-            const departamentos = await response.json();
-            const departamentoSelect = document.getElementById('departamento');
-            console.log('Departamentos cargados:', departamentos); // Verificamos si los departamentos se están cargando
-
-            // Agregamos cada departamento al select
-            departamentos.forEach(departamento => {
-                const option = document.createElement('option');
-                option.value = departamento.nombre; // Suponemos que 'nombre' es el valor que se debe usar
-                option.text = departamento.nombre;
-                departamentoSelect.add(option);
+    // Función para cargar los datos del currículum
+    async function loadCurriculumData() {
+        try {
+            // Realizo la solicitud al servidor para obtener los datos del currículum
+            const response = await fetch(`${baseUrl}/curriculums/${curriculumId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}` // Uso el token de autenticación en la cabecera
+                }
             });
 
-        } else {
-            alert('Error al cargar los departamentos.');
+            if (response.ok) {
+                // Si la solicitud es exitosa, parseo la respuesta como JSON
+                const curriculum = await response.json();
+                console.log('Curriculum data:', curriculum);  // Registro para verificar la carga de datos
+
+                // Lleno los campos del formulario con los datos obtenidos
+                document.getElementById('nombre').value = curriculum.nombre;
+                document.getElementById('apellido').value = curriculum.apellido;
+                document.getElementById('telefono').value = curriculum.telefono;
+                document.getElementById('email').value = curriculum.email;
+                document.getElementById('sexo').value = curriculum.sexo;
+
+                // Asignar el valor al campo de departamento después de cargar las opciones
+                const departamentoSelect = document.getElementById('departamento');
+                console.log('Curriculum departamento:', curriculum.departamento); // Log para verificar el departamento
+
+                // Selecciono el departamento correspondiente si está disponible
+                if (curriculum.departamento) {
+                    for (let i = 0; i < departamentoSelect.options.length; i++) {
+                        if (departamentoSelect.options[i].value === curriculum.departamento) {
+                            departamentoSelect.selectedIndex = i; // Selecciono el departamento correcto
+                            break;
+                        }
+                    }
+                } else {
+                    console.warn('El currículum no tiene un departamento asignado.'); // Aviso en caso de no tener departamento
+                }
+
+            } else {
+                console.error('Error al cargar el currículum:', response.statusText);
+                alert('Error al cargar los datos del currículum.');
+            }
+        } catch (error) {
+            console.error('Error al obtener los datos del currículum:', error);
+            alert('Error al conectar con el servidor.');
         }
-    } catch (error) {
-        console.error('Error al obtener los departamentos:', error);
-        alert('Error al conectar con el servidor.');
     }
-}
 
-// Llamar a la función para cargar los datos de departamentos y curriculum cuando se cargue el DOM
-document.addEventListener('DOMContentLoaded', async () => {
-    await loadDepartamentos(); // Cargamos primero los departamentos
-    await loadCurriculumData(); // Luego asignamos el departamento correcto
-});
+    // Función para cargar los departamentos desde el backend
+    async function loadDepartamentos() {
+        try {
+            // Obtengo el userId desde localStorage para enviar en la solicitud
+            const userId = localStorage.getItem('userId');
 
+            const response = await fetch(`${baseUrl}/departamentos?userId=${userId}`, { // Incluyo el userId en la URL
+                headers: {
+                    'Authorization': `Bearer ${token}` // Uso el token de autenticación
+                }
+            });
+
+            if (response.ok) {
+                const departamentos = await response.json();
+                const departamentoSelect = document.getElementById('departamento');
+                console.log('Departamentos cargados:', departamentos); // Verifico que los departamentos se carguen
+
+                // Agrego cada departamento al elemento <select>
+                departamentos.forEach(departamento => {
+                    const option = document.createElement('option');
+                    option.value = departamento.nombre; // Uso el nombre del departamento como valor
+                    option.text = departamento.nombre;
+                    departamentoSelect.add(option);
+                });
+
+            } else {
+                alert('Error al cargar los departamentos.');
+            }
+        } catch (error) {
+            console.error('Error al obtener los departamentos:', error);
+            alert('Error al conectar con el servidor.');
+        }
+    }
+
+    // Cargar los departamentos y los datos del currículum cuando el DOM esté listo
+    document.addEventListener('DOMContentLoaded', async () => {
+        await loadDepartamentos(); // Primero cargamos los departamentos
+        await loadCurriculumData(); // Luego cargamos los datos del currículum
+    });
 
     // Manejo del formulario para guardar los cambios
     document.getElementById('editForm').addEventListener('submit', async function(event) {
-    event.preventDefault();
+        event.preventDefault(); // Evita el envío por defecto del formulario
 
-    const nombre = document.getElementById('nombre').value;
-    const apellido = document.getElementById('apellido').value;
-    const telefono = document.getElementById('telefono').value;
-    const email = document.getElementById('email').value;
-    const sexo = document.getElementById('sexo').value;
-    const departamento = document.getElementById('departamento').value;
+        // Obtengo los valores del formulario
+        const nombre = document.getElementById('nombre').value;
+        const apellido = document.getElementById('apellido').value;
+        const telefono = document.getElementById('telefono').value;
+        const email = document.getElementById('email').value;
+        const sexo = document.getElementById('sexo').value;
+        const departamento = document.getElementById('departamento').value;
 
-    const response = await fetch(`${baseUrl}/curriculums/${curriculumId}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ nombre, apellido, telefono, email, sexo, departamento })
+        // Realizo la solicitud para actualizar los datos del currículum en el servidor
+        const response = await fetch(`${baseUrl}/curriculums/${curriculumId}`, {
+            method: 'PUT', // Utilizo el método PUT para actualizar
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` // Autenticación con el token
+            },
+            body: JSON.stringify({ nombre, apellido, telefono, email, sexo, departamento }) // Datos a enviar en el cuerpo
+        });
+
+        if (response.ok) {
+            // Si la actualización es exitosa, muestro el mensaje de éxito
+            const successMessage = document.getElementById('successMessage');
+            successMessage.style.display = 'block';
+            setTimeout(() => {
+                window.location.href = 'dashboard.html'; // Redirijo al dashboard después de 2 segundos
+            }, 2000);
+        } else {
+            alert('Error al guardar los datos'); // Mensaje de error si la solicitud falla
+        }
     });
-
-    if (response.ok) {
-        const successMessage = document.getElementById('successMessage');
-        successMessage.style.display = 'block'; // Mostrar el mensaje de éxito
-        setTimeout(() => {
-            window.location.href = 'dashboard.html'; // Redirigir al dashboard después de 2 segundos
-        }, 2000);
-    } else {
-        alert('Error al guardar los datos');
-    }
-});
 
 </script>
 </body>

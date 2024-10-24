@@ -1,4 +1,12 @@
+// EmailService.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.service;
+
+/*
+  Clase EmailService: Responsable de enviar correos electrónicos, como correos de bienvenida,
+  notificaciones a administradores y correos de contacto. También proporciono la funcionalidad
+  para enviar correos de manera asíncrona y directa.
+ */
 
 import com.example.gestion_curriculums0.model.ContactFormDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,11 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
-/*
-  Clase EmailService: Responsable de enviar correos electrónicos, como correos de bienvenida,
-  notificaciones a administradores y correos de contacto. Además, proporciono la funcionalidad
-  para enviar correos de manera asíncrona y directa.
- */
 @Service
 public class EmailService {
 
@@ -24,7 +27,6 @@ public class EmailService {
       Envío un correo de bienvenida a un nuevo usuario de forma asíncrona. Esto asegura que la
       operación de envío de correo no bloquee otras tareas.
      */
-
     @Async
     public void sendWelcomeEmail(String to, String username) {
         // Configuro el mensaje de bienvenida
@@ -43,8 +45,7 @@ public class EmailService {
         }
     }
 
-    //Envío una notificación al administrador cada vez que un nuevo usuario se registra en el sistema.
-
+    // Envío una notificación al administrador cada vez que un nuevo usuario se registra en el sistema
     public void sendNotificationToAdmin(String username, String email) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo("gestionatuscv@gmail.com");
@@ -58,8 +59,7 @@ public class EmailService {
         mailSender.send(message);
     }
 
-    //Envío un correo con los detalles del formulario de contacto a la dirección del administrador.
-
+    // Envío un correo con los detalles del formulario de contacto a la dirección del administrador
     public void sendContactEmail(ContactFormDTO contactForm) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo("gestionatuscv@gmail.com");
@@ -73,8 +73,7 @@ public class EmailService {
         mailSender.send(message);
     }
 
-    //Método genérico para enviar un correo simple a cualquier destinatario con un asunto y un cuerpo de texto.
-
+    // Método genérico para enviar un correo simple a cualquier destinatario con un asunto y un cuerpo de texto
     public void sendSimpleEmail(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);

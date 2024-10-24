@@ -1,7 +1,5 @@
-/* Esta clase se encarga de la gestión de los usuarios, incluyendo su creación, validación de contraseñas,
-   eliminación automática de usuarios inactivos y envío de correos electrónicos de bienvenida y despedida.
-   Además, gestiona el registro de logs de actividad de usuarios.*/
-
+// UsuarioService.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.service;
 
 import com.example.gestion_curriculums0.model.Usuario;
@@ -21,6 +19,13 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
+
+/* El UsuarioService proporciona la lógica de negocio relacionada con la gestión de usuarios.
+Se encarga de validar contraseñas, enviar correos electrónicos (bienvenida, despedida), y registrar
+logs de actividad. También maneja la eliminación automática de usuarios inactivos y la verificación
+de sus roles. Esta clase actúa como una capa de servicio que facilita la interacción entre los controladores
+y los repositorios, garantizando la integridad de los datos y una correcta gestión de las operaciones críticas
+relacionadas con los usuarios. */
 
 @Service
 public class UsuarioService {
@@ -68,7 +73,6 @@ public class UsuarioService {
     public Optional<Usuario> findById(Long id) {
         return usuarioRepository.findById(id);
     }
-
 
     // Este método programado se ejecuta cada 10 minutos para eliminar usuarios inactivos.
     @Scheduled(fixedRate = 600000) // 600000 ms = 10 minutos

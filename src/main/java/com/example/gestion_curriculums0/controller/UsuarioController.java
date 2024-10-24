@@ -1,4 +1,8 @@
+// UsuarioController.java
+// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.controller;
+
+// Defino este controlador para gestionar las operaciones relacionadas con los usuarios
 
 import com.example.gestion_curriculums0.model.CurriculumDTO;
 import com.example.gestion_curriculums0.model.Curriculum;
@@ -19,24 +23,22 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-// Defino este controlador para gestionar las operaciones relacionadas con los usuarios
+// Anoto la clase como un controlador REST y la asocio a la ruta base "/usuarios"
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
 
+    // Inyecto los servicios y el repositorio necesarios para gestionar los usuarios
     @Autowired
     private UsuarioRepository usuarioRepository;
-
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
-
     @Autowired
     private UsuarioService usuarioService;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // Método para registrar un nuevo usuario
+    // Configuro un método para registrar un nuevo usuario
     @PostMapping("/registrar")
     @Transactional
     public ResponseEntity<?> createUsuario(@RequestBody Usuario usuario) {
@@ -90,20 +92,20 @@ public class UsuarioController {
         );
     }
 
-    // Listado de todos los usuarios registrados
+    // Configuro un endpoint para listar todos los usuarios registrados
     @GetMapping("/listar")
     public List<Usuario> listarUsuarios() {
         return usuarioRepository.findAll();
     }
 
-    // Obtengo un usuario por su nombre de usuario
+    // Configuro un endpoint para obtener un usuario por su nombre de usuario
     @GetMapping("/listar/{username}")
     public UsuarioDTO getUsuario(@PathVariable String username) {
         Usuario usuario = usuarioRepository.findByNombreUsuario(username).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         return convertToDTO(usuario);
     }
 
-    // Elimino un usuario por su nombre de usuario
+    // Configuro un endpoint para eliminar un usuario por su nombre de usuario
     @DeleteMapping("/delete-user/{username}")
     public ResponseEntity<String> deleteUser(@PathVariable String username) {
         Optional<Usuario> usuarioOpt = usuarioService.findByNombreUsuario(username);

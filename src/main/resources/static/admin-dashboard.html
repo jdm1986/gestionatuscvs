@@ -1,3 +1,5 @@
+<!-- Archivo: admin-dasshboard.html -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,53 +9,77 @@
     <link rel="stylesheet" href="styles-common.css">
 </head>
 <body>
+<!--
+    Este archivo HTML sirve como la interfaz del panel de administración de la aplicación.
+    Permite a los administradores ver los registros de usuarios a través de una interfaz gráfica.
+    Incluye una cabecera con un logo, un título, un botón para ver los registros de usuarios
+    y una sección donde se mostrarán los registros obtenidos desde el backend.
+-->
+
 <header>
-    <!-- Este archivo HTML sirve como la interfaz del panel de administración de la aplicación.
-         Permite a los administradores ver registros de usuarios a través de una interfaz gráfica. -->
+    <!-- Sección de la cabecera que contiene el logo de la aplicación.
+         El logo actúa como enlace para redirigir al usuario a la página de inicio al hacer clic en él. -->
     <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
 </header>
+
+<!-- Contenedor principal de la página -->
 <div class="container">
-    <!-- Título principal del panel de administración -->
+    <!-- Título principal que indica que este es el panel de administración -->
     <h1>Panel de Administración</h1>
 
-    <!-- Botón para visualizar los registros de usuarios -->
+    <!--
+        Sección de acciones con un botón que permite ver los registros de usuarios.
+        El botón dispara un evento que realiza una solicitud para obtener los registros del backend.
+    -->
     <div class="actions">
         <button id="viewRegistrationsButton">Ver Registros de Usuarios</button>
     </div>
 
-    <!-- Contenedor donde se mostrarán los registros obtenidos -->
+    <!--
+        Contenedor donde se mostrarán los registros de usuarios una vez que se hayan obtenido.
+        Por defecto, está oculto mediante la clase "hidden" y se muestra dinámicamente cuando se cargan los datos.
+    -->
     <div id="registrationsLog" class="results hidden">
         <h2>Registros de Usuarios</h2>
+        <!-- Elemento <pre> utilizado para mostrar los registros con formato preformateado,
+             lo que significa que el texto mantendrá los espacios en blanco y saltos de línea. -->
         <pre id="logContent"></pre>
     </div>
 </div>
 
-<!-- Script para manejar el evento de hacer clic en el botón y mostrar los registros -->
+<!--
+    Script que maneja la interacción con el botón "Ver Registros de Usuarios".
+    Realiza una solicitud al backend para obtener los registros y muestra los resultados en la interfaz.
+-->
 <script>
-    // Al hacer clic en el botón "Ver Registros de Usuarios", hago una solicitud al backend
+    // Al hacer clic en el botón "Ver Registros de Usuarios", se realiza una solicitud HTTP GET al backend
     document.getElementById('viewRegistrationsButton').addEventListener('click', function() {
+        // Realizo una petición fetch a la URL específica para obtener los registros de usuarios
         fetch('${app.baseUrl}/admin/registro-usuarios', {
-            method: 'GET',
+            method: 'GET', // Método HTTP utilizado para la solicitud
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('token')
-                // Uso el token almacenado en localStorage para autenticar la solicitud
+                // Uso el token de autenticación almacenado en localStorage para autenticar la solicitud
             }
         })
         .then(response => {
             if (response.ok) {
-                return response.text(); // Si la solicitud tiene éxito, obtengo el texto de los registros
+                // Si la solicitud es exitosa (código de estado 200), convierto la respuesta a texto
+                return response.text();
             } else {
-                throw new Error('Error al obtener los registros'); // Si algo sale mal, muestro un error
+                // Si la solicitud falla, lanzo un error con un mensaje descriptivo
+                throw new Error('Error al obtener los registros');
             }
         })
         .then(data => {
-            // Muestro los datos obtenidos en el contenedor correspondiente
+            // Cuando los datos han sido obtenidos con éxito, los muestro en el contenedor de registros
             const logContainer = document.getElementById('registrationsLog');
-            logContainer.classList.remove('hidden');
-            document.getElementById('logContent').textContent = data;
+            logContainer.classList.remove('hidden'); // Elimino la clase "hidden" para mostrar el contenedor
+            document.getElementById('logContent').textContent = data; // Coloco el texto de los registros en el <pre>
         })
         .catch(error => {
-            alert(error.message); // En caso de error, muestro una alerta con el mensaje del error
+            // En caso de que ocurra un error en cualquier etapa del proceso, se muestra una alerta con el mensaje del error
+            alert(error.message);
         });
     });
 </script>

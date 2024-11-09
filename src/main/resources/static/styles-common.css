@@ -12,6 +12,7 @@ body {
 
 /* Contenedor principal */
 .container {
+    text-align: center;
     width: 80%; /* Ocupa el 80% del ancho disponible */
     margin: 0 auto; /* Centra el contenedor horizontalmente */
     padding-top: 20px; /* Espacio superior de 20px */
@@ -19,6 +20,17 @@ body {
     padding: 20px; /* Relleno interior */
     border-radius: 8px; /* Bordes redondeados de 8px */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra alrededor del contenedor */
+}
+
+/* Estilo de los enlaces en el contenedor */
+.container a {
+    color: #fff;
+    text-decoration: underline;
+}
+
+/* Efecto hover en los enlaces */
+.container a:hover {
+    color: #ccc;
 }
 
 /* Estilos generales para los botones */

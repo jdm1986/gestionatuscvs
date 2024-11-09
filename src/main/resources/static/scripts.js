@@ -448,43 +448,74 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
+        // Función para mostrar el spinner
+                function showSpinner() {
+                    document.getElementById('spinner').classList.remove('hidden');
+                }
+
+                // Función para ocultar el spinner
+                function hideSpinner() {
+                    document.getElementById('spinner').classList.add('hidden');
+                }
+
         // Manejo del formulario de registro
         document.getElementById('registerForm')?.addEventListener('submit', async function(event) {
             event.preventDefault(); // Evita el comportamiento predeterminado del formulario
-            const username = document.getElementById('username').value; // Obtiene el nombre de usuario
-            const email = document.getElementById('email').value; // Obtiene el email
-            const password = document.getElementById('password').value; // Obtiene la contraseña
-            const roles = "USER"; // Asigna el rol de usuario por defecto
 
-            // Realiza la solicitud de registro
-            const response = await fetch(`${baseUrl}/auth/register`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json' // El cuerpo de la solicitud es JSON
-                },
-                body: JSON.stringify({ username, email, password, roles }) // Envía los datos del formulario
-            });
+            // Obtiene los valores de los campos de entrada
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const consent = document.getElementById('consent').checked; // Verifica si el checkbox está marcado
 
-            const messageContainer = document.getElementById('message'); // Contenedor del mensaje
+            // Verifica si el consentimiento está marcado
+            if (!consent) {
+                alert('Debes aceptar los términos y condiciones.');
+                return;
+            }
 
-            if (response.ok) {
-                messageContainer.classList.remove('hidden'); // Muestra el mensaje de éxito
-                messageContainer.style.color = '#E573FE'; // Color rosado
-                messageContainer.textContent = 'Registro exitoso. Redirigiendo a inicio de sesión...'; // Mensaje de éxito
-                setTimeout(() => {
-                    window.location.href = 'login.html'; // Redirige al login
-                }, 3000); // Espera 3 segundos antes de redirigir
-            } else {
-                const errorText = await response.text(); // Obtiene el mensaje de error
-                messageContainer.classList.remove('hidden'); // Muestra el mensaje de error
-                messageContainer.style.color = '#FF6F61'; // Color rojo
-                messageContainer.innerHTML = errorText.replace('<a href=\'/reset-password\'>', '<a href=\'forgot-password.html\' style="color: white;">'); // Ajusta el enlace de recuperación de contraseña
+            // Muestra el spinner mientras se procesa la solicitud
+            showSpinner();
 
-                if (errorText.includes("Redirigiendo a la recuperación de contraseña")) {
+            try {
+                // Realiza la solicitud de registro
+                const response = await fetch(`${baseUrl}/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json' // El cuerpo de la solicitud es JSON
+                    },
+                    body: JSON.stringify({ username, email, password, roles: 'USER' }) // Envía los datos del formulario
+                });
+
+                const messageContainer = document.getElementById('message'); // Contenedor del mensaje
+                messageContainer.classList.remove('hidden'); // Muestra el contenedor de mensajes
+
+                if (response.ok) {
+                    messageContainer.style.color = '#E573FE'; // Color rosado para mensajes de éxito
+                    messageContainer.textContent = 'Registro exitoso. Redirigiendo a inicio de sesión...';
                     setTimeout(() => {
-                        window.location.href = 'forgot-password.html'; // Redirige a la página de recuperación de contraseña
-                    }, 3000); // Espera 3 segundos antes de redirigir
+                        window.location.href = 'login.html'; // Redirige al login después de 3 segundos
+                    }, 3000);
+                } else {
+                    const errorText = await response.text(); // Obtiene el mensaje de error
+                    messageContainer.style.color = '#FF6F61'; // Color rojo para mensajes de error
+                    messageContainer.innerHTML = errorText.replace(
+                        '<a href=\'/reset-password\'>',
+                        '<a href=\'forgot-password.html\' style="color: white;">'
+                    ); // Ajusta el enlace de recuperación de contraseña si existe en el mensaje
+
+                    if (errorText.includes('Redirigiendo a la recuperación de contraseña')) {
+                        setTimeout(() => {
+                            window.location.href = 'forgot-password.html'; // Redirige a la página de recuperación de contraseña
+                        }, 3000); // Espera 3 segundos antes de redirigir
+                    }
                 }
+            } catch (error) {
+                console.error('Error en la solicitud de registro:', error); // Muestra el error en la consola
+                alert('Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo.'); // Mensaje de error general
+            } finally {
+                // Oculta el spinner al finalizar la solicitud
+                hideSpinner();
             }
         });
 
@@ -494,41 +525,50 @@ document.addEventListener('DOMContentLoaded', function() {
             const username = document.getElementById('login').value; // Obtiene el nombre de usuario
             const password = document.getElementById('password').value; // Obtiene la contraseña
 
-            // Realiza la solicitud de inicio de sesión
-            const response = await fetch(`${baseUrl}/auth/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json' // El cuerpo de la solicitud es JSON
-                },
-                body: JSON.stringify({ username, password }) // Envía los datos del formulario
-            });
+            showSpinner(); // Muestra el spinner al iniciar la solicitud
 
-            const messageContainer = document.getElementById('loginMessage'); // Contenedor del mensaje
-            messageContainer.style.display = 'block'; // Muestra el mensaje
+            try {
+                // Realiza la solicitud de inicio de sesión
+                const response = await fetch(`${baseUrl}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json' // El cuerpo de la solicitud es JSON
+                    },
+                    body: JSON.stringify({ username, password }) // Envía los datos del formulario
+                });
 
-            if (response.ok) {
-                const data = await response.json(); // Convierte la respuesta a JSON
-                localStorage.setItem('token', data.token); // Almacena el token en localStorage
-                localStorage.setItem('username', data.username); // Almacena el nombre de usuario
-                localStorage.setItem('userId', data.userId); // Almacena el ID de usuario
-                window.location.href = 'dashboard.html'; // Redirige al dashboard
-            } else {
-                const errorData = await response.text(); // Obtiene el mensaje de error
-                if (errorData.includes('El usuario no existe')) {
-                    messageContainer.innerHTML = 'El usuario no existe.'; // Muestra un mensaje de error
-                } else if (errorData.includes('Contraseña incorrecta')) {
-                    messageContainer.innerHTML = 'Contraseña incorrecta. Inténtalo de nuevo. <a href="forgot-password.html" style="color: white;">¿Olvidaste tu contraseña?</a>'; // Mensaje de contraseña incorrecta
-                } else if (errorData.includes('La cuenta está bloqueada')) {
-                    messageContainer.innerHTML = 'Has alcanzado el límite de intentos. Redirigiendo a la recuperación de contraseña...'; // Mensaje de cuenta bloqueada
-                    setTimeout(() => {
-                        window.location.href = 'forgot-password.html'; // Redirige a la página de recuperación de contraseña
-                    }, 3000); // Espera 3 segundos antes de redirigir
+                const messageContainer = document.getElementById('loginMessage'); // Contenedor del mensaje
+                messageContainer.style.display = 'block'; // Muestra el mensaje
+
+                if (response.ok) {
+                    const data = await response.json(); // Convierte la respuesta a JSON
+                    localStorage.setItem('token', data.token); // Almacena el token en localStorage
+                    localStorage.setItem('username', data.username); // Almacena el nombre de usuario
+                    localStorage.setItem('userId', data.userId); // Almacena el ID de usuario
+                    window.location.href = 'dashboard.html'; // Redirige al dashboard
                 } else {
-                    messageContainer.innerHTML = 'Error en el inicio de sesión'; // Mensaje de error genérico
+                    const errorData = await response.text(); // Obtiene el mensaje de error
+                    if (errorData.includes('El usuario no existe')) {
+                        messageContainer.innerHTML = 'El usuario no existe.'; // Muestra un mensaje de error
+                    } else if (errorData.includes('Contraseña incorrecta')) {
+                        messageContainer.innerHTML = 'Contraseña incorrecta. Inténtalo de nuevo. <a href="forgot-password.html" style="color: white;">¿Olvidaste tu contraseña?</a>'; // Mensaje de contraseña incorrecta
+                    } else if (errorData.includes('La cuenta está bloqueada')) {
+                        messageContainer.innerHTML = 'Has alcanzado el límite de intentos. Redirigiendo a la recuperación de contraseña...'; // Mensaje de cuenta bloqueada
+                        setTimeout(() => {
+                            window.location.href = 'forgot-password.html'; // Redirige a la página de recuperación de contraseña
+                        }, 3000); // Espera 3 segundos antes de redirigir
+                    } else {
+                        messageContainer.innerHTML = 'Error en el inicio de sesión'; // Mensaje de error genérico
+                    }
+                    messageContainer.style.color = '#FF6F61'; // Color rojo
+                    messageContainer.style.marginTop = '20px'; // Espaciado superior
+                    messageContainer.style.textAlign = 'center'; // Alineación centrada
                 }
-                messageContainer.style.color = '#FF6F61'; // Color rojo
-                messageContainer.style.marginTop = '20px'; // Espaciado superior
-                messageContainer.style.textAlign = 'center'; // Alineación centrada
+            } catch (error) {
+                console.error('Error en la solicitud:', error); // Muestra el error en la consola
+                alert('Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo.'); // Mensaje de error general
+            } finally {
+                hideSpinner(); // Oculta el spinner al finalizar la solicitud, ya sea con éxito o error
             }
         });
 

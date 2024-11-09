@@ -1068,12 +1068,12 @@ public class DatabaseController {
     }
 }
 
+
 // DepartamentoController.java
 // Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.controller;
 
 // Este controlador me permite gestionar las peticiones HTTP relacionadas con los departamentos
-
 import com.example.gestion_curriculums0.model.DepartamentoDTO;
 import com.example.gestion_curriculums0.model.Departamento;
 import com.example.gestion_curriculums0.model.Usuario;

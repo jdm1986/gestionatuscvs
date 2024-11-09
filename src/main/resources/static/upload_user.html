@@ -1,4 +1,3 @@
-<!-- Archivo: upload_user.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -70,12 +69,24 @@
         <button type="submit">Subir</button>
         <button type="button" id="volverBtn">Volver</button>
     </form>
+    <!-- Contenedor del spinner -->
+    <div id="spinner" class="spinner hidden"></div>
     <!-- Mensajes de éxito o error -->
     <div id="uploadMessage" class="hidden">Currículum subido exitosamente.</div>
     <div id="errorMessage" class="hidden">Error al subir el currículum.</div>
 </div>
 
 <script>
+    // Función para mostrar el spinner
+    function showSpinner() {
+        document.getElementById('spinner').classList.remove('hidden');
+    }
+
+    // Función para ocultar el spinner
+    function hideSpinner() {
+        document.getElementById('spinner').classList.add('hidden');
+    }
+
     document.addEventListener("DOMContentLoaded", function() {
         // URL base que se ajusta dependiendo de si estamos en entorno local o producción
         const baseUrl = window.location.hostname.includes('localhost')
@@ -133,6 +144,7 @@
         // Manejo del formulario de subida de currículums
         document.getElementById('uploadForm').addEventListener('submit', function(event) {
             event.preventDefault();
+            showSpinner(); // Mostrar spinner al iniciar la subida
 
             const pdfFile = document.getElementById('pdfFile').files[0];
             const nombre = document.getElementById('nombre').value;
@@ -146,12 +158,14 @@
             // Validación adicional para asegurarse de que el archivo es un PDF
             if (!pdfFile || pdfFile.type !== "application/pdf") {
                 alert('Por favor, sube un archivo PDF válido.');
+                hideSpinner(); // Ocultar spinner si hay error
                 return;
             }
 
             // Validación del checkbox de aceptación de términos
             if (!aceptarTerminos) {
                 alert('Debe aceptar los términos para poder subir su currículum.');
+                hideSpinner(); // Ocultar spinner si hay error
                 return;
             }
 
@@ -163,7 +177,7 @@
             formData.append('departamento', departamento);
             formData.append('telefono', telefono);
             formData.append('email', email);
-            formData.append('userId', userId); // Enviamos el userId
+            formData.append('userId', userId); // Enviar el userId
 
             // Petición para subir el currículum
             fetch(`${baseUrl}/curriculums/upload`, {
@@ -174,6 +188,7 @@
                 body: formData
             })
             .then(response => {
+                hideSpinner(); // Ocultar spinner al finalizar
                 if (!response.ok) {
                     throw new Error('Error al subir el currículum.');
                 }
@@ -189,6 +204,7 @@
                 }, 2000);
             })
             .catch(error => {
+                hideSpinner(); // Ocultar spinner al finalizar
                 document.getElementById('uploadMessage').classList.add('hidden');
                 document.getElementById('errorMessage').classList.remove('hidden');
             });

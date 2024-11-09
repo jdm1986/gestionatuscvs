@@ -64,12 +64,24 @@
 
         <button type="submit">Subir</button>
     </form>
+    <!-- Contenedor del spinner -->
+    <div id="spinner" class="spinner hidden"></div>
     <!-- Mensajes de confirmación o error -->
     <div id="uploadMessage" class="hidden">Currículum subido exitosamente.</div>
     <div id="errorMessage" class="hidden">Error: Enlace de subida no válido o ha expirado.</div>
 </div>
 
 <script>
+    // Función para mostrar el spinner
+    function showSpinner() {
+        document.getElementById('spinner').classList.remove('hidden');
+    }
+
+    // Función para ocultar el spinner
+    function hideSpinner() {
+        document.getElementById('spinner').classList.add('hidden');
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         // URL base que se ajusta dependiendo de si estamos en entorno local o producción
         const baseUrl = window.location.hostname.includes('localhost')
@@ -79,8 +91,8 @@
                 : 'https://gestionatuscv.es'; // Si no está en www
 
         const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('token');  // Capturo el token desde la URL
-        const userId = urlParams.get('userId'); // Capturo el userId desde la URL
+        const token = urlParams.get('token');  // Captura el token desde la URL
+        const userId = urlParams.get('userId'); // Captura el userId desde la URL
 
         // Verifica si el userId está presente en la URL
         if (!userId) {
@@ -108,6 +120,7 @@
         // Manejador del formulario de subida
         document.getElementById('uploadForm').addEventListener('submit', function(event) {
             event.preventDefault();
+            showSpinner(); // Mostrar spinner al iniciar la subida
 
             const pdfFile = document.getElementById('pdfFile').files[0];
             const nombre = document.getElementById('nombre').value;
@@ -121,17 +134,19 @@
             // Validación adicional para asegurarse de que el archivo es un PDF
             if (!pdfFile || pdfFile.type !== "application/pdf") {
                 alert('Por favor, sube un archivo PDF válido.');
+                hideSpinner(); // Ocultar spinner si hay error
                 return;
             }
 
             // Validación del checkbox de aceptación de términos
             if (!aceptarTerminos) {
                 alert('Debe aceptar los términos para poder subir su currículum.');
+                hideSpinner(); // Ocultar spinner si hay error
                 return;
             }
 
             const formData = new FormData();
-            formData.append('token', token);  // Añadimos el token al formData
+            formData.append('token', token);  // Añadir el token al formData
             formData.append('file', pdfFile);
             formData.append('nombre', nombre);
             formData.append('apellido', apellido);
@@ -147,6 +162,7 @@
             })
             .then(response => response.text())
             .then(message => {
+                hideSpinner(); // Ocultar spinner al finalizar
                 if (message.includes("Enlace de subida no válido o ha expirado")) {
                     document.getElementById('errorMessage').classList.remove('hidden');
                 } else {
@@ -159,6 +175,7 @@
                 }
             })
             .catch(error => {
+                hideSpinner(); // Ocultar spinner al finalizar
                 alert('Error al subir el currículum.');
             });
         });

@@ -1,0 +1,827 @@
+<!-- Archivo: privacidad.html -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVISO DE PRIVACIDAD</title>
+    <link rel="stylesheet" href="styles-common.css">
+</head>
+<body>
+<!--
+    Encabezado:
+    Página que proporciona el aviso de privacidad de la plataforma GestionaTusCV, explicando cómo se manejan los datos personales de los usuarios.
+    Incluye el logotipo para mantener la consistencia con la apariencia general de la plataforma.
+-->
+<header>
+    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
+</header>
+
+<!-- Contenedor principal con el contenido del aviso de privacidad -->
+<div class="container">
+    <h1>AVISO DE PRIVACIDAD</h1>
+    <div class="content">
+        <!-- Introducción sobre el compromiso de la plataforma con la privacidad -->
+        <p>[GESTIONATUSCV] se compromete a proteger su privacidad. Este Aviso de Privacidad describe cómo recopilamos, usamos y protegemos su información personal cuando interactúa con la plataforma.</p>
+
+        <!-- Detalle sobre la información recopilada de usuarios registrados -->
+        <p><strong>Información que recopilamos de usuarios registrados:</strong></p>
+        <ul>
+            <li>Nombre de usuario/a</li>
+            <li>Dirección de correo electrónico</li>
+            <li>Fecha de registro</li>
+            <li>Rol</li>
+            <li>Fecha de token generado (para enlace de carga de currículum)</li>
+        </ul>
+
+        <!-- Información específica sobre los datos de los candidatos -->
+        <p><strong>Información que recopilamos de registros de candidatos:</strong></p>
+        <ul>
+            <li>Nombre y Apellidos</li>
+            <li>Archivo del CV en formato PDF y datos asociados</li>
+            <li>Dirección de correo electrónico</li>
+            <li>Fecha de inserción en la base de datos</li>
+            <li>Sexo</li>
+            <li>Teléfono</li>
+        </ul>
+
+        <!-- Explicación del uso que se le da a la información recopilada -->
+        <p><strong>Uso de la información:</strong></p>
+        <ul>
+            <li>La información recopilada se utilizará únicamente para propósitos de prueba de la aplicación salvo usuarios que tengan rol de administración.</li>
+            <li>Los datos proporcionados a nivel usuario serán eliminados automáticamente después de 30 minutos. Solo los datos de registro de un usuario con rol de administración y sus datos asociados permanecerán en la base de datos.</li>
+        </ul>
+
+        <!-- Descripción de las medidas de seguridad implementadas -->
+        <p><strong>Seguridad de la información:</strong></p>
+        <ul>
+            <li><strong>Enlace seguro:</strong> Los enlaces generados para la subida de CV contienen un token único que garantiza que solo aquellos con acceso al enlace puedan realizar la subida del archivo.</li>
+            <li><strong>Encriptación de la conexión:</strong> La plataforma utiliza el protocolo HTTPS para asegurar que todos los datos transmitidos estén cifrados y protegidos durante su envío.</li>
+            <li><strong>Roles y permisos:</strong> La aplicación cuenta con un sistema de autenticación y gestión de roles para asegurar que los datos solo sean accesibles por usuarios autorizados.</li>
+            <li><strong>Medidas de seguridad adicionales:</strong> Se implementan validaciones de archivos y restricciones para garantizar que solo se puedan subir archivos válidos y evitar la manipulación maliciosa.</li>
+        </ul>
+
+        <!-- Información sobre el uso de cookies -->
+        <p><strong>Uso de Cookies:</strong> No utilizamos cookies en esta aplicación para el seguimiento de sesiones o almacenamiento de datos personales.</p>
+
+        <!-- Derechos de los usuarios respecto a sus datos personales -->
+        <p><strong>Consentimiento y derechos de los usuarios/as:</strong></p>
+        <ul>
+            <li>Al subir su CV mediante el enlace proporcionado con token, usted acepta la recopilación y el uso de su información de acuerdo con este Aviso de Privacidad.</li>
+            <li>Usted tiene derecho a acceder, rectificar y suprimir sus datos personales en cualquier momento. Para ejercer estos derechos, póngase en contacto con nosotros en info@gestionatuscv.es.</li>
+        </ul>
+
+        <!-- Información sobre posibles actualizaciones del aviso de privacidad -->
+        <p><strong>Actualizaciones y cambios:</strong> Este aviso de privacidad puede ser actualizado para reflejar mejoras en nuestras políticas de seguridad y prácticas de gestión de datos. Cualquier cambio será comunicado en esta página.</p>
+
+        <!-- Información de contacto -->
+        <p>Para más información, por favor contáctenos en <a href="mailto:info@gestionatuscv.es" class="footer-email" style="color: white;">info@gestionatuscv.es</a>.</p>
+    </div>
+
+    <!-- Botón para volver a la página de inicio -->
+    <div class="buttons">
+        <button onclick="location.href='index.html'">Volver al inicio</button>
+    </div>
+</div>
+
+<!--
+    Archivo JavaScript adicional para funcionalidades generales de la página.
+    Puede incluir scripts para mejorar la interactividad o el manejo de eventos.
+-->
+<script src="scripts.js"></script>
+
+</body>
+
+<!-- Pie de página con enlaces adicionales y créditos -->
+<footer>
+    <div class="footer-content">
+        <!-- Enlace al sitio del desarrollador con el logo correspondiente -->
+        <a href="https://www.jesusdiazmartincv.es" target="_blank">
+            <img src="images/logodeveloper.png" alt="Logo JDM" class="footer-logo">
+        </a>
+        <!-- Enlaces a las políticas de privacidad, términos y condiciones, y contacto -->
+        <div class="footer-links">
+            <a href="privacidad.html">Política de Privacidad</a> |
+            <a href="terminos.html">Términos y Condiciones</a> |
+            <a href="contacto.html">Contacto</a>
+        </div>
+        <!-- Información de derechos de autor y créditos -->
+        <p>&copy; 2024 GESTIONATUSCV. Todos los derechos reservados.</p>
+        <p> || Aplicación Web creada por Jesús Díaz Martín || </p>
+    </div>
+</footer>
+
+</html>
+
+<!-- Archivo: register.html -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <link rel="stylesheet" href="styles-common.css">
+</head>
+<body>
+<!--
+    Encabezado:
+    Página de registro de usuario para la plataforma GestionaTusCV.
+    Permite a los nuevos usuarios crear una cuenta proporcionando la información requerida.
+    Incluye el logotipo para mantener la apariencia coherente con el resto del sitio.
+-->
+<header>
+    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
+</header>
+
+<!-- Contenedor principal para el formulario de registro -->
+<div class="container">
+    <h1>REGISTRO DE USUARIO/A</h1>
+    <form id="registerForm">
+        <!-- Campo para el nombre de usuario -->
+        <input type="text" id="username" placeholder="Nombre de Usuario/a" required>
+
+        <!-- Campo para el correo electrónico -->
+        <input type="email" id="email" placeholder="Email" required>
+
+        <!-- Campo para la contraseña -->
+        <input type="password" id="password" placeholder="Contraseña" required>
+
+        <!-- Mensaje de advertencia sobre la eliminación automática de los datos -->
+        <p style="color: #ff0000; font-weight: bold;">Evaluación gratuita de 30 minutos.</p>
+
+        <!-- Texto de aceptación de los términos y condiciones -->
+        <p style="color: #ffffff;">
+            Acepto los <a href="terminos.html" class="link-blanco">Términos de Uso</a> y el <a href="privacidad.html" class="link-blanco">Aviso de Privacidad</a>.
+        </p>
+
+        <!-- Checkbox para el consentimiento del usuario -->
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="consent" required>
+        </div>
+
+        <!-- Botón para enviar el formulario -->
+        <button type="submit">Registrarse</button>
+
+        <!-- Botón para volver a la página principal -->
+        <button type="button" onclick="location.href='index.html'">Volver</button>
+    </form>
+    <!-- Contenedor del spinner -->
+    <div id="spinner" class="spinner hidden"></div>
+    <!-- Contenedor para mensajes (oculto inicialmente) -->
+    <div id="message" class="hidden" style="margin-top: 20px; text-align: center;"></div>
+</div>
+
+<!-- Archivo JavaScript con funcionalidades adicionales para la página -->
+<script src="scripts.js"></script>
+
+</body>
+
+<!-- Pie de página con enlaces adicionales y créditos -->
+<footer>
+    <div class="footer-content">
+        <!-- Enlace al sitio del desarrollador con el logo correspondiente -->
+        <a href="https://www.jesusdiazmartincv.es" target="_blank">
+            <img src="images/logodeveloper.png" alt="Logo JDM" class="footer-logo">
+        </a>
+        <!-- Enlaces a las políticas de privacidad, términos y condiciones, y contacto -->
+        <div class="footer-links">
+            <a href="privacidad.html">Política de Privacidad</a> |
+            <a href="terminos.html">Términos y Condiciones</a> |
+            <a href="contacto.html">Contacto</a>
+        </div>
+        <!-- Información de derechos de autor y créditos -->
+        <p>&copy; 2024 GESTIONATUSCV. Todos los derechos reservados.</p>
+        <p> || Aplicación Web creada por Jesús Díaz Martín || </p>
+    </div>
+</footer>
+
+</html>
+
+<!-- Archivo: reset-password.html -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restablecer Contraseña</title>
+    <link rel="stylesheet" href="styles-common.css">
+</head>
+<body>
+<!--
+    Encabezado:
+    Página para que el usuario restablezca su contraseña usando un token de recuperación enviado por correo electrónico.
+    Incluye el logotipo para mantener la identidad visual de la plataforma GestionaTusCV.
+-->
+<header>
+    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
+</header>
+
+<!-- Contenedor principal para el formulario de restablecimiento de contraseña -->
+<div class="container">
+    <h1>Restablecer Contraseña</h1>
+    <form id="resetPasswordForm">
+        <!-- Campo oculto para almacenar el token de restablecimiento -->
+        <input type="hidden" id="token" value="">
+
+        <!-- Campo para que el usuario ingrese la nueva contraseña -->
+        <input type="password" id="newPassword" placeholder="Nueva Contraseña" required>
+
+        <!-- Botón para enviar el formulario de restablecimiento -->
+        <button type="submit">Restablecer Contraseña</button>
+    </form>
+</div>
+
+<!-- Script para manejar el proceso de restablecimiento de contraseña -->
+<script>
+    // URL base del entorno de producción
+    const baseUrl = 'https://gestionatuscv.es';
+
+    // Función que se ejecuta cuando la página ha sido cargada completamente
+    document.addEventListener('DOMContentLoaded', function() {
+        // Obtener el token desde la URL (parámetro "token" en la cadena de consulta)
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get('token');
+        document.getElementById('token').value = token; // Asignar el token al campo oculto
+
+        // Agregar un evento para manejar el envío del formulario
+        document.getElementById('resetPasswordForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevenir el comportamiento por defecto del formulario
+
+            // Obtener la nueva contraseña ingresada por el usuario
+            const newPassword = document.getElementById('newPassword').value;
+
+            // Realizar la solicitud POST para restablecer la contraseña
+            const response = await fetch(baseUrl + '/auth/reset-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded' // Enviar los datos en formato URL codificada
+                },
+                body: new URLSearchParams({
+                    token: token, // El token proporcionado
+                    newPassword: newPassword // La nueva contraseña
+                })
+            });
+
+            // Verificar la respuesta del servidor
+            if (response.ok) {
+                // Si la solicitud fue exitosa, mostrar un mensaje y redirigir al inicio de sesión
+                alert('Contraseña restablecida correctamente');
+                window.location.href = 'login.html';
+            } else {
+                // Si hubo un error, mostrar un mensaje de alerta
+                alert('Error al restablecer la contraseña');
+            }
+        });
+    });
+</script>
+
+</body>
+
+<!-- Pie de página con enlaces adicionales y créditos -->
+<footer>
+    <div class="footer-content">
+        <!-- Enlace al sitio del desarrollador con el logo correspondiente -->
+        <a href="https://www.jesusdiazmartincv.es" target="_blank">
+            <img src="images/logodeveloper.png" alt="Logo JDM" class="footer-logo">
+        </a>
+        <!-- Enlaces a la política de privacidad, términos y condiciones, y contacto -->
+        <div class="footer-links">
+            <a href="privacidad.html">Política de Privacidad</a> |
+            <a href="terminos.html">Términos y Condiciones</a> |
+            <a href="contacto.html">Contacto</a>
+        </div>
+        <!-- Información de derechos de autor y créditos -->
+        <p>&copy; 2024 GESTIONATUSCV. Todos los derechos reservados.</p>
+        <p> || Aplicación Web creada por Jesús Díaz Martín || </p>
+    </div>
+</footer>
+
+</html>
+
+<!-- Archivo: terminos.html -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Términos de Uso</title>
+    <link rel="stylesheet" href="styles-common.css">
+</head>
+<body>
+<!--
+    Encabezado:
+    Página que presenta los Términos y Condiciones bajo los cuales los usuarios pueden utilizar la plataforma GestionaTusCV.
+    Proporciona una base para informar a los usuarios de sus derechos y deberes al usar la aplicación.
+-->
+<header>
+    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
+</header>
+
+<!-- Contenedor principal para los términos de uso -->
+<div class="container">
+    <h1>TÉRMINOS DE USO</h1>
+    <div class="content">
+        <!-- Descripción y lista de términos que regulan el uso de la plataforma -->
+        <p>Bienvenido/a a [GESTIONATUSCV]. Al utilizar nuestra aplicación, usted acepta cumplir con los siguientes términos:</p>
+        <ol>
+            <!-- Uso adecuado de la aplicación, destinado principalmente a pruebas y gestión de CVs -->
+            <li><strong>Uso de la Aplicación</strong>: Esta aplicación es una herramienta de prueba y gestión de currículums. Su uso está limitado a propósitos de prueba y evaluación por parte de usuarios no administradores.</li>
+
+            <!-- Explicación sobre la eliminación automática de datos para proteger la privacidad -->
+            <li><strong>Registro y Eliminación de Datos</strong>: Los datos que usted proporcione serán eliminados automáticamente después de 30 minutos. No conservamos sus datos personales más allá del tiempo indicado ni datos que haya subido a la aplicación.</li>
+
+            <!-- Medidas de seguridad implementadas y recomendaciones al usuario sobre el uso de contraseñas -->
+            <li><strong>Seguridad</strong>: Implementamos medidas de seguridad para proteger sus datos durante el uso de la aplicación, no obstante, le recomendamos usar una contraseña que no use normalmente y sea usada única y exclusivamente para este fin.</li>
+
+            <!-- Consentimiento del usuario sobre la aceptación de los términos y aviso de privacidad -->
+            <li><strong>Consentimiento</strong>: Al registrarse en la aplicación, usted acepta estos términos y el Aviso de Privacidad.</li>
+
+            <!-- Limitación de la responsabilidad de la aplicación por cualquier daño o pérdida ocasionada -->
+            <li><strong>Limitación de Responsabilidad</strong>: [GESTIONATUSCV] no se hace responsable de cualquier daño o pérdida resultante del uso de esta aplicación, ya sea directo, indirecto, incidental o consecuente. El uso de la aplicación es bajo su propio riesgo.</li>
+
+            <!-- Derechos de propiedad intelectual, incluyendo la protección del contenido y el software -->
+            <li><strong>Derechos de Propiedad Intelectual</strong>: Todos los derechos, títulos e intereses, incluidos, pero no limitados a, los derechos de propiedad intelectual en esta aplicación y en el contenido que contiene, son propiedad de [Jesús Díaz Martín]. No se permite la reproducción, distribución o uso de cualquier contenido sin autorización previa por escrito.</li>
+
+            <!-- Derecho de la plataforma a modificar los términos de uso en cualquier momento -->
+            <li><strong>Modificaciones</strong>: [GESTIONATUSCV] se reserva el derecho de modificar estos términos y condiciones en cualquier momento. Cualquier cambio será efectivo inmediatamente después de la publicación en la aplicación. El uso continuado de la aplicación implica la aceptación de los términos modificados.</li>
+        </ol>
+
+        <!-- Información de contacto para consultas adicionales sobre los términos -->
+        <p>Para cualquier consulta, por favor contáctenos en <a href="mailto:info@gestionatuscv.es" class="footer-email" style="color: white;">info@gestionatuscv.es</a>.</p>
+    </div>
+
+    <!-- Botón para regresar a la página de inicio -->
+    <div class="buttons">
+        <button onclick="location.href='index.html'">Volver al inicio</button>
+    </div>
+</div>
+
+<!-- Carga del script general de la aplicación -->
+<script src="scripts.js"></script>
+
+</body>
+
+<!-- Pie de página con enlaces a documentos legales y contacto -->
+<footer>
+    <div class="footer-content">
+        <!-- Enlace al sitio del desarrollador con un logo distintivo -->
+        <a href="https://www.jesusdiazmartincv.es" target="_blank">
+            <img src="images/logodeveloper.png" alt="Logo JDM" class="footer-logo">
+        </a>
+
+        <!-- Enlaces adicionales para el usuario a la política de privacidad, términos y contacto -->
+        <div class="footer-links">
+            <a href="privacidad.html">Política de Privacidad</a> |
+            <a href="terminos.html">Términos y Condiciones</a> |
+            <a href="contacto.html">Contacto</a>
+        </div>
+
+        <!-- Derechos de autor y créditos del desarrollador -->
+        <p>&copy; 2024 GESTIONATUSCV. Todos los derechos reservados.</p>
+        <p> || Aplicación Web creada por Jesús Díaz Martín || </p>
+    </div>
+</footer>
+
+</html>
+
+<!-- Archivo: upload.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subir Currículum</title>
+    <link rel="stylesheet" href="styles-common.css">
+    <style>
+        /* Estilo adicional para el contenedor del checkbox */
+        .checkbox-container {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            text-align: left;
+            font-size: 14px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-container input {
+            margin-right: 10px;
+        }
+
+        .checkbox-container label {
+            margin: 0;
+        }
+
+        .checkbox-container a {
+            color: #fff;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <!-- Encabezado con el logo de la aplicación -->
+    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
+</header>
+<div class="container">
+    <h1>Subir Currículum</h1>
+    <!-- Formulario para la subida del currículum en formato PDF, con campos adicionales de información personal -->
+    <form id="uploadForm">
+        <input type="file" id="pdfFile" accept="application/pdf" required>
+        <input type="text" id="nombre" placeholder="Nombre" required pattern="[A-Za-zÀ-ÿ\s]+" title="El nombre solo puede contener letras y espacios.">
+        <input type="text" id="apellido" placeholder="Apellido" required pattern="[A-Za-zÀ-ÿ\s]+" title="El apellido solo puede contener letras y espacios.">
+        <select id="sexo" required>
+            <option value="">Seleccionar Sexo</option>
+            <option value="Hombre">Hombre</option>
+            <option value="Mujer">Mujer</option>
+            <option value="Otro">Otro</option>
+        </select>
+        <select id="departamentoSelect" required>
+            <option value="">Seleccionar Departamento</option>
+        </select>
+        <input type="text" id="telefono" placeholder="Teléfono" required pattern="^\+?[0-9]{9,15}$" title="El teléfono solo puede contener números y opcionalmente el signo + al inicio.">
+        <input type="email" id="email" placeholder="Email" required>
+
+        <!-- Checkbox para aceptar los términos de uso y la política de privacidad -->
+        <p style="color: #ffffff;">Acepto los <a href="terminos.html" class="link-blanco">Términos de Uso</a> y el <a href="privacidad.html" class="link-blanco">Aviso de Privacidad</a>.</p>
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="aceptarTerminos" required>
+        </div>
+
+        <button type="submit">Subir</button>
+    </form>
+    <!-- Contenedor del spinner -->
+    <div id="spinner" class="spinner hidden"></div>
+    <!-- Mensajes de confirmación o error -->
+    <div id="uploadMessage" class="hidden">Currículum subido exitosamente.</div>
+    <div id="errorMessage" class="hidden">Error: Enlace de subida no válido o ha expirado.</div>
+</div>
+
+<script>
+    // Función para mostrar el spinner
+    function showSpinner() {
+        document.getElementById('spinner').classList.remove('hidden');
+    }
+
+    // Función para ocultar el spinner
+    function hideSpinner() {
+        document.getElementById('spinner').classList.add('hidden');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // URL base que se ajusta dependiendo de si estamos en entorno local o producción
+        const baseUrl = window.location.hostname.includes('localhost')
+            ? 'http://localhost:8080' // Si es localhost, usar esta URL
+            : window.location.hostname.includes('www')
+                ? 'https://www.gestionatuscv.es' // Si está en www
+                : 'https://gestionatuscv.es'; // Si no está en www
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');  // Captura el token desde la URL
+        const userId = urlParams.get('userId'); // Captura el userId desde la URL
+
+        // Verifica si el userId está presente en la URL
+        if (!userId) {
+            console.error("userId no está definido en la URL.");
+            alert("No se ha encontrado un userId válido. Por favor, contacta con el administrador.");
+            return;
+        }
+
+        // Cargar los departamentos desde el servidor para el selector
+        fetch(`${baseUrl}/departamentos?userId=${userId}`)
+            .then(response => response.json())
+            .then(departamentos => {
+                const departamentoSelect = document.getElementById('departamentoSelect');
+                departamentos.forEach(depto => {
+                    const option = document.createElement('option');
+                    option.value = depto.nombre;
+                    option.textContent = depto.nombre;
+                    departamentoSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error("Error al cargar departamentos:", error);
+            });
+
+        // Manejador del formulario de subida
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            showSpinner(); // Mostrar spinner al iniciar la subida
+
+            const pdfFile = document.getElementById('pdfFile').files[0];
+            const nombre = document.getElementById('nombre').value;
+            const apellido = document.getElementById('apellido').value;
+            const sexo = document.getElementById('sexo').value;
+            const departamento = document.getElementById('departamentoSelect').value;
+            const telefono = document.getElementById('telefono').value;
+            const email = document.getElementById('email').value;
+            const aceptarTerminos = document.getElementById('aceptarTerminos').checked;
+
+            // Validación adicional para asegurarse de que el archivo es un PDF
+            if (!pdfFile || pdfFile.type !== "application/pdf") {
+                alert('Por favor, sube un archivo PDF válido.');
+                hideSpinner(); // Ocultar spinner si hay error
+                return;
+            }
+
+            // Validación del checkbox de aceptación de términos
+            if (!aceptarTerminos) {
+                alert('Debe aceptar los términos para poder subir su currículum.');
+                hideSpinner(); // Ocultar spinner si hay error
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('token', token);  // Añadir el token al formData
+            formData.append('file', pdfFile);
+            formData.append('nombre', nombre);
+            formData.append('apellido', apellido);
+            formData.append('sexo', sexo);
+            formData.append('departamento', departamento);
+            formData.append('telefono', telefono);
+            formData.append('email', email);
+
+            // Petición para subir el currículum
+            fetch(`${baseUrl}/curriculums/upload_with_token`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(message => {
+                hideSpinner(); // Ocultar spinner al finalizar
+                if (message.includes("Enlace de subida no válido o ha expirado")) {
+                    document.getElementById('errorMessage').classList.remove('hidden');
+                } else {
+                    document.getElementById('uploadMessage').textContent = message;
+                    document.getElementById('uploadMessage').classList.remove('hidden');
+                    // Redireccionar al index después de 2 segundos
+                    setTimeout(function() {
+                        window.location.href = '/index.html';
+                    }, 2000);
+                }
+            })
+            .catch(error => {
+                hideSpinner(); // Ocultar spinner al finalizar
+                alert('Error al subir el currículum.');
+            });
+        });
+    });
+</script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subir Currículum (Usuario)</title>
+    <link rel="stylesheet" href="styles-common.css">
+    <style>
+        /* Estilo adicional para el contenedor del checkbox */
+        .checkbox-container {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            text-align: left;
+            font-size: 14px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-container input {
+            margin-right: 10px;
+        }
+
+        .checkbox-container label {
+            margin: 0;
+        }
+
+        .checkbox-container a {
+            color: #fff;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <!-- Encabezado con el logo de la aplicación -->
+    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo" id="logo">
+</header>
+<div class="container">
+    <h1>Subir Currículum (Usuario)</h1>
+    <!-- Formulario para subir el currículum en formato PDF, con campos adicionales de información personal -->
+    <form id="uploadForm">
+        <input type="file" id="pdfFile" accept="application/pdf" required>
+        <!-- Campos de entrada con validación para nombre y apellido -->
+        <input type="text" id="nombre" placeholder="Nombre" required pattern="[A-Za-zÀ-ÿ\s]+" title="El nombre solo puede contener letras y espacios.">
+        <input type="text" id="apellido" placeholder="Apellido" required pattern="[A-Za-zÀ-ÿ\s]+" title="El apellido solo puede contener letras y espacios.">
+        <select id="sexo" required>
+            <option value="">Seleccionar Sexo</option>
+            <option value="Hombre">Hombre</option>
+            <option value="Mujer">Mujer</option>
+            <option value="Otro">Otro</option>
+        </select>
+        <!-- Selector de departamento cargado dinámicamente -->
+        <select id="departamentoSelect" required>
+            <option value="">Seleccionar Departamento</option>
+        </select>
+        <!-- Campo de entrada con validación para el teléfono -->
+        <input type="text" id="telefono" placeholder="Teléfono" required pattern="^\+?[0-9]{9,15}$" title="El teléfono solo puede contener números y opcionalmente el signo + al inicio.">
+        <input type="email" id="email" placeholder="Email" required>
+        <!-- Campo oculto para almacenar el userId -->
+        <input type="hidden" id="userId" value="">
+
+        <!-- Checkbox para aceptar los términos y condiciones -->
+        <p style="color: #ffffff;">Acepto los <a href="terminos.html" class="link-blanco">Términos de Uso</a> y el <a href="privacidad.html" class="link-blanco">Aviso de Privacidad</a>.</p>
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="aceptarTerminos" required>
+        </div>
+
+        <button type="submit">Subir</button>
+        <button type="button" id="volverBtn">Volver</button>
+    </form>
+    <!-- Contenedor del spinner -->
+    <div id="spinner" class="spinner hidden"></div>
+    <!-- Mensajes de éxito o error -->
+    <div id="uploadMessage" class="hidden">Currículum subido exitosamente.</div>
+    <div id="errorMessage" class="hidden">Error al subir el currículum.</div>
+</div>
+
+<script>
+    // Función para mostrar el spinner
+    function showSpinner() {
+        document.getElementById('spinner').classList.remove('hidden');
+    }
+
+    // Función para ocultar el spinner
+    function hideSpinner() {
+        document.getElementById('spinner').classList.add('hidden');
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // URL base que se ajusta dependiendo de si estamos en entorno local o producción
+        const baseUrl = window.location.hostname.includes('localhost')
+            ? 'http://localhost:8080' // Si es localhost, usar esta URL
+            : window.location.hostname.includes('www')
+                ? 'https://www.gestionatuscv.es' // Si está en www
+                : 'https://gestionatuscv.es'; // Si no está en www
+
+        // Simulando que el userId se obtiene al cargar la página (por ejemplo, desde localStorage)
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+            alert('Error: userId no encontrado.');
+            return;
+        }
+        document.getElementById('userId').value = userId;
+
+        // Funcionalidad para el botón "Volver"
+        document.getElementById('volverBtn').addEventListener('click', function() {
+            window.location.href = '/dashboard.html';
+        });
+
+        // Añadir confirmación al hacer clic en el logo para cerrar sesión
+        document.getElementById('logo').addEventListener('click', function(event) {
+            event.preventDefault();
+            if (confirm("Se va a cerrar la sesión, ¿estás seguro?")) {
+                window.location.href = '/index.html';
+            }
+        });
+
+        // Cargar los departamentos desde el servidor para el selector
+        fetch(`${baseUrl}/departamentos?userId=${userId}`)
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw new Error(err.error); });
+                }
+                return response.json();
+            })
+            .then(departamentos => {
+                const departamentoSelect = document.getElementById('departamentoSelect');
+                if (Array.isArray(departamentos)) {  // Asegúrate de que departamentos sea un array
+                    departamentos.forEach(depto => {
+                        const option = document.createElement('option');
+                        option.value = depto.nombre;
+                        option.textContent = depto.nombre;
+                        departamentoSelect.appendChild(option);
+                    });
+                } else {
+                    console.error("Departamentos no es un array:", departamentos);
+                }
+            })
+            .catch(error => {
+                console.error('Error al cargar departamentos:', error);
+            });
+
+        // Manejo del formulario de subida de currículums
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            showSpinner(); // Mostrar spinner al iniciar la subida
+
+            const pdfFile = document.getElementById('pdfFile').files[0];
+            const nombre = document.getElementById('nombre').value;
+            const apellido = document.getElementById('apellido').value;
+            const sexo = document.getElementById('sexo').value;
+            const departamento = document.getElementById('departamentoSelect').value;
+            const telefono = document.getElementById('telefono').value;
+            const email = document.getElementById('email').value;
+            const aceptarTerminos = document.getElementById('aceptarTerminos').checked;
+
+            // Validación adicional para asegurarse de que el archivo es un PDF
+            if (!pdfFile || pdfFile.type !== "application/pdf") {
+                alert('Por favor, sube un archivo PDF válido.');
+                hideSpinner(); // Ocultar spinner si hay error
+                return;
+            }
+
+            // Validación del checkbox de aceptación de términos
+            if (!aceptarTerminos) {
+                alert('Debe aceptar los términos para poder subir su currículum.');
+                hideSpinner(); // Ocultar spinner si hay error
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', pdfFile);
+            formData.append('nombre', nombre);
+            formData.append('apellido', apellido);
+            formData.append('sexo', sexo);
+            formData.append('departamento', departamento);
+            formData.append('telefono', telefono);
+            formData.append('email', email);
+            formData.append('userId', userId); // Enviar el userId
+
+            // Petición para subir el currículum
+            fetch(`${baseUrl}/curriculums/upload`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`  // Autenticación con el token del usuario
+                },
+                body: formData
+            })
+            .then(response => {
+                hideSpinner(); // Ocultar spinner al finalizar
+                if (!response.ok) {
+                    throw new Error('Error al subir el currículum.');
+                }
+                return response.json();  // Asumiendo que el servidor devuelve un JSON con la información
+            })
+            .then(data => {
+                document.getElementById('uploadMessage').classList.remove('hidden');
+                document.getElementById('errorMessage').classList.add('hidden');
+
+                // Redireccionar al dashboard después de 2 segundos
+                setTimeout(function() {
+                    window.location.href = '/dashboard.html';
+                }, 2000);
+            })
+            .catch(error => {
+                hideSpinner(); // Ocultar spinner al finalizar
+                document.getElementById('uploadMessage').classList.add('hidden');
+                document.getElementById('errorMessage').classList.remove('hidden');
+            });
+        });
+    });
+</script>
+</body>
+</html>
+
+<!-- error-404.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página no encontrada - GestionaTusCV</title>
+    <link rel="stylesheet" href="/styles-common.css">
+</head>
+<body>
+<header>
+    <img src="/images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo">
+</header>
+<div class="container">
+    <h1>Página no encontrada</h1>
+    <p>Lo sentimos, la página que estás buscando no existe o ha sido movida.</p>
+    <p>Por favor, vuelve a la <a href="/index.html">página de inicio</a> o <a href="/contacto.html">contacta</a> con nosotros para más información.</p>
+    <button onclick="location.href='/index.html'">Volver al inicio</button>
+</div>
+<footer>
+    <div class="footer-content">
+        <a href="https://www.jesusdiazmartincv.es" target="_blank">
+            <img src="/images/logodeveloper.png" alt="Logo JDM" class="footer-logo">
+        </a>
+        <div class="footer-links">
+            <a href="/privacidad.html">Política de Privacidad</a> |
+            <a href="/terminos.html">Términos y Condiciones</a> |
+            <a href="/contacto.html">Contacto</a>
+        </div>
+        <p>&copy; 2024 GESTIONATUSCV. Todos los derechos reservados.</p>
+        <p>|| Aplicación Web creada por Jesús Díaz Martín ||</p>
+    </div>
+</footer>
+</body>
+</html>

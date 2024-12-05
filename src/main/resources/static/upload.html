@@ -30,6 +30,22 @@
             color: #fff;
             text-decoration: underline;
         }
+
+        footer {
+            background-color: #1C1C1C;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            position: relative;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .footer-links a {
+            color: #E573FE;
+            margin: 0 10px;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
@@ -70,6 +86,21 @@
     <div id="uploadMessage" class="hidden">Currículum subido exitosamente.</div>
     <div id="errorMessage" class="hidden">Error: Enlace de subida no válido o ha expirado.</div>
 </div>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-links">
+            <a href="https://www.jesusdiazmartincv.es" target="_blank">
+                <img src="images/logodeveloper.png" alt="Logo JDM" class="footer-logo">
+            </a>
+            <a href="privacidad.html">Política de Privacidad</a> |
+            <a href="terminos.html">Términos y Condiciones</a> |
+            <a href="contacto.html">Contacto</a>
+        </div>
+        <p>&copy; 2024 GESTIONATUSCV. Todos los derechos reservados.</p>
+        <p> || Aplicación Web creada por Jesús Díaz Martín || </p>
+    </div>
+</footer>
 
 <script>
     // Función para mostrar el spinner

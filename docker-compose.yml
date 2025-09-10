@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: gestioncv_db
+    environment:
+      MYSQL_DATABASE: gestioncv
+      MYSQL_USER: gestioncv
+      MYSQL_PASSWORD: gestioncv
+      MYSQL_ROOT_PASSWORD: rootpass
+    command: ["--default-authentication-plugin=mysql_native_password"]
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u$$MYSQL_USER -p$$MYSQL_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    container_name: gestioncv_app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/gestioncv?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: gestioncv
+      SPRING_DATASOURCE_PASSWORD: gestioncv
+      JWT_SECRET: devsecret
+      APP_STORAGE_DIR: /data/uploads
+      APP_BASEURL: http://localhost:8080
+      LANG: C.UTF-8
+      LC_ALL: C.UTF-8
+      SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD}
+    ports:
+      - "8080:8080"
+    volumes:
+      - uploads_data:/data/uploads
+
+volumes:
+  db_data:
+  uploads_data:
+

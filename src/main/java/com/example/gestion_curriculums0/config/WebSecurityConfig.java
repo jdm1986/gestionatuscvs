@@ -76,7 +76,9 @@ public class WebSecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Permito solicitudes desde mi dominio de producción
+        // Permito solicitudes desde el dominio del frontend desplegado en Railway
+        configuration.addAllowedOrigin("https://gestionatuscvs-production.up.railway.app");
+        // Permito también desde el dominio original gestionatuscv.es por si usas frontend separado
         configuration.addAllowedOrigin("https://gestionatuscv.es");
         // Permito todos los métodos HTTP
         configuration.addAllowedMethod("*");
@@ -85,7 +87,6 @@ public class WebSecurityConfig {
         // Habilito el uso de cookies en las solicitudes si es necesario
         configuration.setAllowCredentials(true);
 
-        // Aplico esta configuración de CORS a todas las rutas
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
@@ -103,3 +104,4 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 }
+

@@ -1,16 +1,12 @@
-// ArchivoService.java
-// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.service;
 
-/*
-  Clase ArchivoService: Me encargo de gestionar la subida y descarga de archivos.
-  Guardo los archivos subidos en un directorio local y también puedo cargar un archivo cuando es solicitado.
- */
-
+import org.springframework.beans.factory.annotation.Value;          // <--- IMPORT CLAVE
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import jakarta.annotation.PostConstruct;                          // <--- IMPORT CLAVE
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,45 +16,41 @@ import java.nio.file.StandardCopyOption;
 @Service
 public class ArchivoService {
 
-    // Defino la ubicación donde voy a guardar los archivos subidos
-    private final Path fileStorageLocation = Paths.get("uploads").toAbsolutePath().normalize();
+    @Value("${app.storage-dir:uploads}")
+    private String storageDir;
 
-    // Constructor: Me aseguro de que el directorio donde voy a almacenar los archivos exista
-    public ArchivoService() {
+    private Path fileStorageLocation;
+
+    @PostConstruct
+    public void init() {
         try {
-            Files.createDirectories(this.fileStorageLocation);  // Creo el directorio si no existe
+            this.fileStorageLocation = Paths.get(storageDir).toAbsolutePath().normalize();
+            Files.createDirectories(this.fileStorageLocation);
         } catch (Exception ex) {
-            throw new RuntimeException("No pude crear el directorio donde se almacenarán los archivos subidos.", ex);
+            throw new RuntimeException("No pude crear el directorio de uploads: " + storageDir, ex);
         }
     }
 
-    // Método para guardar un archivo. Le doy un nombre único basado en el nombre de usuario.
     public String saveFile(MultipartFile file, String username) {
         try {
-            // Guardo el archivo con el nombre del usuario para evitar colisiones de nombres
-            Path targetLocation = this.fileStorageLocation.resolve(username + "_" + file.getOriginalFilename());
-            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);  // Sobrescribo si ya existe
-            return targetLocation.getFileName().toString();  // Retorno el nombre del archivo guardado
+            String safeName = username.replaceAll("[^a-zA-Z0-9._-]", "_");
+            String unique = String.valueOf(System.currentTimeMillis());
+            Path target = this.fileStorageLocation.resolve(safeName + "_" + unique + "_" + file.getOriginalFilename());
+            Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
+            return target.toAbsolutePath().toString(); // <<--- guardaremos esto en BD
         } catch (Exception ex) {
-            throw new RuntimeException("No pude almacenar el archivo " + file.getOriginalFilename() + ". ¡Por favor, inténtalo de nuevo!", ex);
+            throw new RuntimeException("No pude almacenar el archivo " + file.getOriginalFilename(), ex);
         }
     }
 
-    // Método para cargar un archivo. Lo busco por su nombre.
-    public Resource loadFile(String fileName) {
+    public Resource loadFile(String filePath) {
         try {
-            // Localizo el archivo en el sistema de archivos
-            Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
-
-            // Verifico si el archivo existe y es legible antes de devolverlo
-            if (resource.exists() && resource.isReadable()) {
-                return resource;  // Retorno el archivo como recurso
-            } else {
-                throw new RuntimeException("Archivo no encontrado o no legible: " + fileName);
-            }
+            Path path = Paths.get(filePath).normalize();
+            Resource resource = new UrlResource(path.toUri());
+            if (resource.exists() && resource.isReadable()) return resource;
+            throw new RuntimeException("Archivo no encontrado o no legible: " + filePath);
         } catch (Exception ex) {
-            throw new RuntimeException("Archivo no encontrado: " + fileName, ex);
+            throw new RuntimeException("Archivo no encontrado: " + filePath, ex);
         }
     }
 }

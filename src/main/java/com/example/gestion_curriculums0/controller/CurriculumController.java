@@ -1,119 +1,111 @@
 // CurriculumController.java
-// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.controller;
 
-import com.example.gestion_curriculums0.model.*;
-import com.example.gestion_curriculums0.repository.*;
-import com.example.gestion_curriculums0.service.*;
+import com.example.gestion_curriculums0.model.Curriculum;
+import com.example.gestion_curriculums0.model.CurriculumDTO;
+import com.example.gestion_curriculums0.model.UploadLink;
+import com.example.gestion_curriculums0.model.Usuario;
+import com.example.gestion_curriculums0.repository.UploadLinkRepository;
+import com.example.gestion_curriculums0.repository.UsuarioRepository;
+import com.example.gestion_curriculums0.service.ArchivoService;
+import com.example.gestion_curriculums0.service.CurriculumService;
+import com.example.gestion_curriculums0.service.EmailService;
+import com.example.gestion_curriculums0.service.PdfService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.*;
-import org.springframework.http.*;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import javax.validation.Valid;
-import java.io.*;
+
+import java.io.File;
+import java.nio.file.Paths;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/* Este controlador maneja la funcionalidad relacionada con la gestión de currículums, incluyendo la subida,
-descarga, actualización, eliminación y búsqueda de currículums en la base de datos. Permite tanto a usuarios
-normales como a administradores acceder a los currículums según sus permisos. Además, ofrece una integración
-con un servicio de OCR para extraer texto de archivos PDF, facilitando la búsqueda por palabras clave.
-El controlador también proporciona métodos para generar enlaces de subida de currículums, permitiendo a los
-usuarios externos enviar sus currículums directamente al sistema de forma segura. */
-
 @RestController
 @RequestMapping("/curriculums")
 @CrossOrigin(origins = "http://localhost:8000")
-
 public class CurriculumController {
 
-    // Inyecto los servicios y repositorios necesarios para la gestión de curriculums
-    @Autowired
-    private CurriculumService curriculumService;
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-    @Autowired
-    private PdfService pdfService;
-    @Autowired
-    private OcrService ocrService;
-    @Autowired
-    private UploadLinkRepository uploadLinkRepository;
-    @Autowired
-    private EmailService emailService;
+    @Autowired private CurriculumService curriculumService;
+    @Autowired private UsuarioRepository usuarioRepository;
+    @Autowired private PdfService pdfService;
+    @Autowired private UploadLinkRepository uploadLinkRepository;
+    @Autowired private EmailService emailService;
+    @Autowired private ArchivoService archivoService;
 
-    // Configuro un endpoint para devolver una lista de curriculums en formato DTO
+    // ---------- LISTADOS / CONSULTAS ----------
     @ApiOperation(value = "Ver una lista de curriculums disponibles", response = List.class)
     @GetMapping
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public List<CurriculumDTO> getAllCurriculums() {
-        return curriculumService.getAllCurriculums().stream().map(this::convertToDTO).collect(Collectors.toList());
+        return curriculumService.getAllCurriculums()
+                .stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    // Configuro un endpoint para obtener un curriculum específico por su ID
     @GetMapping("/{id}")
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public CurriculumDTO getCurriculumById(@PathVariable Long id) {
-        Curriculum curriculum = curriculumService.getCurriculumById(id)
+        Curriculum c = curriculumService.getCurriculumById(id)
                 .orElseThrow(() -> new RuntimeException("Curriculum no encontrado"));
-        return convertToDTO(curriculum);
+        return convertToDTO(c);
     }
 
-    // Configuro un endpoint para obtener los curriculums asociados al usuario autenticado
     @GetMapping("/usuario")
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public List<CurriculumDTO> getCurriculumsByCurrentUser(Principal principal) {
-        Usuario usuario = usuarioRepository.findByNombreUsuario(principal.getName())
+        Usuario u = usuarioRepository.findByNombreUsuario(principal.getName())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        return curriculumService.getCurriculumsByUsuarioId(usuario.getId()).stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+        return curriculumService.getCurriculumsByUsuarioId(u.getId())
+                .stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    // Configuro un endpoint para obtener los curriculums de un usuario específico por su ID
     @GetMapping("/usuario/{usuarioId}")
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public List<CurriculumDTO> getCurriculumsByUsuarioId(@PathVariable Long usuarioId) {
-        return curriculumService.getCurriculumsByUsuarioId(usuarioId).stream().map(this::convertToDTO).collect(Collectors.toList());
+        return curriculumService.getCurriculumsByUsuarioId(usuarioId)
+                .stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    // Configuro un endpoint para buscar curriculums por nombre
     @GetMapping("/buscar/nombre")
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public List<CurriculumDTO> buscarPorNombre(@RequestParam String nombre) {
-        return curriculumService.buscarPorNombre(nombre).stream().map(this::convertToDTO).collect(Collectors.toList());
+        return curriculumService.buscarPorNombre(nombre)
+                .stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    // Configuro un endpoint para buscar curriculums por apellido
     @GetMapping("/buscar/apellido")
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public List<CurriculumDTO> buscarPorApellido(@RequestParam String apellido) {
-        return curriculumService.buscarPorApellido(apellido).stream().map(this::convertToDTO).collect(Collectors.toList());
+        return curriculumService.buscarPorApellido(apellido)
+                .stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    // Configuro un endpoint para buscar curriculums por palabra clave y usuario autenticado
     @GetMapping("/buscar/clave")
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public List<CurriculumDTO> buscarPorClave(@RequestParam String clave, Principal principal) {
-        String username = principal.getName();
-        Usuario usuario = usuarioRepository.findByNombreUsuario(username)
+        Usuario u = usuarioRepository.findByNombreUsuario(principal.getName())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        return curriculumService.buscarPorClaveYUsuario(clave, usuario.getId()).stream().map(this::convertToDTO).collect(Collectors.toList());
+        return curriculumService.buscarPorClaveYUsuario(clave, u.getId())
+                .stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    // Configuro un endpoint para subir un curriculum en formato PDF y guardar el departamento
+    // ---------- SUBIDA ----------
     @PostMapping("/upload")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public ResponseEntity<?> uploadCurriculum(@RequestParam("file") MultipartFile file,
@@ -124,96 +116,77 @@ public class CurriculumController {
                                               @RequestParam String departamento,
                                               @RequestParam String telefono,
                                               @RequestParam String email) {
-        // Verifico que el archivo sea un PDF
-        if (!file.getContentType().equals("application/pdf")) {
+
+        if (file.isEmpty() || !"application/pdf".equalsIgnoreCase(file.getContentType())) {
             return ResponseEntity.badRequest().body("Solo se permiten archivos PDF.");
         }
 
-        // Busco el usuario que sube el curriculum
         Usuario usuario = usuarioRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // Convierto el archivo subido a un archivo temporal
-        File convFile = new File(System.getProperty("java.io.tmpdir") + "/" + file.getOriginalFilename());
-        try (FileOutputStream fos = new FileOutputStream(convFile)) {
-            fos.write(file.getBytes());
-        } catch (IOException e) {
-            throw new RuntimeException("Error convirtiendo el archivo", e);
-        }
+        // 1) Guardar el PDF de forma persistente
+        String absolutePath = archivoService.saveFile(file, usuario.getNombreUsuario());
 
-        // Extraigo el texto del PDF usando un servicio
+        // 2) Extraer texto del PDF
         String extractedText;
         try {
-            extractedText = pdfService.extractTextFromPdf(convFile);
+            extractedText = pdfService.extractTextFromPdf(new File(absolutePath));
         } catch (Exception e) {
             throw new RuntimeException("Error procesando el archivo", e);
         }
 
-        // Creo un objeto Curriculum con los datos extraídos y el usuario relacionado
-        Curriculum curriculum = new Curriculum();
-        curriculum.setNombre(nombre);
-        curriculum.setApellido(apellido);
-        curriculum.setPdfPath(convFile.getPath());
-        curriculum.setCvBruto(extractedText);
-        curriculum.setSexo(sexo);
-        curriculum.setTelefono(telefono);
-        curriculum.setEmail(email);
-        curriculum.setDepartamento(departamento);
-        curriculum.setUsuario(usuario);
+        // 3) Guardar Curriculum
+        Curriculum c = new Curriculum();
+        c.setNombre(nombre);
+        c.setApellido(apellido);
+        c.setPdfPath(absolutePath);   // ruta ABSOLUTA persistente
+        c.setCvBruto(extractedText);
+        c.setSexo(sexo);
+        c.setTelefono(telefono);
+        c.setEmail(email);
+        c.setDepartamento(departamento);
+        c.setUsuario(usuario);
 
-        // Guardo el curriculum y retorno una respuesta exitosa con el DTO del curriculum guardado
-        return ResponseEntity.ok(convertToDTO(curriculumService.saveCurriculum(curriculum)));
+        Curriculum saved = curriculumService.saveCurriculum(c);
+        return ResponseEntity.ok(convertToDTO(saved));
     }
 
-    // Configuro un endpoint para actualizar un curriculum existente
+    // ---------- ACTUALIZACIONES ----------
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public CurriculumDTO updateCurriculum(@PathVariable Long id,
-                                          @RequestBody CurriculumDTO curriculumDTO) {
-        // Busco el curriculum por su ID
-        Curriculum curriculum = curriculumService.getCurriculumById(id)
+                                          @RequestBody CurriculumDTO dto) {
+        Curriculum c = curriculumService.getCurriculumById(id)
                 .orElseThrow(() -> new RuntimeException("Curriculum no encontrado"));
 
-        // Actualizo los datos del curriculum
-        curriculum.setNombre(curriculumDTO.getNombre());
-        curriculum.setApellido(curriculumDTO.getApellido());
-        curriculum.setSexo(curriculumDTO.getSexo());
-        curriculum.setTelefono(curriculumDTO.getTelefono());
-        curriculum.setEmail(curriculumDTO.getEmail());
-        curriculum.setDepartamento(curriculumDTO.getDepartamento());
+        c.setNombre(dto.getNombre());
+        c.setApellido(dto.getApellido());
+        c.setSexo(dto.getSexo());
+        c.setTelefono(dto.getTelefono());
+        c.setEmail(dto.getEmail());
+        c.setDepartamento(dto.getDepartamento());
 
-        // Guardo el curriculum actualizado y retorno el DTO
-        return convertToDTO(curriculumService.saveCurriculum(curriculum));
+        return convertToDTO(curriculumService.saveCurriculum(c));
     }
 
-    // Configuro un endpoint para actualizar el departamento de un curriculum específico
     @PutMapping("/{idCurriculum}/departamento")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<?> actualizarDepartamento(
-            @PathVariable Long idCurriculum,
-            @RequestBody Map<String, String> request) {
-
-        // Verifico si el curriculum existe
-        Curriculum curriculum = curriculumService.getCurriculumById(idCurriculum)
+    public ResponseEntity<?> actualizarDepartamento(@PathVariable Long idCurriculum,
+                                                    @RequestBody Map<String, String> request) {
+        Curriculum c = curriculumService.getCurriculumById(idCurriculum)
                 .orElseThrow(() -> new RuntimeException("Curriculum no encontrado"));
 
-        // Obtengo el nuevo departamento desde el request
         String nuevoDepartamento = request.get("departamento");
-
         if (nuevoDepartamento == null || nuevoDepartamento.isEmpty()) {
             return ResponseEntity.badRequest().body("El departamento no puede estar vacío");
         }
 
-        // Actualizo el departamento
-        curriculum.setDepartamento(nuevoDepartamento);
-
-        // Guardo el curriculum actualizado
-        curriculumService.saveCurriculum(curriculum);
-
+        c.setDepartamento(nuevoDepartamento);
+        curriculumService.saveCurriculum(c);
         return ResponseEntity.ok("Departamento actualizado exitosamente");
     }
 
-    // Configuro un endpoint para eliminar un curriculum por su ID
+    // ---------- ELIMINACIÓN ----------
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> deleteCurriculum(@PathVariable Long id) {
@@ -221,151 +194,127 @@ public class CurriculumController {
         return ResponseEntity.ok().build();
     }
 
-    // Configuro un endpoint para descargar el archivo PDF de un curriculum por su ID
+    // ---------- DESCARGA ----------
     @GetMapping("/pdf/{id}")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public ResponseEntity<Resource> descargarArchivo(@PathVariable Long id) {
-        // Busco el curriculum por su ID
-        Curriculum curriculum = curriculumService.getCurriculumById(id)
+        Curriculum c = curriculumService.getCurriculumById(id)
                 .orElseThrow(() -> new RuntimeException("Curriculum no encontrado"));
 
-        // Cargo el archivo asociado al curriculum
-        File file = new File(curriculum.getPdfPath());
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + file.getName());
+        // Cargamos por ruta ABSOLUTA guardada en BD
+        String path = c.getPdfPath();
+        Resource resource = archivoService.loadFile(path);
 
-        // Defino el tipo de archivo según su extensión
-        MediaType mediaType = MediaType.APPLICATION_OCTET_STREAM;
-        if (file.getName().endsWith(".pdf")) {
-            mediaType = MediaType.APPLICATION_PDF;
-        } else if (file.getName().endsWith(".jpg") || file.getName().endsWith(".jpeg")) {
-            mediaType = MediaType.IMAGE_JPEG;
-        } else if (file.getName().endsWith(".png")) {
-            mediaType = MediaType.IMAGE_PNG;
-        }
+        String filename = Paths.get(path).getFileName().toString();
+        MediaType mediaType = filename.toLowerCase().endsWith(".pdf")
+                ? MediaType.APPLICATION_PDF
+                : MediaType.APPLICATION_OCTET_STREAM;
 
-        // Devuelvo el archivo como un recurso descargable
-        Resource resource = new FileSystemResource(file);
         return ResponseEntity.ok()
-                .headers(headers)
-                .contentLength(file.length())
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
                 .contentType(mediaType)
                 .body(resource);
     }
 
-    // Método auxiliar para convertir un Curriculum en DTO
-    private CurriculumDTO convertToDTO(Curriculum curriculum) {
-        return new CurriculumDTO(curriculum.getId(), curriculum.getNombre(), curriculum.getApellido(), curriculum.getPdfPath(),
-                curriculum.getCvBruto(), curriculum.getSexo(), curriculum.getTelefono(), curriculum.getEmail(), curriculum.getDepartamento(), curriculum.getFechaInsercion());
-    }
-
-    // Configuro un endpoint para generar un enlace único para que un usuario pueda subir su curriculum
+    // ---------- ENLACE DE SUBIDA ----------
     @PostMapping("/generate-upload-link")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> generateUploadLink(Principal principal) {
-        // Busco el usuario que genera el enlace
         Usuario usuario = usuarioRepository.findByNombreUsuario(principal.getName())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // Genero un token único
         String token = UUID.randomUUID().toString();
+        UploadLink link = new UploadLink();
+        link.setToken(token);
+        link.setExpirationDate(LocalDateTime.now().plusDays(5));
+        link.setUsuario(usuario);
+        uploadLinkRepository.save(link);
 
-        // Creo un enlace de subida con caducidad de 5 días
-        UploadLink uploadLink = new UploadLink();
-        uploadLink.setToken(token);
-        uploadLink.setExpirationDate(LocalDateTime.now().plusDays(5));
-        uploadLink.setUsuario(usuario);
-
-        // Guardo el enlace en la base de datos
-        uploadLinkRepository.save(uploadLink);
-
-        // Devuelvo el enlace generado con el token y el userId
-        String link = "https://gestionatuscv.es/upload.html?token=" + token + "&userId=" + usuario.getId();
-        return ResponseEntity.ok(link);
+        String url = "https://gestionatuscv.es/upload.html?token=" + token + "&userId=" + usuario.getId();
+        return ResponseEntity.ok(url);
     }
 
-    // Configuro un endpoint para subir un curriculum usando un token de acceso
+    // ---------- SUBIDA CON TOKEN ----------
     @PostMapping("/upload_with_token")
-    public ResponseEntity<?> uploadCurriculumWithToken(
-            @RequestParam("token") String token,
-            @RequestParam("file") MultipartFile file,
-            @RequestParam String nombre,
-            @RequestParam String apellido,
-            @RequestParam String sexo,
-            @RequestParam String departamento,
-            @RequestParam String telefono,
-            @RequestParam String email) {
+    public ResponseEntity<?> uploadCurriculumWithToken(@RequestParam("token") String token,
+                                                       @RequestParam("file") MultipartFile file,
+                                                       @RequestParam String nombre,
+                                                       @RequestParam String apellido,
+                                                       @RequestParam String sexo,
+                                                       @RequestParam String departamento,
+                                                       @RequestParam String telefono,
+                                                       @RequestParam String email) {
 
-        // Verifico que el archivo sea un PDF
-        if (!file.getContentType().equals("application/pdf")) {
+        if (file.isEmpty() || !"application/pdf".equalsIgnoreCase(file.getContentType())) {
             return ResponseEntity.badRequest().body("Solo se permiten archivos PDF.");
         }
 
-        // Valido el token proporcionado
         UploadLink uploadLink = uploadLinkRepository.findByToken(token)
                 .orElseThrow(() -> new RuntimeException("Enlace de subida no válido o ha expirado"));
 
-        // Verifico si el enlace ha expirado
         if (uploadLink.getExpirationDate().isBefore(LocalDateTime.now())) {
             return ResponseEntity.status(HttpStatus.GONE).body("El enlace ha expirado");
         }
 
-        // Convierto el archivo subido a un archivo temporal
-        File convFile = new File(System.getProperty("java.io.tmpdir") + "/" + file.getOriginalFilename());
-        try (FileOutputStream fos = new FileOutputStream(convFile)) {
-            fos.write(file.getBytes());
-        } catch (IOException e) {
-            throw new RuntimeException("Error convirtiendo el archivo", e);
-        }
+        // 1) Guardar persistente
+        String absolutePath = archivoService.saveFile(file, uploadLink.getUsuario().getNombreUsuario());
 
-        // Extraigo el texto del PDF usando un servicio
+        // 2) Extraer texto
         String extractedText;
         try {
-            extractedText = pdfService.extractTextFromPdf(convFile);
+            extractedText = pdfService.extractTextFromPdf(new File(absolutePath));
         } catch (Exception e) {
             throw new RuntimeException("Error procesando el archivo", e);
         }
 
-        // Creo un objeto Curriculum con los datos extraídos y el usuario relacionado
-        Curriculum curriculum = new Curriculum();
-        curriculum.setNombre(nombre);
-        curriculum.setApellido(apellido);
-        curriculum.setPdfPath(convFile.getPath());
-        curriculum.setCvBruto(extractedText);
-        curriculum.setSexo(sexo);
-        curriculum.setTelefono(telefono);
-        curriculum.setEmail(email);
-        curriculum.setDepartamento(departamento);
-        curriculum.setUsuario(uploadLink.getUsuario());
+        // 3) Guardar Curriculum
+        Curriculum c = new Curriculum();
+        c.setNombre(nombre);
+        c.setApellido(apellido);
+        c.setPdfPath(absolutePath);
+        c.setCvBruto(extractedText);
+        c.setSexo(sexo);
+        c.setTelefono(telefono);
+        c.setEmail(email);
+        c.setDepartamento(departamento);
+        c.setUsuario(uploadLink.getUsuario());
+        curriculumService.saveCurriculum(c);
 
-        // Guardo el curriculum en la base de datos
-        curriculumService.saveCurriculum(curriculum);
+        // emails + contador
+        emailService.sendSimpleEmail(uploadLink.getUsuario().getEmail(),
+                "Nuevo C.V. subido a su cuenta",
+                "Hola " + uploadLink.getUsuario().getNombreUsuario() + ",\n\n" +
+                        "Un nuevo C.V. ha sido subido por " + nombre + " " + apellido + ".\n\n" +
+                        "Saludos,\nGestionaTusCVs");
 
-        // Envío un correo de notificación al usuario (quien generó el enlace)
-        String subjectUsuario = "Nuevo C.V. subido a su cuenta";
-        String messageUsuario = "Hola " + uploadLink.getUsuario().getNombreUsuario() + ",\n\n" +
-                "Un nuevo C.V. ha sido subido por " + nombre + " " + apellido + ".\n\n" +
-                "Gracias por utilizar nuestra plataforma.\n\n" +
-                "Saludos cordiales,\nEl equipo de GestionaTusCVs";
-        emailService.sendSimpleEmail(uploadLink.getUsuario().getEmail(), subjectUsuario, messageUsuario);
+        emailService.sendSimpleEmail(email,
+                "Confirmación de Envío de C.V.",
+                "Estimado/a " + nombre + ",\n\n" +
+                        "Su C.V. ha sido enviado correctamente a " + uploadLink.getUsuario().getNombreUsuario() + ".\n\n" +
+                        "Saludos,\nGestionaTusCVs");
 
-        // Envío un correo de confirmación al aspirante
-        String subject = "Confirmación de Envío de C.V.";
-        String message = "Estimado/a " + nombre + ",\n\n" +
-                "Su C.V. ha sido enviado correctamente a " + uploadLink.getUsuario().getNombreUsuario() + ".\n\n" +
-                "Gracias por su tiempo.\n\n" +
-                "Saludos cordiales,\nEl equipo de GestionaTusCVs";
-        emailService.sendSimpleEmail(email, subject, message);
-
-        // Actualizo el contador de subidas y elimino el enlace si se alcanza el límite
         uploadLink.setUploadCount(uploadLink.getUploadCount() + 1);
         uploadLinkRepository.save(uploadLink);
-
         if (uploadLink.getUploadCount() >= uploadLink.getUploadLimit()) {
             uploadLinkRepository.delete(uploadLink);
         }
 
-        // Devuelvo una respuesta exitosa
         return ResponseEntity.ok("Currículum subido exitosamente");
+    }
+
+    // ---------- DTO ----------
+    private CurriculumDTO convertToDTO(Curriculum c) {
+        return new CurriculumDTO(
+                c.getId(),
+                c.getNombre(),
+                c.getApellido(),
+                c.getPdfPath(),
+                c.getCvBruto(),
+                c.getSexo(),
+                c.getTelefono(),
+                c.getEmail(),
+                c.getDepartamento(),
+                c.getFechaInsercion()
+        );
     }
 }

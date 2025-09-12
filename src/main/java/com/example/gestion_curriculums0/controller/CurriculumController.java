@@ -1,4 +1,3 @@
-// CurriculumController.java
 package com.example.gestion_curriculums0.controller;
 
 import com.example.gestion_curriculums0.model.Curriculum;
@@ -19,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,7 +43,6 @@ public class CurriculumController {
     @Autowired private EmailService emailService;
     @Autowired private ArchivoService archivoService;
 
-    // ---------- LISTADOS / CONSULTAS ----------
     @ApiOperation(value = "Ver una lista de curriculums disponibles", response = List.class)
     @GetMapping
     @Transactional(readOnly = true)
@@ -62,15 +62,15 @@ public class CurriculumController {
     }
 
     @GetMapping("/usuario")
-    @Transactional(readOnly = true)
-    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
-    public List<CurriculumDTO> getCurriculumsByCurrentUser(Principal principal) {
-        Usuario u = usuarioRepository.findByNombreUsuario(principal.getName())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        return curriculumService.getCurriculumsByUsuarioId(u.getId())
-                .stream().map(this::convertToDTO).collect(Collectors.toList());
+    public ResponseEntity<?> getCurriculumsByCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(401).body("Usuario no autenticado");
+        }
+        String username = userDetails.getUsername();
+        List<Curriculum> curriculums = curriculumService.findByUsername(username);
+        List<CurriculumDTO> dtos = curriculums.stream().map(this::convertToDTO).collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
-
     @GetMapping("/usuario/{usuarioId}")
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
@@ -105,7 +105,6 @@ public class CurriculumController {
                 .stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    // ---------- SUBIDA ----------
     @PostMapping("/upload")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public ResponseEntity<?> uploadCurriculum(@RequestParam("file") MultipartFile file,
@@ -124,10 +123,8 @@ public class CurriculumController {
         Usuario usuario = usuarioRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // 1) Guardar el PDF de forma persistente
         String absolutePath = archivoService.saveFile(file, usuario.getNombreUsuario());
 
-        // 2) Extraer texto del PDF
         String extractedText;
         try {
             extractedText = pdfService.extractTextFromPdf(new File(absolutePath));
@@ -135,11 +132,10 @@ public class CurriculumController {
             throw new RuntimeException("Error procesando el archivo", e);
         }
 
-        // 3) Guardar Curriculum
         Curriculum c = new Curriculum();
         c.setNombre(nombre);
         c.setApellido(apellido);
-        c.setPdfPath(absolutePath);   // ruta ABSOLUTA persistente
+        c.setPdfPath(absolutePath);
         c.setCvBruto(extractedText);
         c.setSexo(sexo);
         c.setTelefono(telefono);
@@ -151,7 +147,6 @@ public class CurriculumController {
         return ResponseEntity.ok(convertToDTO(saved));
     }
 
-    // ---------- ACTUALIZACIONES ----------
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public CurriculumDTO updateCurriculum(@PathVariable Long id,
@@ -186,7 +181,6 @@ public class CurriculumController {
         return ResponseEntity.ok("Departamento actualizado exitosamente");
     }
 
-    // ---------- ELIMINACIÓN ----------
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> deleteCurriculum(@PathVariable Long id) {
@@ -194,14 +188,12 @@ public class CurriculumController {
         return ResponseEntity.ok().build();
     }
 
-    // ---------- DESCARGA ----------
     @GetMapping("/pdf/{id}")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public ResponseEntity<Resource> descargarArchivo(@PathVariable Long id) {
         Curriculum c = curriculumService.getCurriculumById(id)
                 .orElseThrow(() -> new RuntimeException("Curriculum no encontrado"));
 
-        // Cargamos por ruta ABSOLUTA guardada en BD
         String path = c.getPdfPath();
         Resource resource = archivoService.loadFile(path);
 
@@ -216,7 +208,6 @@ public class CurriculumController {
                 .body(resource);
     }
 
-    // ---------- ENLACE DE SUBIDA ----------
     @PostMapping("/generate-upload-link")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> generateUploadLink(Principal principal) {
@@ -234,7 +225,6 @@ public class CurriculumController {
         return ResponseEntity.ok(url);
     }
 
-    // ---------- SUBIDA CON TOKEN ----------
     @PostMapping("/upload_with_token")
     public ResponseEntity<?> uploadCurriculumWithToken(@RequestParam("token") String token,
                                                        @RequestParam("file") MultipartFile file,
@@ -256,10 +246,8 @@ public class CurriculumController {
             return ResponseEntity.status(HttpStatus.GONE).body("El enlace ha expirado");
         }
 
-        // 1) Guardar persistente
         String absolutePath = archivoService.saveFile(file, uploadLink.getUsuario().getNombreUsuario());
 
-        // 2) Extraer texto
         String extractedText;
         try {
             extractedText = pdfService.extractTextFromPdf(new File(absolutePath));
@@ -267,7 +255,6 @@ public class CurriculumController {
             throw new RuntimeException("Error procesando el archivo", e);
         }
 
-        // 3) Guardar Curriculum
         Curriculum c = new Curriculum();
         c.setNombre(nombre);
         c.setApellido(apellido);
@@ -280,7 +267,6 @@ public class CurriculumController {
         c.setUsuario(uploadLink.getUsuario());
         curriculumService.saveCurriculum(c);
 
-        // emails + contador
         emailService.sendSimpleEmail(uploadLink.getUsuario().getEmail(),
                 "Nuevo C.V. subido a su cuenta",
                 "Hola " + uploadLink.getUsuario().getNombreUsuario() + ",\n\n" +
@@ -302,7 +288,6 @@ public class CurriculumController {
         return ResponseEntity.ok("Currículum subido exitosamente");
     }
 
-    // ---------- DTO ----------
     private CurriculumDTO convertToDTO(Curriculum c) {
         return new CurriculumDTO(
                 c.getId(),
@@ -318,3 +303,4 @@ public class CurriculumController {
         );
     }
 }
+

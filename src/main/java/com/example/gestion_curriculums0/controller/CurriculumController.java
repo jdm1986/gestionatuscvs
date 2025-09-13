@@ -67,10 +67,18 @@ public class CurriculumController {
             return ResponseEntity.status(401).body("Usuario no autenticado");
         }
         String username = userDetails.getUsername();
-        List<Curriculum> curriculums = curriculumService.findByUsername(username);
+
+        Usuario usuario = usuarioRepository.findByNombreUsuario(username).orElse(null);
+
+        if (usuario == null) {
+            return ResponseEntity.status(404).body("Usuario no encontrado");
+        }
+
+        List<Curriculum> curriculums = curriculumService.getCurriculumsByUsuarioId(usuario.getId());
         List<CurriculumDTO> dtos = curriculums.stream().map(this::convertToDTO).collect(Collectors.toList());
         return ResponseEntity.ok(dtos);
     }
+
     @GetMapping("/usuario/{usuarioId}")
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")

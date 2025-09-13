@@ -1,10 +1,9 @@
 // JwtUtil.java
-// Indico el paquete al que pertenece esta clase
 package com.example.gestion_curriculums0.security;
 
 /*
-  Clase JwtUtil: Me encargo de generar, validar y extraer información de los tokens JWT utilizados en la autenticación de usuarios.
-  También gestiono la extracción de tokens desde las cookies enviadas en las solicitudes HTTP.
+  Clase JwtUtil: Genera, valida y extrae información de tokens JWT.
+  También permite extraer tokens desde cookies en las solicitudes HTTP.
  */
 
 import io.jsonwebtoken.Claims;
@@ -12,9 +11,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Value;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,75 +26,64 @@ import java.util.function.Function;
 @Service
 public class JwtUtil {
 
-    // Clave secreta configurable vía propiedades (jwt.secret)
     private final Key SECRET_KEY;
 
-    public JwtUtil(@Value("${jwt.secret}") String secret) {
-        // Permite secret en Base64 (recomendado) o texto plano suficientemente largo
-        if (secret != null && secret.trim().length() > 0) {
+    public JwtUtil(@Value("${jwt.secret:}") String secret) {
+        Key key;
+        if (secret != null && !secret.trim().isEmpty()) {
             try {
                 byte[] keyBytes = Decoders.BASE64.decode(secret);
-                this.SECRET_KEY = Keys.hmacShaKeyFor(keyBytes);
+                key = Keys.hmacShaKeyFor(keyBytes);
             } catch (IllegalArgumentException ex) {
-                // Si no es Base64, usar bytes directos
-                this.SECRET_KEY = Keys.hmacShaKeyFor(secret.getBytes());
+                key = Keys.hmacShaKeyFor(secret.getBytes());
             }
         } else {
-            // Fallback mínimo para evitar NPE, aunque se recomienda definir jwt.secret
-            this.SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+            key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
         }
+        this.SECRET_KEY = key;
     }
 
-    // Extraigo el nombre de usuario (subject) desde el token
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    // Extraigo la fecha de expiración del token
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    // Método genérico para extraer cualquier tipo de claim del token
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    // Extraigo todos los claims del token JWT utilizando la clave secreta
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).getBody();
     }
 
-    // Verifico si el token ha expirado comparando la fecha de expiración con la fecha actual
     private Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
-    // Genero un nuevo token con los detalles del usuario y el tiempo de expiración
     public String generateToken(UserDetails userDetails, int expirationTimeInSeconds) {
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, userDetails.getUsername(), expirationTimeInSeconds);
     }
 
-    // Creo el token JWT asignando claims, subject (usuario) y fecha de expiración
     private String createToken(Map<String, Object> claims, String subject, int expirationTimeInSeconds) {
         return Jwts.builder()
-                .setClaims(claims)  // Añado los claims al token
-                .setSubject(subject)  // Establezco el subject (usuario)
-                .setIssuedAt(new Date(System.currentTimeMillis()))  // Asigno la fecha de emisión
-                .setExpiration(new Date(System.currentTimeMillis() + expirationTimeInSeconds * 1000))  // Establezco la expiración
-                .signWith(SECRET_KEY)  // Firmo el token con la clave secreta
-                .compact();  // Compacto y creo el token
+                .setClaims(claims)
+                .setSubject(subject)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTimeInSeconds * 1000L))
+                .signWith(SECRET_KEY)
+                .compact();
     }
 
-    // Valido el token verificando si el usuario coincide y si no ha expirado
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    // Extraigo el token desde las cookies de la solicitud (por ejemplo, "accessToken")
     public String extractTokenFromRequest(HttpServletRequest request, String tokenName) {
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
@@ -104,6 +92,7 @@ public class JwtUtil {
                 }
             }
         }
-        return null;  // Si no encuentro el token en las cookies, retorno null
+        return null;
     }
 }
+

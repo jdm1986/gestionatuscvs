@@ -5,8 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const baseUrl = window.location.hostname.includes('localhost')
         ? 'http://localhost:8080' // Si es localhost, usar esta URL
         : window.location.hostname.includes('www')
-            ? 'https://www.gestionatuscv.es' // Si está en www
-            : 'https://gestionatuscv.es'; // Si no está en www
+            ? '' // producir llamadas relativas en producción (www)
+            : ''; // producir llamadas relativas en producción
 
     // Obtiene el token de autenticación almacenado en localStorage
     const token = localStorage.getItem('token');

@@ -106,6 +106,13 @@
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
+        <!-- SendGrid (envío de emails vía API HTTP) -->
+        <dependency>
+            <groupId>com.sendgrid</groupId>
+            <artifactId>sendgrid-java</artifactId>
+            <version>4.10.3</version>
+        </dependency>
+
         <!-- Validación de formularios con Jakarta -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

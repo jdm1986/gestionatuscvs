@@ -10,6 +10,7 @@ package com.example.gestion_curriculums0.service;
 
 import com.example.gestion_curriculums0.model.ContactFormDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
@@ -17,11 +18,38 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+import com.sendgrid.*;
+
 @Service
 public class EmailService {
 
     @Autowired
     private JavaMailSender mailSender; // Inyecto el servicio de envío de correos
+
+    @Value("${sendgrid.api-key:}")
+    private String sendGridApiKey;
+
+    @Value("${app.mail.from:gestionatuscv@gmail.com}")
+    private String fromEmail;
+
+    private boolean useSendGrid() { return sendGridApiKey != null && !sendGridApiKey.isBlank(); }
+
+    private void sendViaSendGrid(String to, String subject, String text) throws Exception {
+        Email from = new Email(fromEmail);
+        Email toEmail = new Email(to);
+        Content content = new Content("text/plain", text);
+        Mail mail = new Mail(from, subject, toEmail, content);
+        SendGrid sg = new SendGrid(sendGridApiKey);
+        Request request = new Request();
+        request.setMethod(Method.POST);
+        request.setEndpoint("mail/send");
+        request.setBody(mail.build());
+        Response response = sg.api(request);
+        int status = response.getStatusCode();
+        if (status < 200 || status >= 300) {
+            throw new RuntimeException("SendGrid error status=" + status + ": " + response.getBody());
+        }
+    }
 
     /*
       Envío un correo de bienvenida a un nuevo usuario de forma asíncrona. Esto asegura que la
@@ -30,15 +58,19 @@ public class EmailService {
     @Async
     public void sendWelcomeEmail(String to, String username) {
         // Configuro el mensaje de bienvenida
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject("Bienvenido/a a nuestra plataforma");
-        message.setText("Hola " + username + ",\n\n¡Bienvenid@ a nuestra plataforma! Estamos encantados de tenerte con nosotros.\n\nSaludos,\nEl equipo");
-
         try {
-            // Intento enviar el correo
-            mailSender.send(message);
-            System.out.println("Correo de bienvenida enviado a: " + to);
+            if (useSendGrid()) {
+                sendViaSendGrid(to, "Bienvenido/a a nuestra plataforma",
+                        "Hola " + username + ",\n\n¡Bienvenid@ a nuestra plataforma! Estamos encantados de tenerte con nosotros.\n\nSaludos,\nEl equipo");
+            } else {
+                SimpleMailMessage message = new SimpleMailMessage();
+                message.setFrom(fromEmail);
+                message.setTo(to);
+                message.setSubject("Bienvenido/a a nuestra plataforma");
+                message.setText("Hola " + username + ",\n\n¡Bienvenid@ a nuestra plataforma! Estamos encantados de tenerte con nosotros.\n\nSaludos,\nEl equipo");
+                mailSender.send(message);
+            }
+            System.out.println("Correo de bienvenida enviado a: " + to + (useSendGrid()?" (SendGrid)":" (SMTP)"));
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error al enviar el correo de bienvenida a: " + to);
@@ -47,39 +79,67 @@ public class EmailService {
 
     // Envío una notificación al administrador cada vez que un nuevo usuario se registra en el sistema
     public void sendNotificationToAdmin(String username, String email) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo("gestionatuscv@gmail.com");
-        message.setSubject("Nuevo Registro de Usuario en GestionaTusCV");
-        message.setText("Un nuevo usuario se ha registrado en GestionaTusCV.\n\nDetalles del usuario:\n\n" +
+        String to = "gestionatuscv@gmail.com";
+        String subject = "Nuevo Registro de Usuario en GestionaTusCV";
+        String body = "Un nuevo usuario se ha registrado en GestionaTusCV.\n\nDetalles del usuario:\n\n" +
                 "Usuario: " + username + "\n" +
                 "Email: " + email + "\n" +
                 "Fecha de registro: " + LocalDateTime.now().toString() + "\n\n" +
-                "Saludos,\nGestionaTusCV");
-        // Envío el correo al administrador
-        mailSender.send(message);
+                "Saludos,\nGestionaTusCV";
+        try {
+            if (useSendGrid()) {
+                sendViaSendGrid(to, subject, body);
+            } else {
+                SimpleMailMessage message = new SimpleMailMessage();
+                message.setFrom(fromEmail);
+                message.setTo(to);
+                message.setSubject(subject);
+                message.setText(body);
+                mailSender.send(message);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // Envío un correo con los detalles del formulario de contacto a la dirección del administrador
     public void sendContactEmail(ContactFormDTO contactForm) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo("gestionatuscv@gmail.com");
-        message.setSubject("Nuevo mensaje de contacto de " + contactForm.getName());
-        message.setText("Nombre: " + contactForm.getName() + "\n" +
+        String to = "gestionatuscv@gmail.com";
+        String subject = "Nuevo mensaje de contacto de " + contactForm.getName();
+        String body = "Nombre: " + contactForm.getName() + "\n" +
                 "Email: " + contactForm.getEmail() + "\n\n" +
-                "Mensaje: " + contactForm.getMessage());
-        message.setFrom(contactForm.getEmail()); // Establezco el email del remitente
-
-        // Envío el mensaje de contacto
-        mailSender.send(message);
+                "Mensaje: " + contactForm.getMessage();
+        try {
+            if (useSendGrid()) {
+                sendViaSendGrid(to, subject, body);
+            } else {
+                SimpleMailMessage message = new SimpleMailMessage();
+                message.setFrom(contactForm.getEmail());
+                message.setTo(to);
+                message.setSubject(subject);
+                message.setText(body);
+                mailSender.send(message);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // Método genérico para enviar un correo simple a cualquier destinatario con un asunto y un cuerpo de texto
     public void sendSimpleEmail(String to, String subject, String text) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(text);
-        // Envío el correo
-        mailSender.send(message);
+        try {
+            if (useSendGrid()) {
+                sendViaSendGrid(to, subject, text);
+            } else {
+                SimpleMailMessage message = new SimpleMailMessage();
+                message.setFrom(fromEmail);
+                message.setTo(to);
+                message.setSubject(subject);
+                message.setText(text);
+                mailSender.send(message);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -10,9 +10,11 @@ package com.example.gestion_curriculums0.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,8 +27,24 @@ import java.util.function.Function;
 @Service
 public class JwtUtil {
 
-    // Genero una clave secreta utilizando HS256 para firmar mis tokens JWT
-    private Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    // Clave secreta configurable vía propiedades (jwt.secret)
+    private final Key SECRET_KEY;
+
+    public JwtUtil(@Value("${jwt.secret}") String secret) {
+        // Permite secret en Base64 (recomendado) o texto plano suficientemente largo
+        if (secret != null && secret.trim().length() > 0) {
+            try {
+                byte[] keyBytes = Decoders.BASE64.decode(secret);
+                this.SECRET_KEY = Keys.hmacShaKeyFor(keyBytes);
+            } catch (IllegalArgumentException ex) {
+                // Si no es Base64, usar bytes directos
+                this.SECRET_KEY = Keys.hmacShaKeyFor(secret.getBytes());
+            }
+        } else {
+            // Fallback mínimo para evitar NPE, aunque se recomienda definir jwt.secret
+            this.SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        }
+    }
 
     // Extraigo el nombre de usuario (subject) desde el token
     public String extractUsername(String token) {

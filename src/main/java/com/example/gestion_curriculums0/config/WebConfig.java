@@ -15,16 +15,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
     // Configuro los ajustes de CORS (Cross-Origin Resource Sharing) para permitir peticiones desde mi frontend
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        // Permito solicitudes desde mi entorno de desarrollo y el dominio de producción
-        registry.addMapping("/**")
-                .allowedOrigins("http://localhost:8080", "https://gestionatuscv.es")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")  // Permito todos los métodos necesarios
-                .allowedHeaders("*")  // Permito todos los encabezados necesarios
-                .exposedHeaders("Authorization")  // Aseguro que el encabezado Authorization esté expuesto para manejar los tokens JWT
-                .allowCredentials(true);  // Permito el uso de credenciales (cookies, cabeceras)
-    }
+    // CORS se configura centralizadamente en Security a través de CorsConfigurationSource
 
     // Configuro el manejo de los recursos estáticos en mi aplicación, en este caso los recursos de frontend
     @Override

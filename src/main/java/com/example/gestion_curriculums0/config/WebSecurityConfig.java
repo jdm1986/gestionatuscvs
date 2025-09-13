@@ -53,12 +53,13 @@ public class WebSecurityConfig {
         // Defino las reglas de autorización: las rutas permitidas sin autenticación y las que requieren autenticación
         http
                 .authorizeHttpRequests(auth -> auth
-                        // Permito el acceso sin autenticación a las rutas que he definido para autenticación y documentación
+                        // Endpoints públicos
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/curriculums/generate-link").permitAll()
-                        .requestMatchers("/**").permitAll()  // En desarrollo, permito todas las rutas para facilitar las pruebas
-                        .anyRequest().authenticated()  // Requiero autenticación para cualquier otra ruta
+                        // Recursos estáticos y raíz
+                        .requestMatchers("/", "/index.html", "/static/**", "/images/**", "/scripts.js", "/styles-*.css", "/upload.html", "/reset-password.html").permitAll()
+                        // Todo lo demás requiere autenticación
+                        .anyRequest().authenticated()
                 )
                 // Establezco la política de sesiones como "stateless" ya que utilizo JWT para la autenticación
                 .sessionManagement(session -> session
@@ -80,6 +81,9 @@ public class WebSecurityConfig {
         configuration.addAllowedOrigin("https://gestionatuscvs-production.up.railway.app");
         // Permito también desde el dominio original gestionatuscv.es por si usas frontend separado
         configuration.addAllowedOrigin("https://gestionatuscv.es");
+        // Desarrollo local
+        configuration.addAllowedOrigin("http://localhost:8080");
+        configuration.addAllowedOrigin("http://localhost:8000");
         // Permito todos los métodos HTTP
         configuration.addAllowedMethod("*");
         // Permito todos los encabezados de las solicitudes

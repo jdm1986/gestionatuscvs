@@ -35,7 +35,16 @@ public class ArchivoService {
         try {
             String safeName = username.replaceAll("[^a-zA-Z0-9._-]", "_");
             String unique = String.valueOf(System.currentTimeMillis());
-            Path target = this.fileStorageLocation.resolve(safeName + "_" + unique + "_" + file.getOriginalFilename());
+            String original = file.getOriginalFilename() == null ? "file" : file.getOriginalFilename();
+            // Conservar solo el nombre base y saneado
+            String baseName = Paths.get(original).getFileName().toString().replaceAll("[^a-zA-Z0-9._-]", "_");
+            if (!baseName.toLowerCase().endsWith(".pdf")) {
+                baseName = baseName + ".pdf";
+            }
+            Path target = this.fileStorageLocation.resolve(safeName + "_" + unique + "_" + baseName).normalize();
+            if (!target.startsWith(this.fileStorageLocation)) {
+                throw new RuntimeException("Ruta de destino inválida");
+            }
             Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
             return target.toAbsolutePath().toString(); // <<--- guardaremos esto en BD
         } catch (Exception ex) {
@@ -46,11 +55,29 @@ public class ArchivoService {
     public Resource loadFile(String filePath) {
         try {
             Path path = Paths.get(filePath).normalize();
+            if (!path.startsWith(this.fileStorageLocation)) {
+                throw new RuntimeException("Acceso a ruta fuera del almacenamiento no permitido");
+            }
             Resource resource = new UrlResource(path.toUri());
             if (resource.exists() && resource.isReadable()) return resource;
             throw new RuntimeException("Archivo no encontrado o no legible: " + filePath);
         } catch (Exception ex) {
             throw new RuntimeException("Archivo no encontrado: " + filePath, ex);
+        }
+    }
+
+    public Resource loadFileFromStorage(String filename) {
+        try {
+            String clean = Paths.get(filename).getFileName().toString();
+            Path path = this.fileStorageLocation.resolve(clean).normalize();
+            if (!path.startsWith(this.fileStorageLocation)) {
+                throw new RuntimeException("Acceso a ruta fuera del almacenamiento no permitido");
+            }
+            Resource resource = new UrlResource(path.toUri());
+            if (resource.exists() && resource.isReadable()) return resource;
+            throw new RuntimeException("Archivo no encontrado o no legible: " + filename);
+        } catch (Exception ex) {
+            throw new RuntimeException("Archivo no encontrado: " + filename, ex);
         }
     }
 }

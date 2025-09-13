@@ -39,8 +39,8 @@ public class ArchivoController {
     // Configuro un endpoint para descargar un archivo especificado por su nombre
     @GetMapping("/download/{filename}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String filename) {
-        // Cargo el archivo y lo devuelvo como un recurso descargable
-        Resource file = archivoService.loadFile(filename);
+        // Solo permitimos descargar por nombre almacenado bajo storageDir, evitando rutas arbitrarias
+        Resource file = archivoService.loadFileFromStorage(filename);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
                 .body(file);

@@ -24,6 +24,10 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -137,6 +141,22 @@ public class WebSecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    // Relajar firewall para permitir rutas con "//" que algunos recursos externos/relativos generan
+    @Bean
+    public HttpFirewall httpFirewall() {
+        StrictHttpFirewall firewall = new StrictHttpFirewall();
+        try {
+            firewall.setAllowDoubleSlash(true);
+        } catch (NoSuchMethodError ignored) { /* en versiones antiguas no existe */ }
+        firewall.setAllowUrlEncodedDoubleSlash(true);
+        return firewall;
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer(HttpFirewall firewall) {
+        return web -> web.httpFirewall(firewall);
     }
 }
 

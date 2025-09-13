@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.http.HttpMethod;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -66,7 +67,7 @@ public class WebSecurityConfig {
                                 "/forgot-password.html",
                                 "/reset-password.html",
                                 "/upload.html",
-                                "/**/*.html",
+                                "/*.html",
                                 "/static/**",
                                 "/css/**",
                                 "/js/**",
@@ -74,6 +75,8 @@ public class WebSecurityConfig {
                                 "/scripts.js",
                                 "/styles-*.css"
                         ).permitAll()
+                        // Ubicaciones estáticas comunes (META-INF/resources, resources, static, public)
+                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/favicon.ico").permitAll()
                         // Todo lo demás requiere autenticación
                         .anyRequest().authenticated()

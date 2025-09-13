@@ -79,11 +79,8 @@
 
 <script>
     // URL base del servidor, se ajusta dependiendo del entorno (local o producción)
-    const baseUrl = window.location.hostname.includes('localhost')
-        ? 'http://localhost:8080' // URL en entorno de desarrollo (localhost)
-        : window.location.hostname.includes('www')
-            ? 'https://www.gestionatuscv.es' // URL con "www" en producción
-            : 'https://gestionatuscv.es'; // URL sin "www" en producción
+    // Usar siempre el mismo origen donde se sirve el frontend (Railway o tu dominio)
+    const baseUrl = window.location.origin;
 
     // Obtiene el userId del usuario almacenado en localStorage
     const userId = localStorage.getItem('userId');
@@ -95,7 +92,7 @@
     // Función para cargar los departamentos asociados al usuario actual
     function loadDepartamentos() {
         // Realiza una solicitud GET al servidor para obtener los departamentos del usuario
-        fetch(`${baseUrl}/departamentos?userId=${userId}`)
+        fetch(`${baseUrl}/departamentos?userId=${userId}`, { credentials: 'include' })
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Error al obtener los departamentos');
@@ -143,6 +140,7 @@
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: 'include',
             body: JSON.stringify({ nombre, userId }) // Envia el nombre del departamento y el userId
         })
         .then(response => {
@@ -174,7 +172,7 @@
 
     // Función para eliminar un departamento del servidor
     function deleteDepartamento(id) {
-        fetch(`${baseUrl}/departamentos/${id}`, { method: 'DELETE' })
+        fetch(`${baseUrl}/departamentos/${id}`, { method: 'DELETE', credentials: 'include' })
             .then(() => loadDepartamentos()) // Recarga la lista de departamentos después de eliminar
             .catch(error => console.error("Error al eliminar el departamento:", error));
     }

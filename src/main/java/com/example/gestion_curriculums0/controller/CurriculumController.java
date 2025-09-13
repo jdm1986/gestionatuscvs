@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/curriculums")
-@CrossOrigin(origins = "http://localhost:8000")
 public class CurriculumController {
 
     @Autowired private CurriculumService curriculumService;

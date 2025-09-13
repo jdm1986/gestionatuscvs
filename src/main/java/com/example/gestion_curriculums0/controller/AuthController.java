@@ -14,6 +14,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,7 +26,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "http://localhost:8000")
 public class AuthController {
 
     private static final int ACCESS_TOKEN_EXPIRATION = 15 * 60;
@@ -208,10 +208,33 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("error", "Token inválido o expirado."));
         }
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> me(@AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("error", "No autenticado"));
+        }
+        Long userId = userDetailsService.getUserIdByUsername(userDetails.getUsername());
+        Map<String, Object> body = new HashMap<>();
+        body.put("username", userDetails.getUsername());
+        body.put("userId", userId);
+        body.put("roles", userDetails.getAuthorities());
+        return ResponseEntity.ok(body);
+    }
     private void addCookieHeader(HttpServletResponse response, String name, String value, int maxAge) {
         // Construye la cookie con SameSite=None, Secure y HttpOnly para uso cross-site
         String cookie = String.format("%s=%s; Max-Age=%d; Path=/; HttpOnly; Secure; SameSite=None", name, value, maxAge);
         response.addHeader("Set-Cookie", cookie);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Map<String, String>> logout(HttpServletResponse response) {
+        // Borrar cookies estableciendo Max-Age=0
+        response.addHeader("Set-Cookie", "accessToken=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=None");
+        response.addHeader("Set-Cookie", "refreshToken=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=None");
+        Map<String, String> body = new HashMap<>();
+        body.put("message", "Sesión cerrada");
+        return ResponseEntity.ok(body);
     }
 
     private void incrementFailedAttempts(String identifier) {

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 // Anoto la clase como un controlador REST y la asocio a la ruta base "/auth", permitiendo solicitudes cross-origin desde localhost
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "http://localhost:8000")
 public class PasswordResetController {
 
     // Inyecto el servicio de restablecimiento de contraseñas para manejar la lógica relacionada

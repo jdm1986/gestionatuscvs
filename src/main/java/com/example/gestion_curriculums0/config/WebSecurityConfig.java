@@ -53,7 +53,8 @@ public class WebSecurityConfig {
         // Defino las reglas de autorización: las rutas permitidas sin autenticación y las que requieren autenticación
         http
                 .authorizeHttpRequests(auth -> auth
-                        // Endpoints públicos
+                        // Endpoints con reglas específicas
+                        .requestMatchers("/auth/me").authenticated()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         // Recursos estáticos y páginas públicas
@@ -73,6 +74,7 @@ public class WebSecurityConfig {
                                 "/scripts.js",
                                 "/styles-*.css"
                         ).permitAll()
+                        .requestMatchers("/favicon.ico").permitAll()
                         // Todo lo demás requiere autenticación
                         .anyRequest().authenticated()
                 )
@@ -105,6 +107,17 @@ public class WebSecurityConfig {
         configuration.addAllowedHeader("*");
         // Habilito el uso de cookies en las solicitudes si es necesario
         configuration.setAllowCredentials(true);
+
+        // Orígenes adicionales leídos desde propiedad app.cors.allowed-origins (coma separada)
+        try {
+            String originsProp = environment.getProperty("app.cors.allowed-origins", "");
+            if (originsProp != null && !originsProp.isBlank()) {
+                for (String origin : originsProp.split(",")) {
+                    String o = origin.trim();
+                    if (!o.isEmpty()) configuration.addAllowedOrigin(o);
+                }
+            }
+        } catch (Exception ignore) { }
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

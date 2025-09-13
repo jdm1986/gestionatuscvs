@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 // Anoto la clase como un controlador REST y defino la ruta base "/curriculums", permitiendo solicitudes cross-origin desde localhost
 @RestController
 @RequestMapping("/curriculums")
-@CrossOrigin(origins = "http://localhost:8000")
 public class NotaController {
 
     // Inyecto los servicios necesarios para gestionar las notas y los curriculums

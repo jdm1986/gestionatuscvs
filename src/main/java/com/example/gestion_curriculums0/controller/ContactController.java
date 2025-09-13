@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 // Defino que este controlador está asociado a la ruta "/contact" y acepto solicitudes cross-origin desde localhost
 @RestController
 @RequestMapping("/contact")
-@CrossOrigin(origins = "http://localhost:8000")
 public class ContactController {
 
     // Inyecto el servicio de correo electrónico para manejar el envío de los mensajes del formulario de contacto

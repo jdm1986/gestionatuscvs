@@ -26,7 +26,6 @@ import java.util.List;
 // y acepto solicitudes cross-origin desde localhost
 @RestController
 @RequestMapping("/admin")
-@CrossOrigin(origins = "http://localhost:8000")
 public class AdminController {
 
     // Inyecto el repositorio de logs de usuario para acceder a los registros de usuarios

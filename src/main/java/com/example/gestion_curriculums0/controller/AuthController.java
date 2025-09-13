@@ -75,10 +75,8 @@ public class AuthController {
             String refreshToken = jwtUtil.generateToken(userDetails, REFRESH_TOKEN_EXPIRATION);
             Long userId = userDetailsService.getUserIdByUsername(userDetails.getUsername());
 
-            Cookie accessTokenCookie = createCookie("accessToken", jwt, ACCESS_TOKEN_EXPIRATION);
-            Cookie refreshTokenCookie = createCookie("refreshToken", refreshToken, REFRESH_TOKEN_EXPIRATION);
-            response.addCookie(accessTokenCookie);
-            response.addCookie(refreshTokenCookie);
+            addCookieHeader(response, "accessToken", jwt, ACCESS_TOKEN_EXPIRATION);
+            addCookieHeader(response, "refreshToken", refreshToken, REFRESH_TOKEN_EXPIRATION);
 
             loginAttempts.remove(username);
             lockTime.remove(username);
@@ -107,8 +105,7 @@ public class AuthController {
 
             if (jwtUtil.validateToken(refreshToken, userDetails)) {
                 String newAccessToken = jwtUtil.generateToken(userDetails, ACCESS_TOKEN_EXPIRATION);
-                Cookie newAccessTokenCookie = createCookie("accessToken", newAccessToken, ACCESS_TOKEN_EXPIRATION);
-                response.addCookie(newAccessTokenCookie);
+                addCookieHeader(response, "accessToken", newAccessToken, ACCESS_TOKEN_EXPIRATION);
                 return ResponseEntity.ok(Collections.singletonMap("message", "Token renovado con éxito"));
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token inválido o expirado.");
@@ -211,13 +208,10 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("error", "Token inválido o expirado."));
         }
     }
-    private Cookie createCookie(String name, String value, int maxAge) {
-        Cookie cookie = new Cookie(name, value);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(maxAge);
-        return cookie;
+    private void addCookieHeader(HttpServletResponse response, String name, String value, int maxAge) {
+        // Construye la cookie con SameSite=None, Secure y HttpOnly para uso cross-site
+        String cookie = String.format("%s=%s; Max-Age=%d; Path=/; HttpOnly; Secure; SameSite=None", name, value, maxAge);
+        response.addHeader("Set-Cookie", cookie);
     }
 
     private void incrementFailedAttempts(String identifier) {

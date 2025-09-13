@@ -56,8 +56,23 @@ public class WebSecurityConfig {
                         // Endpoints públicos
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                        // Recursos estáticos y raíz
-                        .requestMatchers("/", "/index.html", "/static/**", "/images/**", "/scripts.js", "/styles-*.css", "/upload.html", "/reset-password.html").permitAll()
+                        // Recursos estáticos y páginas públicas
+                        .requestMatchers(
+                                "/",
+                                "/index.html",
+                                "/login.html",
+                                "/register.html",
+                                "/forgot-password.html",
+                                "/reset-password.html",
+                                "/upload.html",
+                                "/**/*.html",
+                                "/static/**",
+                                "/css/**",
+                                "/js/**",
+                                "/images/**",
+                                "/scripts.js",
+                                "/styles-*.css"
+                        ).permitAll()
                         // Todo lo demás requiere autenticación
                         .anyRequest().authenticated()
                 )

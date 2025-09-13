@@ -89,11 +89,7 @@
 
     document.addEventListener("DOMContentLoaded", function() {
         // URL base que se ajusta dependiendo de si estamos en entorno local o producción
-        const baseUrl = window.location.hostname.includes('localhost')
-            ? 'http://localhost:8080' // Si es localhost, usar esta URL
-            : window.location.hostname.includes('www')
-                ? 'https://www.gestionatuscv.es' // Si está en www
-                : 'https://gestionatuscv.es'; // Si no está en www
+        const baseUrl = window.location.origin;
 
         // Simulando que el userId se obtiene al cargar la página (por ejemplo, desde localStorage)
         const userId = localStorage.getItem('userId');
@@ -117,7 +113,7 @@
         });
 
         // Cargar los departamentos desde el servidor para el selector
-        fetch(`${baseUrl}/departamentos?userId=${userId}`)
+        fetch(`${baseUrl}/departamentos?userId=${userId}`, { credentials: 'include' })
             .then(response => {
                 if (!response.ok) {
                     return response.json().then(err => { throw new Error(err.error); });
@@ -182,9 +178,7 @@
             // Petición para subir el currículum
             fetch(`${baseUrl}/curriculums/upload`, {
                 method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`  // Autenticación con el token del usuario
-                },
+                credentials: 'include',
                 body: formData
             })
             .then(response => {

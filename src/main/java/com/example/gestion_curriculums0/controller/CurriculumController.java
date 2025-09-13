@@ -10,7 +10,7 @@ import com.example.gestion_curriculums0.service.ArchivoService;
 import com.example.gestion_curriculums0.service.CurriculumService;
 import com.example.gestion_curriculums0.service.EmailService;
 import com.example.gestion_curriculums0.service.PdfService;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -43,7 +43,7 @@ public class CurriculumController {
     @Autowired private EmailService emailService;
     @Autowired private ArchivoService archivoService;
 
-    @ApiOperation(value = "Ver una lista de curriculums disponibles", response = List.class)
+    @Operation(summary = "Ver una lista de curriculums disponibles")
     @GetMapping
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")

@@ -35,6 +35,9 @@ public class EmailService {
     @Value("${app.mail.from:gestionatuscv@gmail.com}")
     private String fromEmail;
 
+    @Value("${app.mail.admin:info@gestionatuscv.es}")
+    private String adminEmail;
+
     private boolean useSendGrid() { return sendGridApiKey != null && !sendGridApiKey.isBlank(); }
 
     private void sendViaSendGrid(String to, String subject, String text) throws Exception {
@@ -42,6 +45,26 @@ public class EmailService {
         Email toEmail = new Email(to);
         Content content = new Content("text/plain", text);
         Mail mail = new Mail(from, subject, toEmail, content);
+        SendGrid sg = new SendGrid(sendGridApiKey);
+        Request request = new Request();
+        request.setMethod(Method.POST);
+        request.setEndpoint("mail/send");
+        request.setBody(mail.build());
+        Response response = sg.api(request);
+        int status = response.getStatusCode();
+        if (status < 200 || status >= 300) {
+            throw new RuntimeException("SendGrid error status=" + status + ": " + response.getBody());
+        }
+    }
+
+    private void sendViaSendGrid(String to, String subject, String text, String replyTo) throws Exception {
+        Email from = new Email(fromEmail);
+        Email toEmail = new Email(to);
+        Content content = new Content("text/plain", text);
+        Mail mail = new Mail(from, subject, toEmail, content);
+        if (replyTo != null && !replyTo.isBlank()) {
+            mail.setReplyTo(new Email(replyTo));
+        }
         SendGrid sg = new SendGrid(sendGridApiKey);
         Request request = new Request();
         request.setMethod(Method.POST);
@@ -82,7 +105,7 @@ public class EmailService {
 
     // Envío una notificación al administrador cada vez que un nuevo usuario se registra en el sistema
     public void sendNotificationToAdmin(String username, String email) {
-        String to = "gestionatuscv@gmail.com";
+        String to = adminEmail;
         String subject = "Nuevo Registro de Usuario en GestionaTusCV";
         String body = "Un nuevo usuario se ha registrado en GestionaTusCV.\n\nDetalles del usuario:\n\n" +
                 "Usuario: " + username + "\n" +
@@ -107,17 +130,20 @@ public class EmailService {
 
     // Envío un correo con los detalles del formulario de contacto a la dirección del administrador
     public void sendContactEmail(ContactFormDTO contactForm) {
-        String to = "gestionatuscv@gmail.com";
+        String to = adminEmail;
         String subject = "Nuevo mensaje de contacto de " + contactForm.getName();
         String body = "Nombre: " + contactForm.getName() + "\n" +
                 "Email: " + contactForm.getEmail() + "\n\n" +
                 "Mensaje: " + contactForm.getMessage();
         try {
             if (useSendGrid()) {
-                sendViaSendGrid(to, subject, body);
+                // Envío desde el remitente del dominio y pongo Reply-To al correo del usuario del formulario
+                sendViaSendGrid(to, subject, body, contactForm.getEmail());
             } else {
                 SimpleMailMessage message = new SimpleMailMessage();
-                message.setFrom(contactForm.getEmail());
+                // From debe ser del dominio propio; usamos Reply-To para que al responder vaya al usuario
+                message.setFrom(fromEmail);
+                message.setReplyTo(contactForm.getEmail());
                 message.setTo(to);
                 message.setSubject(subject);
                 message.setText(body);

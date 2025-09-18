@@ -6,8 +6,6 @@ import com.example.gestion_curriculums0.model.Usuario;
 import com.example.gestion_curriculums0.model.UserLog;
 import com.example.gestion_curriculums0.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -49,7 +47,7 @@ public class UsuarioService {
     private UserLogRepository userLogRepository;
 
     @Autowired
-    private JavaMailSender mailSender;
+    private EmailService emailService;
 
     private static final int MIN_PASSWORD_LENGTH = 8;
     private static final String SPECIAL_CHARACTERS = "!@#$%^&*()-_+=<>?";
@@ -60,7 +58,8 @@ public class UsuarioService {
         usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena())); // Codifico la contraseña
         Usuario savedUsuario = usuarioRepository.save(usuario); // Guardo el usuario en la base de datos
         logUserAction(savedUsuario.getNombreUsuario(), "Registro de usuario"); // Registro en logs el registro de usuario
-        sendWelcomeEmail(savedUsuario.getEmail(), savedUsuario.getNombreUsuario()); // Envío un correo de bienvenida
+        // Envío un correo de bienvenida usando el servicio centralizado (SendGrid/SMTP según config)
+        try { emailService.sendWelcomeEmail(savedUsuario.getEmail(), savedUsuario.getNombreUsuario()); } catch (Exception ignored) {}
         return savedUsuario;
     }
 
@@ -139,35 +138,14 @@ public class UsuarioService {
     }
 
     // Envío un correo de bienvenida al usuario registrado
-    public void sendWelcomeEmail(String to, String username) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject("Bienvenido/a a nuestra plataforma");
-        message.setText("Hola " + username + ",\n\n¡Bienvenido/a a nuestra plataforma! Estamos encantados de tenerte con nosotros.\n\nSaludos,\nEl equipo");
-
-        try {
-            mailSender.send(message);
-            System.out.println("Correo de bienvenida enviado a: " + to);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error al enviar el correo de bienvenida a: " + to);
-        }
-    }
+    public void sendWelcomeEmail(String to, String username) { emailService.sendWelcomeEmail(to, username); }
 
     // Envío un correo de despedida cuando el usuario es eliminado
     public void sendGoodbyeEmail(String to, String username) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject("Gracias por probar nuestra aplicación");
-        message.setText("Hola " + username + ",\n\nGracias por visitar y probar nuestra aplicación. Esperamos que hayas tenido una buena experiencia.\n\nSaludos,\nEl equipo");
-
-        try {
-            mailSender.send(message);
-            System.out.println("Correo de despedida enviado a: " + to);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error al enviar el correo de despedida a: " + to);
-        }
+        emailService.sendSimpleEmail(
+                to,
+                "Gracias por probar nuestra aplicación",
+                "Hola " + username + ",\n\nGracias por visitar y probar nuestra aplicación. Esperamos que hayas tenido una buena experiencia.\n\nSaludos,\nEl equipo");
     }
 
     // Valido que la contraseña cumpla con los requisitos mínimos

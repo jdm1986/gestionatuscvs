@@ -15,6 +15,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import jakarta.annotation.PostConstruct;
 
 import java.time.LocalDateTime;
 
@@ -37,6 +38,29 @@ public class EmailService {
 
     @Value("${app.mail.admin:info@gestionatuscv.es}")
     private String adminEmail;
+
+    @PostConstruct
+    public void init() {
+        // Fallback a variables de entorno si las propiedades no llegaron por alguna razón
+        if (sendGridApiKey == null || sendGridApiKey.isBlank()) {
+            String envKey = System.getenv("SENDGRID_API_KEY");
+            if (envKey != null && !envKey.isBlank()) {
+                sendGridApiKey = envKey;
+            }
+        }
+        String envFrom = System.getenv("APP_MAIL_FROM");
+        if (envFrom != null && !envFrom.isBlank()) {
+            fromEmail = envFrom;
+        }
+        String envAdmin = System.getenv("APP_MAIL_ADMIN");
+        if (envAdmin != null && !envAdmin.isBlank()) {
+            adminEmail = envAdmin;
+        }
+        boolean sg = useSendGrid();
+        String keyPreview = (sendGridApiKey == null || sendGridApiKey.length() < 6) ? "" : sendGridApiKey.substring(0,6) + "…";
+        System.out.println("[EmailService] mode=" + (sg?"SendGrid":"SMTP") + 
+                ", from=" + fromEmail + ", admin=" + adminEmail + (sg?", key="+keyPreview:"") );
+    }
 
     private boolean useSendGrid() { return sendGridApiKey != null && !sendGridApiKey.isBlank(); }
 

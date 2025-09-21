@@ -33,11 +33,12 @@ services:
       APP_BASEURL: http://localhost:8080
       LANG: C.UTF-8
       LC_ALL: C.UTF-8
-      SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD}
       # Habilita SendGrid en la app si se define esta variable
       SENDGRID_API_KEY: ${SENDGRID_API_KEY}
       # Define el remitente por defecto de los correos
       APP_MAIL_FROM: ${APP_MAIL_FROM}
+      # Correo del administrador (opcional)
+      APP_MAIL_ADMIN: ${APP_MAIL_ADMIN}
     ports:
       - "8080:8080"
     volumes:

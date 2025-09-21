@@ -2,44 +2,37 @@
 
 ## Requisitos previos
 
-- Tener Docker y Docker Compose instalados en tu máquina
-- Tener la contraseña SMTP para la cuenta de email configurada (por ejemplo, contraseña de aplicación para Gmail)
+- Docker y Docker Compose instalados
+- Cuenta de SendGrid (recomendado autenticar el dominio)
 
-## Variables de entorno
+## Variables de entorno (email)
 
-La variable `SPRING_MAIL_PASSWORD` debe estar configurada en tu entorno para que Spring Boot pueda enviar emails.
+La app puede enviar emails de dos formas:
+- API HTTP de SendGrid: define `SENDGRID_API_KEY` y se usará la API.
+- SMTP de SendGrid (fallback): usuario `apikey` y contraseña tu `SENDGRID_API_KEY`.
 
-### En Linux/macOS
+Variables recomendadas:
 
-```bash
-export SPRING_MAIL_PASSWORD="tu_contraseña_smtp"
+```
+SENDGRID_API_KEY=SG.xxxxxx      # no la subas al repo
+APP_MAIL_FROM=info@gestionatuscv.es
+APP_MAIL_ADMIN=info@gestionatuscv.es
 ```
 
-### En Windows PowerShell
-
-```powershell
-$env:SPRING_MAIL_PASSWORD="tu_contraseña_smtp"
-```
+No es necesario usar Gmail ni contraseñas de aplicación.
 
 ## Levantar la aplicación con Docker Compose
 
 Desde la raíz del proyecto, ejecuta:
 
-```bash
+```
 docker-compose up --build
 ```
 
-Esto reconstruirá la imagen y levantará el contenedor con las variables de entorno configuradas.
-
 ## Comprobación
 
-- Verifica que los contenedores estén corriendo con `docker ps`
-- Accede a la aplicación en http://localhost:8080
-- Prueba a registrar un usuario y verifica que no se produzca error 400 por fallo en el envío de email
-
----
-
-Así mantienes segura la contraseña de correo, evitas que el registro falle si el correo no se puede enviar, y puedes desplegar fácilmente con Docker.
+- Verifica contenedores con `docker ps`
+- Accede a http://localhost:8080
+- Registra un usuario y revisa logs; al iniciar debe aparecer `[EmailService] mode=SendGrid` si la API key está presente
 
 Si tienes dudas o problemas, avísame y te ayudo.
-

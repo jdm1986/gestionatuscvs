@@ -33,7 +33,7 @@ public class EmailService {
     @Value("${sendgrid.api-key:}")
     private String sendGridApiKey;
 
-    @Value("${app.mail.from:gestionatuscv@gmail.com}")
+    @Value("${app.mail.from:info@gestionatuscv.es}")
     private String fromEmail;
 
     @Value("${app.mail.admin:info@gestionatuscv.es}")

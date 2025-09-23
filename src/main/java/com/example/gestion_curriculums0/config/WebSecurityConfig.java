@@ -61,6 +61,9 @@ public class WebSecurityConfig {
                         // Endpoints con reglas específicas
                         .requestMatchers("/auth/me").authenticated()
                         .requestMatchers("/auth/**").permitAll()
+                        // Formulario de contacto público
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/contact").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         // Recursos estáticos y páginas públicas
                         .requestMatchers(

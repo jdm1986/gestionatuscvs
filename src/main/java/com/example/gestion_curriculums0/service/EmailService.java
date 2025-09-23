@@ -23,6 +23,10 @@ import com.sendgrid.*;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Email;
 import com.sendgrid.helpers.mail.objects.Content;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 @Service
 public class EmailService {
@@ -32,6 +36,9 @@ public class EmailService {
 
     @Value("${sendgrid.api-key:}")
     private String sendGridApiKey;
+
+    @Value("${resend.api-key:}")
+    private String resendApiKey;
 
     @Value("${app.mail.from:info@gestionatuscv.es}")
     private String fromEmail;
@@ -48,6 +55,12 @@ public class EmailService {
                 sendGridApiKey = envKey;
             }
         }
+        if (resendApiKey == null || resendApiKey.isBlank()) {
+            String envKey = System.getenv("RESEND_API_KEY");
+            if (envKey != null && !envKey.isBlank()) {
+                resendApiKey = envKey;
+            }
+        }
         String envFrom = System.getenv("APP_MAIL_FROM");
         if (envFrom != null && !envFrom.isBlank()) {
             fromEmail = envFrom;
@@ -56,13 +69,31 @@ public class EmailService {
         if (envAdmin != null && !envAdmin.isBlank()) {
             adminEmail = envAdmin;
         }
-        boolean sg = useSendGrid();
-        String keyPreview = (sendGridApiKey == null || sendGridApiKey.length() < 6) ? "" : sendGridApiKey.substring(0,6) + "…";
-        System.out.println("[EmailService] mode=" + (sg?"SendGrid":"SMTP") + 
-                ", from=" + fromEmail + ", admin=" + adminEmail + (sg?", key="+keyPreview:"") );
+        String mode = useResend() ? "Resend" : (useSendGrid() ? "SendGrid" : "SMTP");
+        String keyPreview = "";
+        if (useResend() && resendApiKey != null && resendApiKey.length() >= 6) {
+            keyPreview = resendApiKey.substring(0,6) + "…";
+        } else if (useSendGrid() && sendGridApiKey != null && sendGridApiKey.length() >= 6) {
+            keyPreview = sendGridApiKey.substring(0,6) + "…";
+        }
+        System.out.println("[EmailService] mode=" + mode + ", from=" + fromEmail + ", admin=" + adminEmail + (keyPreview.isEmpty()?"":", key="+keyPreview));
     }
 
+    private boolean useResend() { return resendApiKey != null && !resendApiKey.isBlank(); }
     private boolean useSendGrid() { return sendGridApiKey != null && !sendGridApiKey.isBlank(); }
+
+    public java.util.Map<String, Object> mailStatus() {
+        String mode = useResend() ? "Resend" : (useSendGrid() ? "SendGrid" : "SMTP");
+        String sg = (sendGridApiKey == null) ? "null" : (sendGridApiKey.isBlank()?"blank":"set");
+        String rs = (resendApiKey == null) ? "null" : (resendApiKey.isBlank()?"blank":"set");
+        return java.util.Map.of(
+                "mode", mode,
+                "from", fromEmail,
+                "admin", adminEmail,
+                "sendgrid", sg,
+                "resend", rs
+        );
+    }
 
     private void sendViaSendGrid(String to, String subject, String text) throws Exception {
         Email from = new Email(fromEmail);
@@ -101,6 +132,54 @@ public class EmailService {
         }
     }
 
+    private void sendViaResend(String to, String subject, String text) throws Exception {
+        String body = "{"
+                + "\"from\":\"" + fromEmail + "\"," 
+                + "\"to\":[\"" + to + "\"],"
+                + "\"subject\":\"" + escapeJson(subject) + "\"," 
+                + "\"text\":\"" + escapeJson(text) + "\"" 
+                + "}";
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://api.resend.com/emails"))
+                .header("Authorization", "Bearer " + resendApiKey)
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(body))
+                .build();
+        HttpClient client = HttpClient.newHttpClient();
+        HttpResponse<String> resp = client.send(request, HttpResponse.BodyHandlers.ofString());
+        int status = resp.statusCode();
+        if (status < 200 || status >= 300) {
+            throw new RuntimeException("Resend error status=" + status + ": " + resp.body());
+        }
+    }
+
+    private void sendViaResend(String to, String subject, String text, String replyTo) throws Exception {
+        String rt = (replyTo != null && !replyTo.isBlank()) ? "\"reply_to\":\"" + escapeJson(replyTo) + "\"," : "";
+        String body = "{"
+                + "\"from\":\"" + fromEmail + "\"," 
+                + "\"to\":[\"" + to + "\"],"
+                + rt
+                + "\"subject\":\"" + escapeJson(subject) + "\"," 
+                + "\"text\":\"" + escapeJson(text) + "\"" 
+                + "}";
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://api.resend.com/emails"))
+                .header("Authorization", "Bearer " + resendApiKey)
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(body))
+                .build();
+        HttpClient client = HttpClient.newHttpClient();
+        HttpResponse<String> resp = client.send(request, HttpResponse.BodyHandlers.ofString());
+        int status = resp.statusCode();
+        if (status < 200 || status >= 300) {
+            throw new RuntimeException("Resend error status=" + status + ": " + resp.body());
+        }
+    }
+
+    private static String escapeJson(String s) {
+        return s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r");
+    }
+
     /*
       Envío un correo de bienvenida a un nuevo usuario de forma asíncrona. Esto asegura que la
       operación de envío de correo no bloquee otras tareas.
@@ -109,7 +188,10 @@ public class EmailService {
     public void sendWelcomeEmail(String to, String username) {
         // Configuro el mensaje de bienvenida
         try {
-            if (useSendGrid()) {
+            if (useResend()) {
+                sendViaResend(to, "Bienvenido/a a nuestra plataforma",
+                        "Hola " + username + ",\n\n¡Bienvenid@ a nuestra plataforma! Estamos encantados de tenerte con nosotros.\n\nSaludos,\nEl equipo");
+            } else if (useSendGrid()) {
                 sendViaSendGrid(to, "Bienvenido/a a nuestra plataforma",
                         "Hola " + username + ",\n\n¡Bienvenid@ a nuestra plataforma! Estamos encantados de tenerte con nosotros.\n\nSaludos,\nEl equipo");
             } else {
@@ -120,7 +202,8 @@ public class EmailService {
                 message.setText("Hola " + username + ",\n\n¡Bienvenid@ a nuestra plataforma! Estamos encantados de tenerte con nosotros.\n\nSaludos,\nEl equipo");
                 mailSender.send(message);
             }
-            System.out.println("Correo de bienvenida enviado a: " + to + (useSendGrid()?" (SendGrid)":" (SMTP)"));
+            String prov = useResend()?"Resend":(useSendGrid()?"SendGrid":"SMTP");
+            System.out.println("Correo de bienvenida enviado a: " + to + " (" + prov + ")");
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error al enviar el correo de bienvenida a: " + to);
@@ -137,7 +220,9 @@ public class EmailService {
                 "Fecha de registro: " + LocalDateTime.now().toString() + "\n\n" +
                 "Saludos,\nGestionaTusCV";
         try {
-            if (useSendGrid()) {
+            if (useResend()) {
+                sendViaResend(to, subject, body);
+            } else if (useSendGrid()) {
                 sendViaSendGrid(to, subject, body);
             } else {
                 SimpleMailMessage message = new SimpleMailMessage();
@@ -160,8 +245,9 @@ public class EmailService {
                 "Email: " + contactForm.getEmail() + "\n\n" +
                 "Mensaje: " + contactForm.getMessage();
         try {
-            if (useSendGrid()) {
-                // Envío desde el remitente del dominio y pongo Reply-To al correo del usuario del formulario
+            if (useResend()) {
+                sendViaResend(to, subject, body, contactForm.getEmail());
+            } else if (useSendGrid()) {
                 sendViaSendGrid(to, subject, body, contactForm.getEmail());
             } else {
                 SimpleMailMessage message = new SimpleMailMessage();
@@ -181,7 +267,9 @@ public class EmailService {
     // Método genérico para enviar un correo simple a cualquier destinatario con un asunto y un cuerpo de texto
     public void sendSimpleEmail(String to, String subject, String text) {
         try {
-            if (useSendGrid()) {
+            if (useResend()) {
+                sendViaResend(to, subject, text);
+            } else if (useSendGrid()) {
                 sendViaSendGrid(to, subject, text);
             } else {
                 SimpleMailMessage message = new SimpleMailMessage();

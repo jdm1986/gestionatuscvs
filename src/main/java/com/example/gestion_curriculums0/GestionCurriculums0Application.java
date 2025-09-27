@@ -3,7 +3,7 @@
 package com.example.gestion_curriculums0;
 
 /*
-   Esta es la clase principal que arranca la aplicación Spring Boot.
+   Esta es la clase principal que arranca la aplicación SpringBoot.
    Aquí configuro los paquetes a escanear, los repositorios JPA, y habilito funcionalidades como
    la programación de tareas asíncronas y la carga de variables de entorno desde un archivo .env.
 */

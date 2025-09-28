@@ -238,30 +238,63 @@ public class EmailService {
     }
 
     // Envío un correo con los detalles del formulario de contacto a la dirección del administrador
+    // y una confirmación al remitente.
     public void sendContactEmail(ContactFormDTO contactForm) {
-        String to = adminEmail;
-        String subject = "Nuevo mensaje de contacto de " + contactForm.getName();
-        String body = "Nombre: " + contactForm.getName() + "\n" +
+        String adminTo = adminEmail;
+        String adminSubject = "Nuevo mensaje de contacto de " + contactForm.getName();
+        String adminBody = "Nombre: " + contactForm.getName() + "\n" +
                 "Email: " + contactForm.getEmail() + "\n\n" +
                 "Mensaje: " + contactForm.getMessage();
+
+        // 1) Enviar al administrador (crítico). Si falla, se propaga la excepción.
         try {
             if (useResend()) {
-                sendViaResend(to, subject, body, contactForm.getEmail());
+                sendViaResend(adminTo, adminSubject, adminBody, contactForm.getEmail());
             } else if (useSendGrid()) {
-                sendViaSendGrid(to, subject, body, contactForm.getEmail());
+                sendViaSendGrid(adminTo, adminSubject, adminBody, contactForm.getEmail());
             } else {
                 SimpleMailMessage message = new SimpleMailMessage();
-                // From debe ser del dominio propio; usamos Reply-To para que al responder vaya al usuario
                 message.setFrom(fromEmail);
-                message.setReplyTo(contactForm.getEmail());
-                message.setTo(to);
-                message.setSubject(subject);
-                message.setText(body);
+                message.setReplyTo(contactForm.getEmail()); // responder al usuario
+                message.setTo(adminTo);
+                message.setSubject(adminSubject);
+                message.setText(adminBody);
                 mailSender.send(message);
             }
+            String prov = useResend()?"Resend":(useSendGrid()?"SendGrid":"SMTP");
+            System.out.println("[EmailService] Contact enviado a admin: " + adminTo + " replyTo=" + contactForm.getEmail() + " (" + prov + ")");
         } catch (Exception e) {
             // Propagar para que el controlador devuelva 500 y el frontend muestre error
-            throw new RuntimeException("Fallo enviando email de contacto: " + e.getMessage(), e);
+            throw new RuntimeException("Fallo enviando email de contacto a admin: " + e.getMessage(), e);
+        }
+
+        // 2) Enviar confirmación al usuario (no crítico). No rompemos el flujo si falla.
+        try {
+            String userTo = contactForm.getEmail();
+            if (userTo != null && !userTo.isBlank()) {
+                String userSubject = "Hemos recibido tu mensaje - GestionaTusCV";
+                String userBody = "Hola " + contactForm.getName() + ",\n\n" +
+                        "Gracias por escribirnos. Hemos recibido tu mensaje y te responderemos lo antes posible.\n\n" +
+                        "Resumen del mensaje:\n" +
+                        contactForm.getMessage() + "\n\n" +
+                        "— Equipo de GestionaTusCV";
+                if (useResend()) {
+                    sendViaResend(userTo, userSubject, userBody);
+                } else if (useSendGrid()) {
+                    sendViaSendGrid(userTo, userSubject, userBody);
+                } else {
+                    SimpleMailMessage confirm = new SimpleMailMessage();
+                    confirm.setFrom(fromEmail);
+                    confirm.setTo(userTo);
+                    confirm.setSubject(userSubject);
+                    confirm.setText(userBody);
+                    mailSender.send(confirm);
+                }
+                System.out.println("[EmailService] Confirmación de contacto enviada a usuario: " + userTo);
+            }
+        } catch (Exception ex) {
+            // Log y continuar: el correo principal ya fue enviado al admin
+            System.out.println("[EmailService] Aviso: no se pudo enviar confirmación al usuario: " + ex.getMessage());
         }
     }
 

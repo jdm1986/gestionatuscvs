@@ -240,7 +240,16 @@ public class EmailService {
     // Envío un correo con los detalles del formulario de contacto a la dirección del administrador
     // y una confirmación al remitente.
     public void sendContactEmail(ContactFormDTO contactForm) {
-        String adminTo = adminEmail;
+        // Permite múltiples destinatarios separados por coma en APP_MAIL_ADMIN
+        java.util.List<String> adminRecipients = new java.util.ArrayList<>();
+        if (adminEmail != null) {
+            for (String r : adminEmail.split(",")) {
+                String v = r == null ? null : r.trim();
+                if (v != null && !v.isBlank()) adminRecipients.add(v);
+            }
+        }
+        if (adminRecipients.isEmpty()) adminRecipients.add(fromEmail); // último recurso
+        String adminTo = adminRecipients.get(0);
         String adminSubject = "Nuevo mensaje de contacto de " + contactForm.getName();
         String adminBody = "Nombre: " + contactForm.getName() + "\n" +
                 "Email: " + contactForm.getEmail() + "\n\n" +
@@ -248,21 +257,23 @@ public class EmailService {
 
         // 1) Enviar al administrador (crítico). Si falla, se propaga la excepción.
         try {
-            if (useResend()) {
-                sendViaResend(adminTo, adminSubject, adminBody, contactForm.getEmail());
-            } else if (useSendGrid()) {
-                sendViaSendGrid(adminTo, adminSubject, adminBody, contactForm.getEmail());
-            } else {
-                SimpleMailMessage message = new SimpleMailMessage();
-                message.setFrom(fromEmail);
-                message.setReplyTo(contactForm.getEmail()); // responder al usuario
-                message.setTo(adminTo);
-                message.setSubject(adminSubject);
-                message.setText(adminBody);
-                mailSender.send(message);
+            for (String toAdmin : adminRecipients) {
+                if (useResend()) {
+                    sendViaResend(toAdmin, adminSubject, adminBody, contactForm.getEmail());
+                } else if (useSendGrid()) {
+                    sendViaSendGrid(toAdmin, adminSubject, adminBody, contactForm.getEmail());
+                } else {
+                    SimpleMailMessage message = new SimpleMailMessage();
+                    message.setFrom(fromEmail);
+                    message.setReplyTo(contactForm.getEmail()); // responder al usuario
+                    message.setTo(toAdmin);
+                    message.setSubject(adminSubject);
+                    message.setText(adminBody);
+                    mailSender.send(message);
+                }
+                String prov = useResend()?"Resend":(useSendGrid()?"SendGrid":"SMTP");
+                System.out.println("[EmailService] Contact enviado a admin: " + toAdmin + " replyTo=" + contactForm.getEmail() + " (" + prov + ")");
             }
-            String prov = useResend()?"Resend":(useSendGrid()?"SendGrid":"SMTP");
-            System.out.println("[EmailService] Contact enviado a admin: " + adminTo + " replyTo=" + contactForm.getEmail() + " (" + prov + ")");
         } catch (Exception e) {
             // Propagar para que el controlador devuelva 500 y el frontend muestre error
             throw new RuntimeException("Fallo enviando email de contacto a admin: " + e.getMessage(), e);

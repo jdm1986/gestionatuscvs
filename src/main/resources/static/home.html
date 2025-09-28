@@ -91,4 +91,135 @@
 </footer>
 
 </html>
+<!-- Archivo: home.html -->
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TU GESTOR DE CVS</title>
+    <meta name="description" content="Gestiona, organiza y filtra tus CV de forma segura">
+    <link rel="stylesheet" href="styles-common.css">
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:url" content="https://gestionatuscv.es">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="TU GESTOR DE CVS">
+    <meta property="og:description" content="Gestiona, organiza y filtra tus CV de forma segura">
+    <meta property="og:image" content="https://opengraph.b-cdn.net/production/images/015ed697-6e19-4204-b258-aef38bb49009.png?token=EZkEiXiwUoIgSeffPcVmgxTGCm_zmJ5QURWqrccvebk&height=344&width=486&expires=33260663957">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:domain" content="gestionatuscv.es">
+    <meta property="twitter:url" content="https://gestionatuscv.es">
+    <meta name="twitter:title" content="TU GESTOR DE CVS">
+    <meta name="twitter:description" content="Gestiona, organiza y filtra tus CV de forma segura">
+    <meta name="twitter:image" content="https://opengraph.b-cdn.net/production/images/015ed697-6e19-4204-b258-aef38bb49009.png?token=EZkEiXiwUoIgSeffPcVmgxTGCm_zmJ5QURWqrccvebk&height=344&width=486&expires=33260663957">
+
+    <!-- Cloudflare Web Analytics -->
+    <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "81002494b6c7479dbe29b5b1513d466a"}'></script>
+
+    <link rel="icon" href="/favicon.ico">
+
+    <style>
+        /* Features de portada: usa la paleta y tipografía del sitio */
+        .features {
+            width: 80%;
+            margin: 20px auto 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+        .feature-card {
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            border: 1px solid #2f2f2f;
+            transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+        }
+        .feature-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #3a3a3a;
+            background: #1c1c1c;
+        }
+        .feature-title { color: #E573FE; font-size: 16px; margin: 10px 0 6px; }
+        .feature-desc { color: #ddd; font-size: 14px; margin: 0; }
+
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+            border-color: #3b3b3b;
+        }
+
+        .hero-subtitle {
+            color: #dddddd;
+            margin-top: -5px;
+            margin-bottom: 14px;
+            font-size: 15px;
+        }
+
+        @media (max-width: 767px) {
+            .features { width: 95%; }
+            .feature-card img { height: 140px; }
+            .hero-subtitle { font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo">
+</header>
+
+<div class="container">
+    <h2>TU GESTOR DE CVS</h2>
+    <p class="hero-subtitle">Centraliza, filtra y comparte CVs de forma rápida y segura.</p>
+
+    <div class="buttons" aria-label="Acciones principales">
+        <button id="loginButton" aria-label="Iniciar Sesión">Iniciar Sesión</button>
+        <button id="registerButton" aria-label="Registrarse">Registrarse</button>
+    </div>
+
+    <!-- Sección de valor: 3 features -->
+    <section class="features" aria-label="Ventajas principales">
+        <div class="feature-card">
+            <img loading="lazy" src="images/OrganizCV.PNG" alt="Organiza tus CVs en un mismo lugar">
+            <div class="feature-title">Organiza tus CV</div>
+            <p class="feature-desc">Centraliza, ordena y clasifica por departamentos.</p>
+        </div>
+        <div class="feature-card">
+            <img loading="lazy" src="images/FiltraCV.png" alt="Filtra CVs y encuentra rápido">
+            <div class="feature-title">Filtra y encuentra</div>
+            <p class="feature-desc">Búsquedas por nombre, apellido y palabras clave.</p>
+        </div>
+        <div class="feature-card">
+            <img loading="lazy" src="images/DatosSeguros.png" alt="Tus datos están seguros">
+            <div class="feature-title">Datos seguros</div>
+            <p class="feature-desc">Enlace con token y almacenamiento seguro.</p>
+        </div>
+    </section>
+</div>
+
+<script src="scripts.js"></script>
+
+</body>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-links">
+            <a href="https://www.jesusdiazmartincv.es" target="_blank">
+                <img src="images/logodeveloper.png" alt="Logo JDM" class="footer-logo">
+            </a>
+            <a href="privacidad.html">Política de Privacidad</a> |
+            <a href="terminos.html">Términos y Condiciones</a> |
+            <a href="contacto.html">Contacto</a>
+        </div>
+        <p>&copy; 2024 GESTIONATUSCV. Todos los derechos reservados.</p>
+        <p> || Aplicación Web creada por Jesús Díaz Martín || </p>
+    </div>
+</footer>
+
+</html>

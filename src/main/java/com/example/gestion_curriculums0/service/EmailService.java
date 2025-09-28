@@ -260,7 +260,8 @@ public class EmailService {
                 mailSender.send(message);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            // Propagar para que el controlador devuelva 500 y el frontend muestre error
+            throw new RuntimeException("Fallo enviando email de contacto: " + e.getMessage(), e);
         }
     }
 

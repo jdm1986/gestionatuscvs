@@ -256,8 +256,10 @@ public class EmailService {
                 "Mensaje: " + contactForm.getMessage();
 
         // 1) Enviar al administrador (crítico). Si falla, se propaga la excepción.
-        try {
-            for (String toAdmin : adminRecipients) {
+        boolean anyAdminSent = false;
+        StringBuilder adminErrors = new StringBuilder();
+        for (String toAdmin : adminRecipients) {
+            try {
                 if (useResend()) {
                     sendViaResend(toAdmin, adminSubject, adminBody, contactForm.getEmail());
                 } else if (useSendGrid()) {
@@ -271,12 +273,16 @@ public class EmailService {
                     message.setText(adminBody);
                     mailSender.send(message);
                 }
+                anyAdminSent = true;
                 String prov = useResend()?"Resend":(useSendGrid()?"SendGrid":"SMTP");
                 System.out.println("[EmailService] Contact enviado a admin: " + toAdmin + " replyTo=" + contactForm.getEmail() + " (" + prov + ")");
+            } catch (Exception e) {
+                adminErrors.append("[").append(toAdmin).append("] ").append(e.getMessage()).append("; ");
+                System.out.println("[EmailService] Error enviando a admin " + toAdmin + ": " + e.getMessage());
             }
-        } catch (Exception e) {
-            // Propagar para que el controlador devuelva 500 y el frontend muestre error
-            throw new RuntimeException("Fallo enviando email de contacto a admin: " + e.getMessage(), e);
+        }
+        if (!anyAdminSent) {
+            throw new RuntimeException("Fallo enviando email de contacto a todos los admin: " + adminErrors);
         }
 
         // 2) Enviar confirmación al usuario (no crítico). No rompemos el flujo si falla.

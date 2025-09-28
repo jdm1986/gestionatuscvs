@@ -1,89 +1,19 @@
-<!-- Archivo: index.html -->
-
+<!-- Archivo: index.html (redirige a home.html) -->
 <!DOCTYPE html>
 <html lang="es">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página de Bienvenida</title>
-    <meta name="description" content="Gestiona y organiza tus CV">
-    <link rel="stylesheet" href="styles-common.css">
+    <title>Redirigiendo…</title>
+    <meta http-equiv="refresh" content="0; url=/home.html">
+    <link rel="canonical" href="/home.html">
+    <script>
+      // Fallback por si meta refresh no funciona
+      window.location.replace('/home.html');
+    </script>
+  </head>
+  <body>
+    Si no eres redirigido automáticamente, ve a <a href="/home.html">home</a>.
+  </body>
+  </html>
 
-    <!--
-        Meta etiquetas para mejorar la optimización en redes sociales
-        Estas etiquetas permiten que la página tenga una mejor apariencia al compartirse en redes sociales.
-    -->
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:url" content="https://gestionatuscv.es">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Página de Bienvenida">
-    <meta property="og:description" content="Gestiona y organiza tus CV">
-    <meta property="og:image" content="https://opengraph.b-cdn.net/production/images/015ed697-6e19-4204-b258-aef38bb49009.png?token=EZkEiXiwUoIgSeffPcVmgxTGCm_zmJ5QURWqrccvebk&height=344&width=486&expires=33260663957">
-
-    <!-- Twitter Meta Tags para optimización en Twitter -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta property="twitter:domain" content="gestionatuscv.es">
-    <meta property="twitter:url" content="https://gestionatuscv.es">
-    <meta name="twitter:title" content="Página de Bienvenida">
-    <meta name="twitter:description" content="Gestiona y organiza tus CV">
-    <meta name="twitter:image" content="https://opengraph.b-cdn.net/production/images/015ed697-6e19-4204-b258-aef38bb49009.png?token=EZkEiXiwUoIgSeffPcVmgxTGCm_zmJ5QURWqrccvebk&height=344&width=486&expires=33260663957">
-
-    <!--
-        Cloudflare Web Analytics para rastreo de tráfico de la página
-        Permite realizar un seguimiento de los visitantes para mejorar la experiencia de usuario.
-    -->
-    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "81002494b6c7479dbe29b5b1513d466a"}'></script>
-    <!-- Fin de Cloudflare Web Analytics -->
-
-</head>
-<body>
-<!--
-    Encabezado de la página con el logo del sitio web.
-    La página da la bienvenida a los usuarios y proporciona botones para iniciar sesión o registrarse.
--->
-<header>
-    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo">
-</header>
-
-<div class="container">
-    <!-- Título principal de bienvenida -->
-    <h2>BIENVENIDO/A</h2>
-
-    <!--
-        Botones de acción para que el usuario pueda iniciar sesión o registrarse.
-        Se utilizan para dirigir al usuario a las respectivas páginas de autenticación.
-    -->
-    <div class="buttons">
-        <button id="loginButton">Iniciar Sesión</button> <!-- Botón para ir a la página de inicio de sesión -->
-        <button id="registerButton">Registrarse</button> <!-- Botón para ir a la página de registro -->
-    </div>
-</div>
-
-<!--
-    Archivo JavaScript que contiene las funciones para manejar los eventos de los botones.
-    Aquí podría haber funciones para redirigir al usuario a las páginas correspondientes al hacer clic.
--->
-<script src="scripts.js"></script>
-
-</body>
-
-<!-- Pie de página con enlaces y créditos -->
-<footer>
-    <div class="footer-content">
-        <div class="footer-links">
-            <!-- Enlace al sitio del desarrollador -->
-            <a href="https://www.jesusdiazmartincv.es" target="_blank">
-                <img src="images/logodeveloper.png" alt="Logo JDM" class="footer-logo">
-            </a>
-            <!-- Enlaces a las políticas, términos y contacto -->
-            <a href="privacidad.html">Política de Privacidad</a> |
-            <a href="terminos.html">Términos y Condiciones</a> |
-            <a href="contacto.html">Contacto</a>
-        </div>
-        <!-- Información de derechos de autor y créditos -->
-        <p>&copy; 2024 GESTIONATUSCV. Todos los derechos reservados.</p>
-        <p> || Aplicación Web creada por Jesús Díaz Martín || </p>
-    </div>
-</footer>
-
-</html>

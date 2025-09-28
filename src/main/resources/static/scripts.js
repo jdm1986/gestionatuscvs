@@ -28,10 +28,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     localStorage.removeItem('token'); // Elimina el token de localStorage
                     localStorage.removeItem('username'); // Elimina el nombre de usuario
                     localStorage.removeItem('userId'); // Elimina el ID de usuario
-                    window.location.href = 'index.html'; // Redirige a la página de inicio
+                    window.location.href = 'home.html'; // Redirige a la página de inicio
                 }
             } else {
-                window.location.href = 'index.html'; // Si no hay token, redirige a la página de inicio
+                window.location.href = 'home.html'; // Si no hay token, redirige a la página de inicio
             }
         });
     }
@@ -582,7 +582,7 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.removeItem('token'); // Elimina el token de localStorage
             localStorage.removeItem('username'); // Elimina el nombre de usuario
             localStorage.removeItem('userId'); // Elimina el ID de usuario
-            window.location.href = 'index.html'; // Redirige a la página de inicio
+            window.location.href = 'home.html'; // Redirige a la página de inicio
         });
 
         // Botón de búsqueda de currículums
@@ -823,4 +823,5 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+
 

@@ -1,144 +1,94 @@
+<!-- Archivo: home.html -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GestionaTusCV</title>
+    <title>Página de Bienvenida</title>
+    <meta name="description" content="Gestiona y organiza tus CV">
     <link rel="stylesheet" href="styles-common.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            background-color: #333333;
-            overflow-x: hidden;
-        }
-        header {
-            background-color: #1C1C1C;
-            color: #1C1C1C;
-            padding: 1px 0;
-            text-align: center;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-        }
-        .logo {
-            max-width: 150px;
-        }
-        .container {
-            padding: 100px 10px 5px;
-            max-width: 1000px;
-            margin: auto;
-            text-align: center;
-            overflow-y: auto;
-        }
-        h1 {
-            color: #E573FE;
-        }
-        .features {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 10px;
-            flex-wrap: wrap;
-        }
-        .feature {
-            background-color: #333333;
-            padding: 15px;
-            border-radius: 5px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            width: 30%;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        .feature img {
-            max-width: 160px;
-            margin-bottom: 1px;
-            border-radius: 10px;
-        }
-        footer {
-            background-color: #1C1C1C;
-            color: #fff;
-            text-align: center;
-            padding: 10px 0;
-            position: relative;
-            width: 100%;
-            z-index: 1000;
-        }
-        .footer-links a {
-            color: #E573FE;
-            margin: 0 10px;
-            text-decoration: none;
-        }
-        button {
-            margin-top: 20px;
-            padding: 7px 30px;
-            background-color: #E573FE;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            max-width: 200px;
-            width: auto;
-        }
-        @media (max-width: 768px) {
-            .features {
-                flex-direction: column;
-                align-items: center;
-            }
-            .feature {
-                width: 70%;
-                margin-bottom: 20px;
-            }
-            .feature img {
-                max-width: 150px;
-            }
-            button {
-                padding: 10px 40px;
-                font-size: 16px;
-                max-width: 200px;
-            }
-        }
-    </style>
+
+    <!--
+        Meta etiquetas para mejorar la optimización en redes sociales
+        Estas etiquetas permiten que la página tenga una mejor apariencia al compartirse en redes sociales.
+    -->
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:url" content="https://gestionatuscv.es">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Página de Bienvenida">
+    <meta property="og:description" content="Gestiona y organiza tus CV">
+    <meta property="og:image" content="https://opengraph.b-cdn.net/production/images/015ed697-6e19-4204-b258-aef38bb49009.png?token=EZkEiXiwUoIgSeffPcVmgxTGCm_zmJ5QURWqrccvebk&height=344&width=486&expires=33260663957">
+
+    <!-- Twitter Meta Tags para optimización en Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:domain" content="gestionatuscv.es">
+    <meta property="twitter:url" content="https://gestionatuscv.es">
+    <meta name="twitter:title" content="Página de Bienvenida">
+    <meta name="twitter:description" content="Gestiona y organiza tus CV">
+    <meta name="twitter:image" content="https://opengraph.b-cdn.net/production/images/015ed697-6e19-4204-b258-aef38bb49009.png?token=EZkEiXiwUoIgSeffPcVmgxTGCm_zmJ5QURWqrccvebk&height=344&width=486&expires=33260663957">
+
+    <!--
+        Cloudflare Web Analytics para rastreo de tráfico de la página
+        Permite realizar un seguimiento de los visitantes para mejorar la experiencia de usuario.
+    -->
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "81002494b6c7479dbe29b5b1513d466a"}'></script>
+    <!-- Fin de Cloudflare Web Analytics -->
+
+    <link rel="icon" href="/favicon.ico">
 </head>
 <body>
-    <header>
-        <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo">
-      </header>
+<!--
+    Encabezado de la página con el logo del sitio web.
+    La página da la bienvenida a los usuarios y proporciona botones para iniciar sesión o registrarse.
+-->
+<header>
+    <img src="images/logogestionatuscv.png" alt="Logo GestionaTusCV" class="logo">
+    
+</header>
 
-    <div class="container">
-        <div class="features">
-            <div class="feature">
-                <img src="images/feature1.png" alt="Funcionalidad 1">
-                <h3>Organiza tus CVs</h3>
-            </div>
-            <div class="feature">
-                <img src="images/feature2.png" alt="Funcionalidad 2">
-                <h3>Comparte con un clic</h3>
-            </div>
-            <div class="feature">
-                <img src="images/feature3.png" alt="Funcionalidad 3">
-                <h3>Seguridad garantizada</h3>
-            </div>
-        </div>
+<div class="container">
+    <!-- Título principal de bienvenida -->
+    <h2>BIENVENIDO/A</h2>
 
+    <!--
+        Botones de acción para que el usuario pueda iniciar sesión o registrarse.
+        Se utilizan para dirigir al usuario a las respectivas páginas de autenticación.
+    -->
+    <div class="buttons">
+        <button id="loginButton">Iniciar Sesión</button> <!-- Botón para ir a la página de inicio de sesión -->
+        <button id="registerButton">Registrarse</button> <!-- Botón para ir a la página de registro -->
     </div>
+    
+</div>
 
-    <footer>
-        <button onclick="window.location.href='index.html'">INICIO</button>
-        <div class="footer-content">
-            <div class="footer-links">
-                <a href="https://www.jesusdiazmartincv.es" target="_blank">
-                    <img src="images/logodeveloper.png" alt="Logo JDM" class="footer-logo">
-                </a>
-                <a href="privacidad.html">Política de Privacidad</a> |
-                <a href="terminos.html">Términos y Condiciones</a> |
-                <a href="contacto.html">Contacto</a>
-            </div>
-            <p>&copy; 2024 GESTIONATUSCV. Todos los derechos reservados.</p>
-            <p> || Aplicación Web creada por Jesús Díaz Martín || </p>
-        </div>
-    </footer>
+<!--
+    Archivo JavaScript que contiene las funciones para manejar los eventos de los botones.
+    Aquí podría haber funciones para redirigir al usuario a las páginas correspondientes al hacer clic.
+-->
+<script src="scripts.js"></script>
+
 </body>
-</html> 
+
+<!-- Pie de página con enlaces y créditos -->
+<footer>
+    <div class="footer-content">
+        <div class="footer-links">
+            <!-- Enlace al sitio del desarrollador -->
+            <a href="https://www.jesusdiazmartincv.es" target="_blank">
+                <img src="images/logodeveloper.png" alt="Logo JDM" class="footer-logo">
+            </a>
+            <!-- Enlaces a las políticas, términos y contacto -->
+            <a href="privacidad.html">Política de Privacidad</a> |
+            <a href="terminos.html">Términos y Condiciones</a> |
+            <a href="contacto.html">Contacto</a>
+        </div>
+        <!-- Información de derechos de autor y créditos -->
+        <p>&copy; 2024 GESTIONATUSCV. Todos los derechos reservados.</p>
+        <p> || Aplicación Web creada por Jesús Díaz Martín || </p>
+    </div>
+    
+</footer>
+
+</html>
+
